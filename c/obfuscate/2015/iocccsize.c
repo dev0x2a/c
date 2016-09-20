@@ -37,8 +37,6 @@
  */
 
 /*
- * The official IOCCC rule 2 secondary limit on C code size
- *
  * The IOCCC size tool should be compiled as:
  *
  *	cc -pedantic -Wall -std=c99 iocccsize.c -o iocccsize
@@ -60,25 +58,6 @@
  *
  * ASCII whitespace includes ASCII tab, ASCII space, ASCII newline,
  * ASCII formfeed, and ASCII carriage return.
- *
- * In cases where the above summary and the algorithm implemented by
- * the IOCCC size tool source code conflict, the algorithm implemented
- * by the IOCCC size tool source code is preferred by the judges.
- *
- * See the current IOCCC rules and guidelines for more information.
- * In particular, see the current IOCCC size rule for information about
- * the maximum value that this tool should print for an entry to be valid.
- */
-
-/*
- * IOCCC Judge's remarks:
- *
- * This code contains undocumented features.  On the other hand, this code
- * is RTFS (for certain values of RTFS). One might say that this code
- * perfectly documents itself. :-)
- *
- * Many thanks to Anthony Howe for taking the time to put his OCD
- * (Obfuscated Coding Determination) into this code!
  */
 
 /*

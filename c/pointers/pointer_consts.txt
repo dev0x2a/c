@@ -1,6 +1,0 @@
-const int * const ip;   /*  the pointer *ip is const as well as what it points at */
-
-      int * const ip;   /*  the pointer *ip is const  */
-const int *       ip;   /*  what *ip is pointing at is const  */
-      int *       ip;   /*  nothing is const  */
-

@@ -14,7 +14,7 @@ cd $HOME/c
 
 files="*"
 
-echo -e "::\n(\n$files `ls` )\n»» auto included"
+echo -e "::\n(\n$files\n`ls`\n)\n»» auto included"
 echo -en ":: enter other files\n   "
 read efiles
 

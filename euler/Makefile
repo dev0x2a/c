@@ -1,4 +1,4 @@
- include /home/ryanku/Makefile
+include /home/ryanku/c/Makefile.mk
 
 #		c makefile
 #

@@ -13,10 +13,9 @@ local EX="$?"
 cd $HOME/c
 
 files="*"
-sdir=""
 
-echo -e ":: ( $sdir $files `ls` ) »» auto included"
-echo -en ":: enter other files    "
+echo -e "::\n(\n$files `ls` )\n»» auto included"
+echo -en ":: enter other files\n   "
 read efiles
 
 git add $files $sdir $efiles

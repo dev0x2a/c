@@ -19,7 +19,7 @@ echo -en ":: enter other files\n   "
 read efiles
 
 git add $files $sdir $efiles
-git commit -m "gitupdate.sh >> c"
+git commit -m "gitup.sh >> c"
 git push origin master
 
 gitEX

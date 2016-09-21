@@ -20,8 +20,14 @@ i = 1;
 while (i < NUMNODES) {
   j = i + 1;
   if (node[i].mark) {
-    if (node[i].utype == LST &&)
+    if (node[i].utype == LST && node[node[i].lstinfo].mark != TRUE) {
+      node[node[i].lstinfo] = TRUE;
+      if (node[i].lstinfo < j) j = node[i].lstinfo;
+    }
+    if (node[node[i].next].mark != TRUE) {
+      node[node[i].next].mark = TRUE;
+      if (node[i].next < j) j = node[i].next;
+    }
   }
+  i = j;
 }
-
-

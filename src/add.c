@@ -1,12 +1,12 @@
 /*
- * source.c
+ * add.c
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#define PROGRAM_NAME "source"
+#define PROGRAM_NAME "add"
 
 void usage(void);
  

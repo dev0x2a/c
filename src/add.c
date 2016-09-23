@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #define PROGRAM_NAME "add"
+#define COMMAND_NAME "git"
 
 void usage(void);
  
@@ -19,7 +20,7 @@ int main(int argc, char **argv)
   int argcount = 2;
   int help_check, switchcase;
 
-  printf("source:\t");
+  printf("%s %s:\t", COMMAND_NAME, PROGRAM_NAME);
   scanf("%s", input_file);
   help_check = strcmp(input_file, "help");
 
@@ -53,7 +54,7 @@ void usage(void)
 {
   fprintf(stdout, "\n\
         usage: %s: \n\
-        \t  source: [input_file]\n\
-        ", PROGRAM_NAME);
+        \t  %s %s: [input_file]\n\
+        ", PROGRAM_NAME, COMMAND_NAME, PROGRAM_NAME);
 }
 

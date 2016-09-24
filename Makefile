@@ -1,9 +1,11 @@
-#		c makefile
-#
-#
-#		use on this system only
-#
-#		ryan keleti
+#                              #
+#		c makefile                 #
+#                              #
+#                              #
+#		use on this system only    #
+#                              #
+#		ryan keleti                #
+#                              #
 
 BIN=bin
 SRCS:=$(wildcard *.c)

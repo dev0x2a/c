@@ -1,9 +1,9 @@
 #
-#		c makefile, euler
+#		c makefile for euler
 #
 #		ryan keleti
 #
-##	include ../Makefile
+##	include ../../Makefile
 #
 
 SRCS:=$(wildcard *.c)
@@ -24,6 +24,7 @@ all: $(OBJS)
 
 $(OBJS): %.o: %.c
 	cc $< -o $@ $(CFLAGS)
+	mv *.o ../bin
 
 clean: 
 	@- $(RM) $(NAME)
@@ -32,18 +33,22 @@ clean:
 distclean: clean
 
 remove:
-	rm -i `find . -perm /111 -type f`
+	rm -i `find ../bin -perm /111 -type f`
+
+delete:
+	rm -I `find ../bin -perm /111 -type f`
 
 help:
 	@echo
-	@echo 'c makefile, euler'
+	@echo 'c makefile | proj euler'
 	@echo
 	@echo 'usage: make [TARGET]'
 	@echo
-	@echo '   all:        make all *.c'
-	@echo '   clean:      rm *.o'
+	@echo '   all:        make all *.c in bin'
+	@echo '   clean:      rm *.o in bin'
 	@echo '   distclean:  clean'
-	@echo '   remove:     rm files with executable bit set'
+	@echo '   remove:     rm files w/ exec bit set (safer)'
+	@echo '   delete:     rm files w/ exec bit set'
 	@echo
 	@echo
 

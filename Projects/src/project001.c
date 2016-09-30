@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+const double pi = 4.0 * atan(1.0);
+
 int
 main(int argc, char *argv[])
 {
@@ -18,11 +20,9 @@ main(int argc, char *argv[])
 
   int long num = atol(argv[1]);
 
-  for (int i = 0; i <= num; ++i) {
 
-    
 
-  }
+  printf("%lf\n", pi);
 
   printf("\n");
   return 0;

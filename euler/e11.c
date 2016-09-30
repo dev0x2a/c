@@ -2,18 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define ROWS 20
-#define COLUMNS 20
-#define VECTOR 20
-#define CONST 20
-#define LENGTH 4
+//int maxval(int *vec, int len, int *matrix);
 
-int maxval(int *vec, int len, int *matrix);
-
-int main(void)
+int 
+main(void)
 {
-#if 0
-  int matrix[ROWS][COLUMNS] = {
+  int matrix[20][20] = {
     { 8,  2, 22, 97, 38, 15,  0, 40,  0, 75,  4,  5,  7, 78, 52, 12, 50, 77, 91,  8},
     {49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48,  4, 56, 62,  0},
     {81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30,  3, 49, 13, 36, 65},
@@ -34,90 +28,31 @@ int main(void)
     {20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74,  4, 36, 16},
     {20, 73, 35, 29, 78, 31, 90,  1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57,  5, 54},
     { 1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52,  1, 89, 19, 67, 48}};
-#endif
-  int matrix[] = { 8,  2, 22, 97, 38, 15,  0, 40,  0, 75,  4,  5,  7, 78, 52, 12, 50, 77, 91,  8};
 
-  //int vec[VECTOR];
-  //int max, thismax;
-  //int i, j;
-  int len = sizeof(matrix) / sizeof(matrix[0]);
-  int *end = matrix + len;
-  int sum = 0, prod = 1;
-  int *p;
+  int prod;
 
-  for (p=matrix; p!=end; ++p) {
-    sum += *p; 
-    prod *= *p;
+  for (int i=0; i<=19; ++i) {
+    for (int j=0; j<=19; ++j) {
+      printf("%2d ", matrix[i][j]);
+    }
+  printf("\n");
   }
-  printf("\nsum:\t\t%d\nproduct:\t%d\n\n", sum, prod);
+
+  for (int i=0; i<=19; ++i) {
+    for (int j=0; j<=19; ++j) {
+      
+
+    }
+  }
+
+  printf("\n\n");
   return 0;
 
-  /*
-  max = 0;
-  for (i=0; i<ROWS; ++i) {
-    for (j=0; j<COLUMNS; ++j)
-      vec[j] = matrix[i][j];
-
-    thismax = maxval(vec, LENGTH, *matrix);
-    if (thismax > max)
-      max = thismax; 
-  }
-  for (j=0; j<COLUMNS; ++j) {
-    for (i=0; i<ROWS; ++i)
-      vec[i] = matrix[i][j];
-
-    thismax = maxval(vec, LENGTH);
-    if (thismax > max)
-      max = thismax; 
-  }
-  for (i=0; i<ROWS; ++i) {
-    for (j=0; j<COLUMNS-i; ++j)
-      vec[j] = matrix[i+j][j];
-
-    thismax = maxval(vec, LENGTH-i);
-    if (thismax > max)
-      max = thismax; 
-  }
-  for (i=0; i<ROWS; ++i) {
-    for (j=0; j<COLUMNS-i; ++j)
-      vec[j] = matrix[j][i+j];
-
-    thismax = maxval(vec, LENGTH-i);
-    if (thismax > max)
-      max = thismax; 
-  }
-  */
-
-  //printf("max = %d\n", max);
-  //return 0;
 }
-
-int maxval(int *vec, int len, int *matrix)
+/*
+int
+maxval(int *vec, int len, int *matrix)
 {
-#if 0
-  int i, j;
-  float *is_max;
- 
-  j = (int)*vec;
 
-  is_max = (float*)calloc(j, sizeof(float));
-  if (is_max == NULL) {
-    printf("error:  memory not allocated\n");
-    exit(0);
-  }
-  for (i=1; i<j; ++i) {
-    if (*is_max < *(is_max + i))
-      *is_max = *(is_max + i);
-  }
-  return is_max;
-#endif
-  int i, n;
-
-  n = CONST;
-  for (i=1; i<n; ++i) {
-    if (matrix[0] < matrix[i])
-      matrix[0] = matrix[i];
-  }
-  return matrix[0];
-}
+} */
 

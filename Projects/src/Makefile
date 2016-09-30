@@ -25,7 +25,7 @@ CFLAGS:=-lm
 all: $(OBJS)	
 
 bin: $(OBJS)
-	mv *.o ~/c/bin
+	mv *.o ../bin
 
 $(OBJS): %.o: %.c
 	cc $< -o $@ $(CFLAGS)

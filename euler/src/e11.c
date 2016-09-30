@@ -2,13 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 
-//int maxval(int *vec, int len, int *matrix);
-
 int 
 main(void)
 {
   int matrix[22][22] = {
-    {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
+    {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
     {0,  8,  2, 22, 97, 38, 15,  0, 40,  0, 75,  4,  5,  7, 78, 52, 12, 50, 77, 91,  8,  0},
     {0, 49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48,  4, 56, 62,  0,  0},
     {0, 81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30,  3, 49, 13, 36, 65,  0},
@@ -28,7 +26,7 @@ main(void)
     {0,  4, 42, 16, 73, 38, 25, 39, 11, 24, 94, 72, 18,  8, 46, 29, 32, 40, 62, 76, 36,  0},
     {0, 20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74,  4, 36, 16,  0},
     {0, 20, 73, 35, 29, 78, 31, 90,  1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57,  5, 54,  0},
-    {0,  1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52,  1, 89, 19, 67, 48,  0};
+    {0,  1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52,  1, 89, 19, 67, 48,  0},
     {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0}};
   /*
   int matrix[20][20] = {
@@ -66,12 +64,10 @@ main(void)
       long int prod = matrix[i][0+j] * matrix[i][1+j] * matrix[i][2+j] * matrix[i][3+j];
       if (prod == 0)
         continue;
-      if (prod > 96059601)
+      if (prod > 96059601 || prod < 40000000)
         continue;
       else
-        //printf("%ld\t\t%d*%d*%d*%d\n", prod, matrix[i][0+j], matrix[i][1+j], matrix[i][2+j], matrix[i][3+j]);
-        printf("%d*%d*%d*%d\n", matrix[i][0+j], matrix[i][1+j], matrix[i][2+j], matrix[i][3+j]);
-        printf("\t\t\t%ld\n", prod);
+        printf("%d*%d*%d*%d\t\t%ld\n", matrix[i][0+j], matrix[i][1+j], matrix[i][2+j], matrix[i][3+j], prod);
     }
     ++i;
   }
@@ -81,12 +77,10 @@ main(void)
       long int prod = matrix[0+i][j] * matrix[1+i][j] * matrix[2+i][j] * matrix[3+i][j];
       if (prod == 0)
         continue;
-      if (prod > 96059601)
+      if (prod > 96059601 || prod < 40000000)
         continue;
       else
-        //printf("%ld\t\t%d*%d*%d*%d\n", prod, matrix[0+i][j], matrix[1+i][j], matrix[2+i][j], matrix[3+i][j]);
-        printf("%d*%d*%d*%d\n", matrix[0+i][j], matrix[1+i][j], matrix[2+i][j], matrix[3+i][j]);
-        printf("\t\t\t%ld\n", prod);
+        printf("%d*%d*%d*%d\t\t%ld\n", matrix[0+i][j], matrix[1+i][j], matrix[2+i][j], matrix[3+i][j], prod);
     }
     ++j;
   }
@@ -96,38 +90,29 @@ main(void)
       long int prod = matrix[0+i][0+j] * matrix[1+i][1+j] * matrix[2+i][2+j] * matrix[3+i][3+j];
       if (prod == 0)
         continue;
-      if (prod > 96059601)
+      if (prod > 96059601 || prod < 40000000)
         continue;
       else
-        //printf("%ld\t\t%d*%d*%d*%d\n", prod, matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j]);
-        printf("%d*%d*%d*%d\n", matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j]);
-        printf("\t\t\t%ld\n", prod);
+        printf("%d*%d*%d*%d\t\t%ld\n", matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j], prod);
     }
     ++j;
   }
-
+                                              /*
   for (int j=21; j>=0; ) {
     for (int i=21; i>=0; --i ) {
-      long int prod = matrix[0+i][0+j] * matrix[1+i][1+j] * matrix[2+i][2+j] * matrix[3+i][3+j];
+      long int prod = matrix[3+i][3+j] * matrix[2+i][2+j] * matrix[1+i][1+j] * matrix[0+i][0+j];
       if (prod == 0)
         continue;
-      if (prod > 96059601)
+      if (prod > 96059601 || prod < 40000000)
         continue;
       else
-        //printf("%ld\t\t%d*%d*%d*%d\n", prod, matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j]);
-        printf("%d*%d*%d*%d\n", matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j]);
-        printf("\t\t\t%ld\n", prod);
+        printf("%d*%d*%d*%d\t\t%ld\n", matrix[0+i][0+j], matrix[1+i][1+j], matrix[2+i][2+j], matrix[3+i][3+j], prod);
     }
     --j;
   }
+  */
 
   printf("\n");
   return 0;
 }
-/*
-int
-maxval(int *vec, int len, int *matrix)
-{
-
-} */
 

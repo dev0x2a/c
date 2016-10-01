@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-
-int 
+ 
+int
 main(void)
 {
-  int matrix[20][20] = {
+  int matrix[20][20]= {
     { 8,  2, 22, 97, 38, 15,  0, 40,  0, 75,  4,  5,  7, 78, 52, 12, 50, 77, 91,  8},
     {49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48,  4, 56, 62,  0},
     {81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30,  3, 49, 13, 36, 65},
@@ -26,61 +25,56 @@ main(void)
     {20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74,  4, 36, 16},
     {20, 73, 35, 29, 78, 31, 90,  1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57,  5, 54},
     { 1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52,  1, 89, 19, 67, 48}};
-  long int prod, maxprod = 0;
-  int i, j;
-  /*
-  for (int i=0; i<=19; ++i) {
-    for (int j=0; j<=19; ++j) {
-      printf("%2d ", matrix[i][j]);
-    }
-  printf("\n");
-  } */
 
-  for (i=0; i<20; i++) {
-    for (j=0; j<20-3; j++) {
-      prod = matrix[i][j] * matrix[i][j+1] * matrix[i][j+2] * matrix[i][j+3];
-      if (prod > maxprod) {
-        printf("%d*%d*%d*%d\t\t%ld\n", 
-          matrix[i][j], matrix[i][j+1], matrix[i][j+2], matrix[i][j+3], prod);
-        maxprod = prod;
+  int i, j, k, tmp;
+
+  //1 = left-down, 2 = down, 3 = right-down, 4 = right
+  long long int prod1, prod2, prod3, prod4, max_prod = 0;
+
+  for (i = 0; i < 20; i++){
+    for (j = 0; j < 20; j++){
+      prod1 = 1, prod2 = 1, prod3 = 1, prod4 = 1;
+      for (k = 0; k < 4; k++){
+        //left-down
+        tmp = matrix[i+k][j-k];
+        if (tmp >= 50 && j >= 3 && i <= 16)
+          prod1 *= tmp;
+        else
+          prod1 = 0;
+ 
+        //down
+        tmp = matrix[i+k][j];
+        if (tmp >= 50 && i <= 16)
+          prod2 *= tmp;
+        else
+          prod2 = 0;
+ 
+        //right-down
+        tmp = matrix[i+k][j+k];
+        if (tmp >= 50 && i <= 16 && j <= 16)
+          prod3 *= tmp;
+        else
+          prod3 = 0;
+ 
+        //right
+        tmp = matrix[i][j+k];
+        if (tmp >= 50 && j <= 16)
+          prod4 *= tmp;
+        else
+          prod4 = 0;
       }
+ 
+      if (prod1 > max_prod)
+        max_prod = prod1;
+      if (prod2 > max_prod)
+        max_prod = prod2;
+      if (prod3 > max_prod)
+        max_prod = prod3;
+      if (prod4 > max_prod)
+        max_prod = prod4;
     }
   }
-  
-  for (i=0; i<20-3; i++) {
-    for (j=0; j<20; j++) {
-      prod = matrix[i][j] * matrix[i+1][j] * matrix[i+2][j] * matrix[i+3][j];
-      if (prod > maxprod) {
-        printf("%d*%d*%d*%d\t\t%ld\n", 
-          matrix[i][j], matrix[i+1][j], matrix[i+2][j], matrix[i+3][j], prod);
-        maxprod = prod;
-      }
-    }
-  }
-  
-  for (i=0; i<20-3; i++) {
-    for (j=0; j<20-3; j++) {
-      prod = matrix[i][j] * matrix[i+1][j+1] * matrix[i+2][j+2] * matrix[i+3][j+3];
-      if (prod > maxprod) {
-        printf("%d*%d*%d*%d\t\t%ld\n", 
-          matrix[i][j], matrix[i+1][j+1], matrix[i+2][j+2], matrix[i+3][j+3], prod);
-        maxprod = prod;
-      }
-    }
-  }
-  
-  for (i=0; i<20-3; i++) {
-    for (j=3; j<20; j++) {
-      prod = matrix[i][j] * matrix[i+1][j-1] * matrix[i+2][j-2] * matrix[i+3][j-3];
-      if (prod > maxprod) {
-        printf("%d*%d*%d*%d\t\t%ld\n", 
-          matrix[i][j], matrix[i+1][j+1], matrix[i+2][j+2], matrix[i+3][j+3], prod);
-        maxprod = prod;
-      }
-    }
-  }
-  
-  printf("maxprod: %ld\n", maxprod);
+  printf("%lld\n", max_prod);
   return 0;
-}
+}                              
 

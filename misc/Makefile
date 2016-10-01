@@ -1,19 +1,19 @@
-#=======================================================================#
-#                                                                       #
-# c makefile                                                            #
-# ------------                                                          #
-#   $ make           		compile & link                                  #
-#   $ make NODEP=yes 		compile & link w/o generating dependencies      #
-#   $ make objs      		compile only (no linking)                       #
-#   $ make ctags     		create ctags for vi                             #
-#   $ make clean     		clean objects & executable                      #
-#   $ make distclean 		clean objects, executable & dependencies        #
-#   $ make help      		print usage                                     #
-#                                                                       #
-#=======================================================================#
+#======================================================================#
+#                                                                      #
+# c makefile                                                           #
+# ------------                                                         #
+#   $ make           		compile & link                                 #
+#   $ make NODEP=yes 		compile & link w/o generating dependencies     #
+#   $ make objs      		compile only (no linking)                      #
+#   $ make ctags     		create ctags for vi                            #
+#   $ make clean     		clean objects & executable                     #
+#   $ make distclean 		clean objects, executable & dependencies       #
+#   $ make help      		print usage                                    #
+#                                                                      #
+#======================================================================#
 
 ## custom
-##======================================================================
+##=====================================================================
 
 MY_CFLAGS =
 MY_LIBS   =
@@ -22,7 +22,7 @@ SRCDIRS   =
 PROGRAM   = main
 
 ## implicit
-##======================================================================
+##=====================================================================
 
 SRCEXTS    = .c
 HDREXTS    = .h
@@ -33,7 +33,7 @@ CTAGSFLAGS =
 #RM         = rm -f
 
 ## stable
-##======================================================================
+##=====================================================================
 
 SHELL = /bin/sh
 EMPTY =

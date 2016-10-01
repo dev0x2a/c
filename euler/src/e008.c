@@ -12,11 +12,13 @@ int convert(const char c)
 uint64_t productof(const int num[])
 {
   uint64_t product = 1.0;
-  for (int i = 0; i < SIZE; ++i) product *= (uint64_t)num[i];
+  for (int i=0; i<SIZE; ++i)
+    product *= (uint64_t)num[i];
   return product;
 }
 
-int main(void)
+int 
+main(void)
 {
   char numstring[] = "73167176531330624919225119674426574742355349194934"
                      "96983520312774506326239578318016984801869478851843"
@@ -41,14 +43,15 @@ int main(void)
 
   uint64_t maxnum = 0;
   int consec[SIZE];
-  for (int n = 0, c = 0; numstring[n] != '\0'; ++n, ++c) {
-    if (c == SIZE) c = 0;
-  
-  consec[c] = convert(numstring[n]);
-  if (n < SIZE - 1) continue;
-
-  uint64_t product = productof(consec);
-  if (product > maxnum) maxnum = product;
+  for (int n=0, c=0; numstring[n]!='\0'; ++n, ++c) {
+    if (c == SIZE) 
+      c = 0;
+    consec[c] = convert(numstring[n]);
+    if (n < SIZE - 1) 
+      continue;
+    uint64_t product = productof(consec);
+    if (product > maxnum)
+      maxnum = product;
   }
   printf("max product of %d integers is %"PRId64"\n\n", SIZE, maxnum);
   return 0;

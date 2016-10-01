@@ -4,7 +4,8 @@
 #define MAX 1000
 #define ERROR 0
 
-int main()
+int
+main(void)
 {
   int a, b, c, d, e, f, g, h, i, k, m, n;
   double cf;
@@ -47,7 +48,6 @@ int main()
     printf("%4d\t%4d\t%4d\t%4d\t%4d\n",((k*a) + (k*b) + (k*c)), k*a, k*b, k*c, k);
   }
 #endif  
-
   return 0;
 }
 

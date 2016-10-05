@@ -18,70 +18,69 @@ main (int argc, char *argv[])
   int prime = 1;
   int i, inc; 
 
-  num = atol(argv[1]);
-
   if (argc != 2) {
     fprintf(stderr, "%s <num> to check if prime\n", argv[0]);
     return(-1);
   }
 
+  num = atol(argv[1]);
   if (num == s[0] || num == s[1] || num == s[5]) {
-    fprintf(stdout, "%ld not prime\n", num);
+    printf("%ld not prime\n", num);
     return(0);
   }
 
   if (num == s[2] || num == s[3] || num == s[4]) {
-    fprintf(stdout, "%ld is prime\n", num);
+    printf("%ld is prime\n", num);
     return(0);
   }
 
   inc = 0;
   while (!(num&0x01)) {
     if (prime) 
-      fprintf(stdout, "not prime %ld = 2", num);
+      printf("not prime %ld = 2", num);
     ++inc;
     num >>= 1;
     prime = 0;
   }
 
   if (inc > 1) 
-    fprintf(stdout, "^%d", inc);
+    printf("^%d", inc);
 
   inc = 0;
   while (!(num%3)) {
     if (prime) 
-      fprintf(stdout, "not prime %ld = 3", num);
+      printf("not prime %ld = 3", num);
     else if (inc == 0) 
-      fprintf(stdout, "*3");
+      printf("*3");
     ++inc;
     num /= 3;
     prime = 0;
   }
 
   if (inc > 1) 
-    fprintf(stdout, "^%d", inc);
+    printf("^%d", inc);
 
   inc = 0;
   while (!(num%5)) {
     if (prime) 
-      fprintf(stdout, "not prime %ld = 5", num);
+      printf("not prime %ld = 5", num);
     else if (inc == 0) 
-      fprintf(stdout, "*5");
+      printf("*5");
     ++inc;
     num /= 5;
     prime = 0;
   }
 
   if (inc > 1) 
-    fprintf(stdout, "^%d", inc);
+    printf("^%d", inc);
   if (num <= 31) {
     if (prime) 
-      fprintf(stdout, "%ld is prime\n", num);
+      printf("%ld is prime\n", num);
     else { 
       if (num != 1) 
-        fprintf(stdout, "*%ld\n", num);
+        printf("*%ld\n", num);
       else 
-        fprintf(stdout, "\n");
+        printf("\n");
     }
     return(0);
   }
@@ -91,18 +90,18 @@ main (int argc, char *argv[])
     inc = 0;
     while (!(num%div)) {
       if (prime)
-        fprintf(stdout, "%ld not prime %ld = %ld", num, num, div);
+        printf("%ld not prime %ld = %ld", num, num, div);
       else if (inc == 0) 
-        fprintf(stdout, "*%ld", div);
+        printf("*%ld", div);
       ++inc;
       num /= div;
       max = sqrt(num);
       prime = 0;
     }
     if (inc > 1) 
-      fprintf(stdout, "^%d", inc);
+      printf("^%d", inc);
     if (num == 1) {
-      fprintf(stdout, "\n");
+      printf("\n");
       return(0);
     }
     div += del[++i];
@@ -111,12 +110,12 @@ main (int argc, char *argv[])
   }
 
   if (prime) 
-    fprintf(stdout, "%ld is prime\n", num);
+    printf("%ld is prime\n", num);
   else { 
     if (num != 1) 
-      fprintf(stdout, "*%ld\n", num);
+      printf("*%ld\n", num);
     else 
-      fprintf(stdout, "\n");
+      printf("\n");
   }
   return(0);
 }

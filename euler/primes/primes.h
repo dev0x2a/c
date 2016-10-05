@@ -2,34 +2,16 @@
 /*
  * primes.h
  * c header for some useful primes functions
+ * ryan keleti (c) 2016
  *
  * yes, the variable names are meaningless. this is a personal header.
- *
- * reference:
- *  power       -- x^y for ints
- *  gcd         -- greatest common denom
- *  lcm         -- least common multiple
- *  isprime     -- check if prime, version 1
- *  is_prime    -- check if prime, version 2
- *  countprimes -- count primes in range
- *  primefac    -- factor non-primes into primes
- *  sieve       -- sieve to find primes in range
  */
 #endif
 
 #ifndef PRIMES_H
 #define PRIMES_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
-#endif
-
-#define AUTHORS \
-  ("Ryan Keleti")
-
-int power(int b, unsigned int e)
+int pwr(int b, unsigned int e)
 {
   int i, r = 1; 
   for (i=0; i<e; ++i) r *= b;
@@ -47,7 +29,7 @@ int gcd(int a, int b)
 
 int lcm(int x, int y)
 {
-  return (x / gcd(x,y) * y);
+  return (x/gcd(x,y)*y);
 }
 
 int isprime(int n)
@@ -68,7 +50,7 @@ int is_prime(int n)
   return 1;
 }
 
-int countprimes(int n)
+int cprimes(int n)
 {
   int c = 0;
   for (int i=2; i<n; ++i) if (isprime(i)) ++c;
@@ -78,7 +60,7 @@ int countprimes(int n)
 int primefac(unsigned long int n)
 {
   while (n%2 == 0) {
-    printf("%d\t", 2);
+    printf("%2d\t", 2);
     n /= 2;
   }
   for (int i=3; i<=sqrt(n); i+=2) {
@@ -87,24 +69,25 @@ int primefac(unsigned long int n)
       n /= i;
     }
   }
-  if (n > 2) printf("%ld\t", n);
+  if (n > 2) printf("%2ld\t", n);
   return 0;
 }
 
 int sieve(int min, int max)
 {
-  int i, j, k;
+  int i,j,k;
   int set = ++max;
-  int *ints = malloc(sizeof(int) * set);
+  int *nums = malloc(sizeof(int)*set);
 
-  for (i=0; i<set; ++i) ints[i] = i + 1;
+  for (i=0; i<set; ++i) nums[i] = i + 1;
   for (j=2; j<set; ++j) 
-    if (ints[j] != 0) 
+    if (nums[j] != 0) 
       for (k=2*j; k<set; k+=j) 
-        ints[k] = 0;
-  
+        nums[k] = 0;
   for (i=min; i<set; ++i)
-    if (ints[i] != 0) printf("%2d ", i);
+    if (nums[i] != 0) printf("%2d ", i);
+  free(nums);
   return 0;
 }
+#endif
 

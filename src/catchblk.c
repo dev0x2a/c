@@ -21,9 +21,11 @@
 
 #define PROGRAM_NAME "catchblk"
 
-void usage(void);
+void
+usage(void);
 
-int main(int argc, char **argv)
+int
+main(int argc, char *argv[])
 {
   const char *input_file;
   const char *args[] = {input_file ,"| grep '^.\\*'"};
@@ -56,13 +58,14 @@ int main(int argc, char **argv)
             break;
 
     default: usage();
-             return (-1);
+             return(-1);
              break;
   }
   return 0;
 }
 
-void usage(void)
+void
+usage(void)
 {
   fprintf(stdout, "\n\
         usage: %s: \n\

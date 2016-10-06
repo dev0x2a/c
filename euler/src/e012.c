@@ -3,57 +3,46 @@
 #include <math.h>
 #include <inttypes.h>
 
-//#define MAX 10000
-
 typedef uint64_t u64;
 
-int 
-num_t(u64 n)
-{
-  u64 result = (n*(n + 1))/2;
-  return result;
-}
-
 int
-factor(u64 num)
+factor(u64 n)
 {
-  int num_factors = 0;
-  for (u64 i=1; i<=num; ++i) {
-    if (num%i == 0) {
-      //printf("%"PRIu64" ", i);
-      ++num_factors;
-    }
-    if (num_factors == 500) {
-      //printf("factor 500""%"PRIu64" ", num_factors);
-      exit(0);
-    } 
+  int c = 0;
+  for (int i=1; i<=n; ++i) {
+    if (n%i == 0)
+      ++c;
   }
-  return num_factors;
+  return c;
 }
 
 int
 main(int argc, char *argv[])
 { 
+  int init = 0;
+  int count = -1;
   u64 num;
-  int count;
 
   if (argc != 2) {
     printf("%s <num>\n", argv[0]);
     return(-1);
   }
   num = atoll(argv[1]);
-  count = -1;
 
-//  for (int i=0; i<=num; ++i) {
-//    num_t(i);
-//    ++count;
-//    printf("%d\t%d\n", num_t(i), count);
-//  }
-  printf("\nnum: %d, (%d)triangle\n", num_t(num), num);
-
-  num = num_t(num);
-  //factor(num);
-  printf("\nnum_factors: %d\n", factor(num));
+  for (int k=0 ;; ++k) {
+    int t;
+    ++count;
+    if (k%2 == 0)
+      t = factor(k+1);
+    else
+      t = factor((k+1)/2);
+    int total = init*t;
+    if (total > 500) {
+      printf("%d, t(%d)\n", (k*(k+1))/2, count);
+      break;
+    }
+    init = t;
+  }
   return 0;
 }
 

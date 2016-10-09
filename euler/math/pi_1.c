@@ -4,7 +4,6 @@
  *
  * original created by Dik T. WInter
  */
-
 #include <stdio.h>
 
 int

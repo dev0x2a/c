@@ -9,7 +9,6 @@
  *  where a, b, & c are given via input, and
  *    x1 & x2 are outputs
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -24,7 +23,6 @@ main(int argc, char *argv[])
     printf("%s <a> <b> <c>\n", argv[0]);
     return(-1);
   }
-
   int a = atol(argv[1]);
   int b = atol(argv[2]);
   int c = atol(argv[3]);
@@ -39,8 +37,7 @@ main(int argc, char *argv[])
   else if (numtr < 0)
     type = 3;
 
-  switch(type)
-  {
+  switch(type) {
     case 1:   x1 = -b / denom;
               x2 = x1;
               break;
@@ -49,13 +46,13 @@ main(int argc, char *argv[])
               break;
     case 3:   real = -b / denom;
               i = sqrt(fabs(numtr)) / denom;
-              printf("\nx1\t%f + %fi", real, i);
-              printf("\nx2\t%f - %fi\n", real, i);
+              printf("\nx₁\t%f + %fi", real, i);
+              printf("\nx₂\t%f - %fi\n", real, i);
               return 0;
     default:  return(-1);
   }
 
-  printf("\nx1\t%f\nx2\t%f\n", x1, x2);
+  printf("\nx₁\t%f\nx₂\t%f\n", x1, x2);
   return 0;
 }
 

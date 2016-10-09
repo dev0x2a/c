@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#endif
 
 #define AUTHORS \
   ("Ryan Keleti")
@@ -130,4 +129,5 @@ int collatz(int long n)
   printf("1\n");
   return 0;
 }
+#endif
 

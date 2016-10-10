@@ -14,6 +14,7 @@ cd $HOME/c
 
 files="*"
 
+git add `find .`
 git add $files 
 git commit -m "update `date`"
 git push origin master

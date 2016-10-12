@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <time.h>
+#include <gmp.h>
 
 typedef uint64_t u64;
 
@@ -26,10 +27,11 @@ main(int argc, char *argv[])
   n = i+k;
   r = k;
 
+
   printf("%"PRIu64"\n", C(n,r));
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
-  printf("cpu time: %1f\n", cpu_usage);
+  printf("\ncpu time: %1f\n", cpu_usage);
   return 0;
 }
 
@@ -54,5 +56,5 @@ C(int n, int r)
   c = factorial(n-r);
   ret = a/(b*c);
   return ret;
-} 
+}
 

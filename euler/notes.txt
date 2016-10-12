@@ -1,0 +1,9 @@
+struct num {
+  int ndigits;
+  char d[MAXDIGITS];
+};
+
+struct num = { 6, { 6, 5, 4, 3, 2, 1} };
+
+n.d[i] ... ... ...;
+

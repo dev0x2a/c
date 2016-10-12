@@ -4,6 +4,6 @@
 int
 main(void)
 {
-  dgt_main();
+  dgt_main(5);
 }
 

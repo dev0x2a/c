@@ -1,60 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
 #include <time.h>
-#include <gmp.h>
-
-typedef uint64_t u64;
-
-u64 factorial(int n);
-u64 C(int n, int r);
 
 int
 main(int argc, char *argv[])
 {
-  int i, k, n, r;
+  int n;
   clock_t start, end;
   double cpu_usage;
 
-  if (argc != 3) {
-    printf("%s <num> <num>\n", argv[0]);
+  if (argc != 2) {
+    printf("%s <num>\n", argv[0]);
     return(-1);
   }
   start = clock();
-  i = atoi(argv[1]);
-  k = atoi(argv[2]);
+  n = atoi(argv[1]);
+  ++n;
 
-  n = i+k;
-  r = k;
+  unsigned long long g[n][n];
+  for (int i=0; i<n; ++i) {
+    g[i][0] = 1;
+    g[0][i] = 1;
+  }
+  for (int i=1; i<n; ++i) {
+    for (int j=1; j<n; ++j) {
+      g[i][j] = g[i-1][j] + g[i][j-1];
+    }
+  }
+  printf("%lld\n", g[n-1][n-1]);
 
-
-  printf("%"PRIu64"\n", C(n,r));
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
   printf("\ncpu time: %1f\n", cpu_usage);
   return 0;
-}
-
-u64
-factorial(int n)
-{
-  int i;
-  u64 ret;
-  ret = 1;
-  for (i=1; i<=n; ++i) {
-    ret *= i;
-  }
-  return ret;
-}
-
-u64
-C(int n, int r)
-{
-  u64 a, b, c, ret;
-  a = factorial(n);
-  b = factorial(r);
-  c = factorial(n-r);
-  ret = a/(b*c);
-  return ret;
 }
 

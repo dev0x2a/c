@@ -17,10 +17,10 @@ main(int argc, char *argv[])
     return(-1);
   }
   start = clock();
-  b = atoi(argv[1]);
-  n = atoi(argv[2]);
+  //b = atoi(argv[1]);
+  //n = atoi(argv[2]);
 
-  printf("%lld\n", modular(2,1000,10));
+  printf("%lld\n", modular(2,1000,1));
 
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;

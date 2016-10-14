@@ -15,7 +15,7 @@ int gcd(int a, int b)
 
 int lcm(int x, int y)
 {
-  return (x / gcd(x,y) * y);
+  return (x / gcd(x,y)*y);
 }
 
 int 
@@ -24,12 +24,11 @@ main(void)
   int n = 1;
   bool found = false;
   
-  for (int i=1; i<21; ++i) {
+  for (int i=1; i<21; ++i)
     n = lcm(n, i+1);
-  }
   found = true;
   
-  if (found == true)
+  if (found)
     printf("%d\n", n);
   return 0;
 }

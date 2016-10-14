@@ -10,14 +10,41 @@
  * prefix all functions or non-local variables with eul_
  */
 
-int eul_pwr(int b, unsigned int e)
+int
+eul_pwr(int b, unsigned int e)
 {
   int r = 1; 
   for (int i=0; i<e; ++i) r *= b;
   return r;
 }
 
-int eul_gcd(int a, int b)
+long long
+eul_power(long long n, long long e)
+{
+  long long r = 1;
+  while (e > 0) {
+    if ((e&1)!=0) r *= n;
+    n *= n;
+    e >>= 1;
+  }
+  return r;
+}
+
+int
+eul_modular(int b, unsigned int e, unsigned int m)
+{
+  int i;
+  int r = 1;
+  int p = b%m;
+  for (i=0; i<sizeof(int)*8; ++i) {
+    int lbit = 0x00000001&(e>>i);
+    if (lbit) r = (r*p)%m;
+  }
+  return r;
+}
+
+int
+eul_gcd(int a, int b)
 {
   while (a != b) {
     if (a > b) a -= b;
@@ -26,12 +53,14 @@ int eul_gcd(int a, int b)
   return a;
 }
 
-int eul_lcm(int x, int y)
+int
+eul_lcm(int x, int y)
 {
   return (x/gcd(x,y)*y);
 }
 
-int eul_isprime(int n)
+int
+eul_isprime(int n)
 {
   if (n<2) return 0;
   if (n==2) return 1;
@@ -43,7 +72,8 @@ int eul_isprime(int n)
 }
 
 /*  eul_is_prime: slightly different than eul_isprime */
-int eul_is_prime(int n)
+int
+eul_is_prime(int n)
 {
   if (n==1) return 0;
   if (n==2) return 1;
@@ -52,7 +82,8 @@ int eul_is_prime(int n)
   return 1;
 }
 
-int eul_cprimes(int n)
+int
+eul_cprimes(int n)
 {
   int c = 0;
   for (int i=2; i<n; ++i) 
@@ -60,7 +91,8 @@ int eul_cprimes(int n)
   return c;
 }
 
-int eul_primefac(unsigned long int n)
+int
+eul_primefac(unsigned long int n)
 {
   while (n%2==0) {
     printf("%2d\t", 2);
@@ -76,7 +108,8 @@ int eul_primefac(unsigned long int n)
   return 0;
 }
 
-int eul_sieve(int min, int max)
+int
+eul_sieve(int min, int max)
 {
   int i,j,k;
   int set = ++max;

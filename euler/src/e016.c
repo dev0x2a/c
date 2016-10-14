@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-long long power(long long n, long long e);
-int modular(int b, unsigned int e, unsigned int m);
+unsigned long long power(unsigned long long n, unsigned long long e);
 
 int
 main(int argc, char *argv[])
@@ -17,10 +16,10 @@ main(int argc, char *argv[])
     return(-1);
   }
   start = clock();
-  //b = atoi(argv[1]);
-  //n = atoi(argv[2]);
+  b = atoi(argv[1]);
+  n = atoi(argv[2]);
 
-  printf("%lld\n", modular(2,1000,1));
+  printf("%d^%d = %lld\n", b, n, power(b,n));
 
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
@@ -28,31 +27,16 @@ main(int argc, char *argv[])
   return 0;
 }
 
-long long 
-power(long long n, long long e)
+unsigned long long 
+power(unsigned long long n, unsigned long long e)
 {
-  long long r;
+  unsigned long long r;
   r = 1;
   while (e > 0) {
     if ((e&1) != 0)
       r *= n;
     n *= n;
     e >>= 1;
-  }
-  return r;
-}
-  
-int
-modular(int b, unsigned int e, unsigned int m)
-{
-  int i;
-  int r = 1;
-  int p = b%m;
-
-  for (i=0; i<sizeof(int)*8; ++i) {
-    int lbit = 0x00000001&(e>>i);
-    if (lbit)
-      r = (r*p)%m;
   }
   return r;
 }

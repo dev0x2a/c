@@ -18,10 +18,10 @@ eul_pwr(int b, unsigned int e)
   return r;
 }
 
-long long
-eul_power(long long n, long long e)
+unsigned long long
+eul_power(unsigned long long n, unsigned long long e)
 {
-  long long r = 1;
+  unsigned long long r = 1;
   while (e > 0) {
     if ((e&1)!=0) r *= n;
     n *= n;

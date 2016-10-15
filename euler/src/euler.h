@@ -10,6 +10,11 @@
  * prefix all functions or non-local variables with eul_
  */
 
+unsigned char eul_bittab[] =
+{
+  1,2,4,8,16,32,64,128,
+};
+
 int
 eul_pwr(int b, unsigned int e)
 {

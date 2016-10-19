@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 int
 main(int argc, char *argv[])
@@ -22,14 +21,11 @@ main(int argc, char *argv[])
   const char *bin = "cat";
   char out[5000];
 
-
   sprintf(out, "%s", bin);
   for (int i=0; i<2; ++i) {
     strcat(out, " ");
     strcat(out, arr[i]);
   }
-  printf("%s\n\n", out);
-  sleep(1);
   system(out);
   return(0);
 }

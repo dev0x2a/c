@@ -19,7 +19,7 @@ main(int argc, char *argv[])
   lim = atoi(argv[2]);
 
   int sum = 0;
-  for (i=0; i<=lim; ++i) {
+  for (i=num; i<=lim; ++i) {
     sum += i;
   }
   printf(" %d\n", lim); 

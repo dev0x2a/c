@@ -44,10 +44,10 @@ main(int argc, char *argv[])
     }
   }
   //printf("1\n");
-  printf("\n\ncount:\t%d\n", count);
+  printf("\n\ncount = %d", count);
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
-  printf("cpu time: %1f\n", cpu_usage);
+  printf("\ncpu time: %1f\n", cpu_usage);
   return 0;
 }
 

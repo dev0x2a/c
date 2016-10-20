@@ -22,6 +22,6 @@ main(int argc, char *argv[])
   end = clock();
   cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
   printf("\ncpu time: %1f\n", cpu_usage);
-  return 0;
+  return(0);
 }
 

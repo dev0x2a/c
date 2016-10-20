@@ -13,7 +13,7 @@ main(int argc, char *argv[])
   char op;
 
   if (argc != 4) {
-    fprintf(stderr, "%s <num> <operation> <num>\n", argv[0]);
+    fprintf(stderr, "%s <num> <+,-,x,/> <num>\n", argv[0]);
     return(-1);
   }
   m = atof(argv[1]);

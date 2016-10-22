@@ -11,12 +11,11 @@ main(int argc, char *argv[])
   int n,k,u;
   n = atol(argv[1]);
   if (n>255)
-    u = 31;
+    u=31;
   else
-    u = 7;
-
+    u=7;
   for (int i=u; i>=0; --i) {
-    k = n>>i;
+    k=n>>i;
     if (k&1)
       printf("1");
     else

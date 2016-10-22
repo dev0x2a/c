@@ -40,6 +40,7 @@ main(int argc, char *argv[])
 int
 gen(int N)
 {
+  int k;
   int c=0;
   int tmp=N;
   while (N!=1) {
@@ -51,6 +52,14 @@ gen(int N)
       ++c;
     }
   }
+  for (int i=31; i>=0; --i) {
+    k=c>>i;
+    if (k&1)
+      printf("1");
+    else
+      printf("0");
+  }
+  printf("\n");
   //printf("for %3d, count = %3d\n", tmp,c);
   return(c);
 }

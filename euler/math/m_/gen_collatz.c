@@ -1,7 +1,8 @@
 /*
  * collatz.c
  *  counts steps in collatz seq
- *  for a given num
+ *  for an interval [1,num]
+ *  and gives the average
  * (c) copyright 2016 Ryan Keleti
  */
 #include <stdio.h>
@@ -41,7 +42,6 @@ gen(int N)
   int c=0;
   int tmp=N;
   while (N!=1) {
-    //printf("%llu ", N);
     
     if (N&1) {
       N=(((N<<1)+N)+1)>>1;
@@ -51,7 +51,7 @@ gen(int N)
       ++c;
     }
   }
-  printf("for %3d, count = %3d\n", tmp,c);
+  //printf("for %3d, count = %3d\n", tmp,c);
   return(c);
 }
 

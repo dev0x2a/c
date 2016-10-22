@@ -21,7 +21,7 @@ main(int argc, char *argv[])
   double s;
   int i;
 
-  N = atoi(argv[1]);
+  N=atoi(argv[1]);
   if ((signed)N<1) {
     printf("%s: input < 1\n", argv[0]);
     return(-1);
@@ -29,9 +29,9 @@ main(int argc, char *argv[])
   printf("\n");
   s=0;
   for (i=1; i<=N; ++i) {
-    s += gen(i);
+    s+=gen(i);
   }
-  s /= i;
+  s/=i;
   printf("avg = %f\n", s);
   //printf("1");
   return(0);

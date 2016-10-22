@@ -45,6 +45,7 @@ gen(int N)
   int tmp=N;
   while (N!=1) {
     if (N&1) {
+      //N=(((N<<1)+N)+1);++c;
       N=(((N<<1)+N)+1)>>1;
       c+=2;
     } else {
@@ -59,7 +60,7 @@ gen(int N)
     else
       printf("0");
   }
-  printf("\n");
+  printf("  %d\n",c);
   //printf("for %3d, count = %3d\n", tmp,c);
   return(c);
 }

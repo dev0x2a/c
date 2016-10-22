@@ -13,10 +13,10 @@ main (int argc, char *argv[])
   //int offset[8] = {1,7,11,13,17,19,23,29};
   int s[6] = {0,1,2,3,5,-1};
   int del[8] = {6,4,2,4,2,4,6,2};
-  long int N = 0;
+  long int N=0;
   long int div, max;
-  int prime = 1;
-  int i, inc; 
+  int prime=1;
+  int i,inc; 
 
   if (argc!=2) {
     printf("%s <num> to check if prime\n", argv[0]);

@@ -56,7 +56,7 @@ gen(int N)
     if ((c>>i)&1)
       printf("1");
     else
-      printf("0");
+      printf("\033[31m0\033[0m");
   }
   printf("  %d\n",c);
   //printf("for %3d, count = %3d\n", tmp,c);

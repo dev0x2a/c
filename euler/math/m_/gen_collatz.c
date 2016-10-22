@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void gen(int N);
+int gen(int N);
 
 int 
 main(int argc, char *argv[]) 
@@ -17,6 +17,8 @@ main(int argc, char *argv[])
     return(-1);
   }
   unsigned long long N;
+  double s;
+  int i;
 
   N = atoi(argv[1]);
   if ((signed)N<1) {
@@ -24,14 +26,16 @@ main(int argc, char *argv[])
     return(-1);
   }
   printf("\n");
-  for (int i=1; i<=N; ++i) {
-    gen(i);
+  for (i=1; i<=N; ++i) {
+    s += gen(i);
   }
+  s /= i;
+  printf("avg = %f\n", s);
   //printf("1");
   return(0);
 }
 
-void
+int
 gen(int N)
 {
   int c=0;
@@ -48,4 +52,6 @@ gen(int N)
     }
   }
   printf("for %3d, count = %3d\n", tmp,c);
+  return(c);
 }
+

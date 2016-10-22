@@ -43,7 +43,6 @@ gen(int N)
   int c=0;
   int tmp=N;
   while (N!=1) {
-    
     if (N&1) {
       N=(((N<<1)+N)+1)>>1;
       c+=2;

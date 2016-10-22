@@ -27,19 +27,17 @@ clean:
 distclean: clean
 
 remove:
-	rm -i `find ../bin -perm /111 -type f`
+	rm -i `find . -perm /111 -type f`
 
 delete:
-	rm -I `find ../bin -perm /111 -type f`
+	rm -I `find . -perm /111 -type f`
 
 help:
 	@echo
-	@echo 'c makefile | proj euler'
-	@echo
 	@echo 'usage: make [TARGET]'
 	@echo
-	@echo '   all:        make all *.c in bin'
-	@echo '   clean:      rm *.o in bin'
+	@echo '   all:        make all *.c'
+	@echo '   clean:      rm *.o'
 	@echo '   distclean:  clean'
 	@echo '   remove:     rm files w/ exec bit set (safer)'
 	@echo '   delete:     rm files w/ exec bit set'

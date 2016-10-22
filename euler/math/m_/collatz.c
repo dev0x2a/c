@@ -1,6 +1,11 @@
+/*
+ * collatz.c
+ *  counts steps in collatz seq
+ *  for a given num
+ * (c) copyright 2016 Ryan Keleti
+ */
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 int 
 main(int argc, char *argv[]) 
@@ -23,7 +28,6 @@ main(int argc, char *argv[])
     
     if (N&1) {
       N=(((N<<1)+N)+1)>>1;
-      //N=(3*N+1)>>1;
       c+=2;
     } else {
       N>>=1;
@@ -31,7 +35,7 @@ main(int argc, char *argv[])
     }
   }
   //printf("1");
-  printf("\n\033[0;31mcount = %d\033[0m\n\n", c);
+  printf("\ncount = %d\n", c);
   return(0);
 }
 

@@ -27,6 +27,7 @@ main(int argc, char *argv[])
     return(-1);
   }
   printf("\n");
+  s=0;
   for (i=1; i<=N; ++i) {
     s += gen(i);
   }

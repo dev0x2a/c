@@ -4,23 +4,23 @@
 int
 main(int argc, char *argv[])
 {
-  int num, k;
-
-  if (argc != 2) {
-    fprintf(stderr, "%s <num> to convert base10 to base2\n", argv[0]);
+  if (argc!=2) {
+    printf("%s <num> b10->b2\n",argv[0]);
     return(-1);
   }
-
-  num = atol(argv[1]);
-
-  for (int i=31; i>=0; --i) {
-    k = num >> i;
-    if (k&1)
+  int n,u;
+  n = atol(argv[1]);
+  if (n>255)
+    u=31;
+  else
+    u=7;
+  for (int i=u; i>=0; --i) {
+    if ((n>>i)&1)
       printf("1");
     else
       printf("0");
   }
   printf("\n");
-  return 0;
+  return(0);
 }
 

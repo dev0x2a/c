@@ -5,10 +5,10 @@ main(void)
 {
   int status;
 
-  init_game()
+  init();
 
     
 
-  return status;
+  return(status);
 }
 

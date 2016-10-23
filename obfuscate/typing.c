@@ -24,15 +24,11 @@ Most Unusual Data Structure <pjr@pyra.co.uk> Peter J Ruczynski
   Hants GU14 7PL
   England, U.K.
 
-
 Judges' comments:
-
     This program prints out a string.  Can you figure out how
     it is done?
-
     By use of pointers to functions returning a struct of pointers 
     to functions!
-
     Note that some compilers will be unable to compile the
     expression 'X=g()...' in main due to lack of temporary
     value space.  One might want to try replacing main with:
@@ -41,9 +37,7 @@ Judges' comments:
     
     if this is a problem.
 
-
 Spoiler: (rot13 to read)
-
     Guvf cebtenz cevagf bhg gur fgevat:
 
     gur dhvpx oebja sbk whzcrq bire gur ynml qbt
@@ -51,9 +45,7 @@ Spoiler: (rot13 to read)
     ol hfr bs cbvagref gb shapgvbaf ergheavat n fgehpg bs cbvagref 
     gb shapgvbaf!
 
-
 Selected notes from the author: (rot13 to read)
-
     Vg vf fvzcyr gb znxr gur cebtenz cevag bgure fgevatf.  Rnpu
     nycunorgvpny punenpgre sebz n gb m vf cevagrq bhg nf vgf
     bccbfvgr:
@@ -72,7 +64,6 @@ Selected notes from the author: (rot13 to read)
     By the way, there is actually a piece of code which is not used
     in the original program! I leave it as an intellectual exercise
     to the reader to find out what it is.
-
 
 Copyright (c) 1990, Landon Curt Noll & Larry Bassel.
 All Rights Reserved.  Permission for personal, educational or non-profit use is

@@ -31,10 +31,10 @@ clean:
 	@- $(RM) $(OBJS)
 
 remove:
-	rm -i `find ../bin -perm /111 -type f`
+	rm -i `find . -perm /111 -type f`
 
 delete:
-	rm -I `find ../bin -perm /111 -type f`
+	rm -I `find . -perm /111 -type f`
 
 help:
 	@echo

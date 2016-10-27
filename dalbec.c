@@ -1,19 +1,22 @@
-#include<stdlib.h>
 #include<stdio.h>
-main(I,O,O0,OO,l)
-int I,O0,OO,l;
-char **O;
+#include<stdlib.h>
+
+int main(z,c,k,x,n)
+int z,k,x,n;
+char **c;
 {
-	return !!I>=I?!I>=I?!!~I>=~I?!~I>=~I?!OO?!I:OO%2?
-		OO=main(I,O,O0,OO>>!!OO,l),
-		OO=main(I-!I-!!I,O,OO,OO,l),
-		OO=main(I-!I-!!I,O,O0,OO,l),
-		!(OO-!I||I)?l-1:OO
-	:(OO=main(I,O,O0,OO>>!!OO,l),
-		!(OO-l+!I||I)?l-1:main(I-!I-!!I,O,OO,OO,l))
-	:(O0+OO)%l
-	:main(I-I/I-I/I,O,O0,OO+OO/OO,
-		main(0,O,O0,OO,I-I-I)+I+1?1:printf("%d ",I-I-I)+fflush(stdout))
-	:main(I-I-I-I-I,O,I+I-I+I,I,0)
-	:main(~!!I-!!I,O,atoi(1[O]),1,atoi(0[O]));
+	return(
+      !!z>=z ? !z>=z ? !!~z>=~z ? !~z>=~z ? !x ? !z : x%2 ? 
+      x=main(z,c,k,x>>!!x,n),
+      x=main(z-!z-!!z,c,x,x,n),
+      x=main(z-!z-!!z,c,k,x,n),
+      !(x-!z||z)
+        ? n-1 : x : (x=main(z,c,k,x>>!!x,n),!(x-n+!z||z) 
+        ? n-1 : main(z-!z-!!z,c,x,x,n)) :
+        (k+x)%n : 
+    main(z-z/z-z/z,c,k,x+x/x, main(0,c,k,x,z-z-z)+z+1 ? 1 : 
+    printf("%d\t",z-z-z)+fflush(stdout)):
+      main(z-z-z-z-z,c,z+z-z+z,z,0) : 
+      main(~!!z-!!z,c,atoi(c[1]),1,atoi(c[0]));
 }
+

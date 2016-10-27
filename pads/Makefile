@@ -16,7 +16,7 @@ CC= cc
 GCC= gcc
 RM=rm
 
-.PHONY: all clean remove delete help
+.PHONY: all gcc clean remove help
 
 all: $(NAME)	
 
@@ -26,25 +26,23 @@ $(NAME):
 #$(OBJS): %.o: %.c
 #	cc $< -o $@ $(CFLAGS)
 
-clean: 
-	@- $(RM) $(NAME)
-	@- $(RM) $(OBJS)
+gcc:
+	${GCC} $(NAME).c ${CFLAGS} $? -o $@
 
-remove:
+clean:
 	rm -i `find . -perm /111 -type f`
 
-delete:
+remove:
 	rm -I `find . -perm /111 -type f`
 
 help:
 	@echo
-	@echo 'c makefile | proj euler'
-	@echo
 	@echo 'usage: make [TARGET]'
 	@echo
-	@echo '   all:        make all *.c in bin'
-	@echo '   remove:     rm files w/ exec bit set (safer)'
-	@echo '   delete:     rm files w/ exec bit set'
-	@echo
+	@echo '	all:    make all *.c'
+	@echo '	gcc:    use gcc'
+	@echo '	clean:  rm files w/ exec bit set (safer)'
+	@echo '	remove: rm files w/ exec bit set'
+	@echo '	help:   display this message'
 	@echo
 

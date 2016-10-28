@@ -1,39 +1,34 @@
 #                              #
 #		c makefile                 #
 #                              #
-#                              #
-#		use on this system only    #
-#                              #
 #		ryan keleti                #
 #                              #
 
-BIN=bin
 SRCS:=$(wildcard *.c)
-OBJS:=${SRCS:.c=.o}
 NAME:=$(patsubst %.c,%,$(SRCS))
+OBJS:=${SRCS:.c=.o}
 
-INCLUDE_DIR:=
-LIBRARY_DIR:=
-LIBS:=
+#INCLUDE_DIR:=
+#LIBRARY_DIR:=
+#LIBS:=
+RM=rm
+CC=cc
 
-LDFLAGS +=$(foreach libdir,$(LIBRARY_DIR),-L$(libdir))
-LDFLAGS +=$(foreach lib,$(LIBS),-l$(lib))
-CFLAGS:=-lm 
+#LDFLAGS +=$(foreach libdir,$(LIBRARY_DIR),-L$(libdir))
+#LDFLAGS +=$(foreach lib,$(LIBS),-l$(lib))
+CFLAGS:=-std=c99 -ansi
 
 .PHONY: all clean remove
 
-all: $(OBJS)	
+all: $(NAME)	
 
-bin: $(OBJS)
-	mv *.o ~/c/bin
-
-$(OBJS): %.o: %.c
-	cc $< -o $@ $(CFLAGS)
+$(NAME): $(NAME) 
+	$(CC) $@.c -o $@ $(CFLAGS)
 
 clean: 
-	@- $(RM) $(NAME)
-	@- $(RM) $(OBJS)
+	@- $(RM) -I $(NAME)
+	@- $(RM) -I $(OBJS)
 
 remove:
-	rm -i `find . -perm /111 -type f`
+	$(RM) -i `find . -perm /111 -type f`
 

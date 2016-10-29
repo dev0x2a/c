@@ -5,11 +5,11 @@
  * a cell dies of loneliness, if it has less than two neighbors
  * a cell dies of overcrowding, if ir has more than three neighbors
  * a cell survices to the next generation, if it does not die of loneliness
- * or overcrowding
+ *        or overcrowding
  *
  * This version uses a 2-dim array of ints.
- * a 1 cell is on     'x'
- * a 0 cell is off    ' '
+ *    a 1 cell is on     'x'
+ *    a 0 cell is off    ' '
  * 
  * 100 rounds
  */

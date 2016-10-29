@@ -34,15 +34,11 @@ char *str[256]={
 	" ð "," ñ "," ò "," ó "," ô "," õ "," ö "," ÷ ",
 	" ø "," ù "," ú "," û "," ü "," ý "," þ "," ÿ "
 };
-
-int
-main(void)
-{
-  int j=-1;
-  for (int i=0; i<256; ++i) {
-    if (i%8==0)
-      printf("\n\t%2d\t", ++j);
-    printf("%s ", str[i]);
+int main(void)
+{ int j=-1;
+  for(int i=0;i<256;++i){
+    if(i%8==0)printf("\n\t%2d\t",++j);
+    printf("%s ",str[i]);
   }
   printf("\n");
 	return(0);

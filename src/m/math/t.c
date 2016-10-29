@@ -4,23 +4,17 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-
-int
-main(int argc, char *argv[])
-{
-  int n;
-
-  if (argc != 2) {
-    fprintf(stderr, "%s <num>\n", argv[0]);
+int main(int argc,char*argv[])
+{ if(argc!=2){
+    printf("%s <num>\n",argv[0]);
     return(-1);
   }
-  n = atol(argv[1]);
+  int n;
+  n=atol(argv[1]);
+  do{
 
-  do {
-
-  } while ();
-
+  }while();
   printf("\n");
-  return 0;
+  return(0);
 }
 

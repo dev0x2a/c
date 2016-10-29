@@ -324,8 +324,7 @@ extern char *ctermid(char*__s)__THROW;
 extern char *cuserid(char*__s);
 #endif
 #ifdef __USE_GNU
-struct obstack;
-extern int obstack_printf(struct obstack*__restrict __obstack,const char*__restrict __format,...)__THROWNL __attribute__((__format__(__printf__,2,3)));
+struct obstack;extern int obstack_printf(struct obstack*__restrict __obstack,const char*__restrict __format,...)__THROWNL __attribute__((__format__(__printf__,2,3)));
 extern int obstack_vprintf(struct obstack*__restrict __obstack,const char*__restrict __format,_G_va_list __args)__THROWNL __attribute__((__format__(__printf__,2,0)));
 #endif
 #ifdef __USE_POSIX199506

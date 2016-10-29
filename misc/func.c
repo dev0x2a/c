@@ -1,11 +1,9 @@
 #include <stdio.h>
-
-void swap(int p1, int p2);
-
+void swap(int p1,int p2);
 int main()
 {
-  int a = 10;
-  int b = 20;
+  int a=10;
+  int b=20;
 
   printf("before:\tvalue of a = %d and value of b = %d\n", a, b);
   swap(a, b);

@@ -4,9 +4,11 @@
 #include<unistd.h>
 
 /*  
+ *  conway's game of life
  *  mod  @ryankeleti
  *  orig @theduckscientist
  */
+const int rate=20000;
 
 int main(int argc,char *argv[])
 {
@@ -25,16 +27,16 @@ int main(int argc,char *argv[])
       default:out='#';break;
     }
   }
-  int O;
+  int r;
   int a[2048];
   int n=~n+n;
-  O=(int)&O;
+  r=(int)&r;
 
   while((++n)^2048)
-    n[a]=(O=(O*0x41C64E6D+12345)&0x7fffffff)&1024?1<<5:0;
+    n[a]=(r=(r*0x41C64E6D+12345)&0x7fffffff)&1024?1<<5:0;
   
   //while(usleep('d'<<'\n'),n+=~n){
-  while(usleep(20000),n+=~n){
+  while(usleep(rate),n+=~n){
 
     while((++n)^8192){
 

@@ -45,7 +45,8 @@ int gen(int N)
   }
   for(int i=31;i>=0;--i){
     if((c>>i)&1)printf("1");
-    else printf("\033[31m0\033[0m");
+    /*else printf("\033[31m0\033[0m");*/
+    else printf("0");
   }
   printf("  %d\n",c);
   //printf("for %3d, count = %3d\n",tmp,c);

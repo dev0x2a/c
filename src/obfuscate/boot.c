@@ -52,11 +52,11 @@ typedef struct{
   u32_t size;
 } __attribute__ ((packed)) entry_t;
 boot_t const* _bs=(boot_t*)0x7c00;
-FILE* _disk=(FILE*)0x7e00
+FILE *_disk=(FILE*)0x7e00;
 s8_t const* _io_bin="IO      SYS";
-u8_t* _buffer;
+u8_t *_buffer;
 u8_t _size;
-entry_t const* _entry;
+entry_t const*_entry;
 s8_t iosyscmp(){
   u16_t i;
   for(i=0;i<10&&((s8_t*)_entry)[i]&&((s8_t*)_entry)[i]==_io_bin[i];++i);
@@ -68,11 +68,11 @@ u16_t read(){
   u16_t h=(_disk->lba%t)/_disk->sectors;
   c<<=8;
   c|=((_disk->lba%t)%_disk->sectors)+1;
-  asm("int $0x13" : : "a"(0x0200|_size), "b"(_buffer), "c"(c). "d"((h<<8)|0x0080));
+  asm("int $0x13" : : "a"(0x0200|_size), "b"(_buffer), "c"(c), "d"((h<<8)|0x0080));
   return(0);
 }
 u16_t _start(){
-  asm("int $0x13" : "=c"(_disk->sectors) : "a"(0x0800), "d"(0x80)  "bx");
+  asm("int $0x13" : "=c"(_disk->sectors) : "a"(0x0800), "d"(0x80): "bx");
   _disk->sectors&=0b00111111;
   _buffer=(u8_t*)0x0500;
   _disk->lba=_bs->reserved_sectors+(_bs->fats*_bs->sectors_per_fat);
@@ -80,7 +80,7 @@ u16_t _start(){
   read();
   for(_entry=(entry_t*)_buffer;;++_entry)
     if(iosyscmp()==0){
-      _bufffer=(u8_t*)0x0700;
+      _buffer=(u8_t*)0x0700;
       _disk->lba+=_size+(_entry->cluster-2)*_bs->sectors_per_cluster;
       _size=3;
       read();

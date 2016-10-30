@@ -1,12 +1,12 @@
 #define F(I,S,N) for(I=S;I<N;I++)
 #define W(A) while(A)
-
+#include<stdio.h>
 int V=112,M=136,I=8e3,C=799,X,Y,Q,N,
     d[]={-16,-15,-17,0,1,16,0,1,16,15,17,0,14,18,31,33,0,
       1,1,3,-1,3,5,9,7,-1,11,6,8,3,6},
       b[128]={6,3,5,7,4,5,3,6};
 char n[]=".?+pkltd?*?PKLTD";
-D(k,q,l,e,x,n)
+int D(k,q,l,e,x,n)
 int k,q,l,e,x,n;
 { int i=0,j,t,p,u,r,y,m=n>1|q>e?q:e,v,h,z;
   N++;
@@ -42,7 +42,7 @@ int k,q,l,e,x,n;
   }W(i=i+9&~M);
   return(m+I?m:-D(24-k,-I,I,0,x,1)/2);
 }
-main()
+int main()
 { int k=8,*p,c[9],d;
   F(X,0,8){
     b[X+Y]=(b[X]+=16)-8;b[X+16]=18;b[X+96]=9;

@@ -6,5 +6,6 @@ CFLAGS:=-g -Wall -O -lm
 prog:
 	$(CC) prog.c -o prog
 clean:
+	$(RM) a.out
 	$(RM) `find . -perm /111 -type f`
 

@@ -1,7 +1,6 @@
 #include<ncurses.h>
 #include<stdlib.h>
 #include<time.h>
-
 //typedef struct _ent{
 //}ent_t;
 //typedef struct _itm{
@@ -10,6 +9,7 @@ typedef struct _locale{
   int dy;
   int dx;
 }lcl_t;
+
 typedef struct _room{
   lcl_t p;
   int dh;
@@ -34,7 +34,6 @@ usr_t *psetuser(void);
 int main()
 { int ch;
   usr_t *user;
-  srand(time(NULL));
   psetscr();
   psetmap();
   user=psetuser();
@@ -46,9 +45,10 @@ int main()
 }
 int psetscr(void)
 { initscr();
-  //printw("... ");
+  printw("... ");
   noecho();
   refresh();
+  srand(time(NULL));
   return(0);
 }
 rm_t **psetmap(void)
@@ -73,7 +73,7 @@ rm_t *pmkrm(int ry,int rx,int rh,int rw)
   rm->d[0]->dx=rand()%rw+rm->p.dx;
 
   rm->d[1]=malloc(sizeof(lcl_t));
-  rm->d[1]->dy=rm->p.dy+rm->dh;
+  rm->d[1]->dy=rm->p.dy+rm->dh-1;
   rm->d[1]->dx=rand()%rw+rm->p.dx;
 
   rm->d[2]=malloc(sizeof(lcl_t));
@@ -82,7 +82,7 @@ rm_t *pmkrm(int ry,int rx,int rh,int rw)
 
   rm->d[3]=malloc(sizeof(lcl_t));
   rm->d[3]->dy=rand()%rw+rm->p.dy;
-  rm->d[3]->dx=rm->p.dx+rw;
+  rm->d[3]->dx=rm->p.dx+rw-1;
   return(rm);
 }
 int drwrm(rm_t *rm)

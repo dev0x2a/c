@@ -1,7 +1,7 @@
 CC:=cc
 RM:=rm -i
 OUT:=a.out
-CFLAGS:=-lncurses
+CFLAGS:=-lncurses -lm -Wall
 .PHONY: main clean
 main:
 	$(CC) main.c -o $(OUT) $(CFLAGS)

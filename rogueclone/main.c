@@ -1,34 +1,37 @@
 #include<ncurses.h>
 #include<stdlib.h>
 
-typedef struct _ent{
-}ent_t;
-typedef struct _itm{
-}itm_t;
-typedef struct _room{
+//typedef struct _ent{
+//}ent_t;
+//typedef struct _itm{
+//}itm_t;
+typedef struct _locale{
   int dy;
   int dx;
+}lcl_t;
+typedef struct _room{
+  lcl_t p;
   int dh;
   int dw;
   //ent_t **monst;
   //itm_t **items;
-}room_t;
+}rm_t;
 typedef struct _user{
-  int dy;
-  int dx;
+  lcl_t p;
   int hp;
-}user_t;
+  //room_t *room;
+}usr_t;
 int psetscr(void);
-room_t **psetmap(void);
-room_t *pmkroom(int ry,int rx,int rh,int rw);
-int drwroom(room_t *room);
-int pgetin(int in,user_t *user);
-int pmove(int y,int x,user_t *user);
-int pcheckd(int ny,int nx,user_t *user);
-user_t *psetuser(void);
+rm_t **psetmap(void);
+rm_t *pmkroom(int ry,int rx,int rh,int rw);
+int drwroom(rm_t *room);
+int pgetin(int in,usr_t *user);
+int pmove(int y,int x,usr_t *user);
+int pcheckd(int ny,int nx,usr_t *user);
+usr_t *psetuser(void);
 int main()
 { int ch;
-  user_t *user;
+  usr_t *user;
   psetscr();
   psetmap();
   user=psetuser();
@@ -45,74 +48,77 @@ int psetscr(void)
   refresh();
   return(0);
 }
-room_t **psetmap(void)
-{ room_t **room;
-  room=malloc(sizeof(room_t)*6);
+rm_t **psetmap(void)
+{ rm_t **room;
+  room=malloc(sizeof(rm_t)*6);
   room[0]=pmkroom(13,13,6,8);
   drwroom(room[0]);
   return(room);
 }
-room_t *pmkroom(int ry,int rx,int rh,int rw)
-{ room_t *nroom;
-  nroom=malloc(sizeof(room_t));
-  nroom->dy=ry;
-  nroom->dx=rx;
+rm_t *pmkroom(int ry,int rx,int rh,int rw)
+{ rm_t *nroom;
+  nroom=malloc(sizeof(rm_t));
+  nroom->p.dy=ry;
+  nroom->p.dx=rx;
   nroom->dh=rh;
   nroom->dw=rw;
   return(nroom);
 }
-int drwroom(room_t *room)
-{ int wy,wx;
-  for(wx=room->dx;wx<room->dx+room->dw;++wx){
-    mvprintw(room->dy,wx,"-");
-    mvprintw(room->dy+room->dh,wx,"-");
+int drwroom(rm_t *room)
+{ int y,x;
+  for(x=room->p.dx;x<room->p.dx+room->dw;++x){
+    mvprintw(room->p.dy,x,"-");
+    mvprintw(room->p.dy+room->dh-1,x,"-");
   }
-  for(wy=room->dy+1;wy<room->dy+room->dh;++wy){
-    mvprintw(wy,room->dx,"|");
-    mvprintw(wy,room->dx+room->dw-1,"|");
+  for(y=room->p.dy+1;y<room->p.dy+room->dh-1;++y){
+    mvprintw(y,room->p.dx,"|");
+    mvprintw(y,room->p.dx+room->dw-1,"|");
+    for(x=room->p.dx+1;x<room->p.dx+room->dw-1;++x){
+      mvprintw(y,x,".");
+    }
   }
   return(0);
 }
-user_t *psetuser(void)
-{ user_t *user;
-  user=malloc(sizeof(user_t));
-  user->dy=14;
-  user->dx=14;
+usr_t *psetuser(void)
+{ usr_t *user;
+  user=malloc(sizeof(usr_t));
+  user->p.dy=14;
+  user->p.dx=14;
   user->hp=20;
   pmove(14,14,user);
   return(user);
 }
-int pgetin(int in,user_t *user)
+int pgetin(int in,usr_t *user)
 { int ny,nx;
   switch(in){
     case('w'):case('W'):
-      ny=user->dy-1;
-      nx=user->dx;break;
+      ny=user->p.dy-1;
+      nx=user->p.dx;break;
     case('s'):case('S'):
-      ny=user->dy+1;
-      nx=user->dx;break;
+      ny=user->p.dy+1;
+      nx=user->p.dx;break;
     case('a'):case('A'):
-      ny=user->dy;
-      nx=user->dx-1;break;
+      ny=user->p.dy;
+      nx=user->p.dx-1;break;
     case('d'):case('D'):
-      ny=user->dy;
-      nx=user->dx+1;break;
+      ny=user->p.dy;
+      nx=user->p.dx+1;break;
     default:break;
   }
   pcheckd(ny,nx,user);
 }
-int pcheckd(int ny,int nx,user_t *user)
+int pcheckd(int ny,int nx,usr_t *user)
 { int s;
   switch(mvinch(ny,nx)){
     case('.'):pmove(ny,nx,user);break;
-    default:move(user->dy,user->dx);break;
+    default:move(user->p.dy,user->p.dx);break;
   }
 }
-int pmove(int y,int x,user_t *user)
-{ mvprintw(user->dy,user->dx,".");
-  user->dy=y;
-  user->dx=x;
-  mvprintw(user->dy,user->dx,"@");
-  move(user->dy,user->dx);
+int pmove(int y,int x,usr_t *user)
+{ mvprintw(user->p.dy,user->p.dx,".");
+  user->p.dy=y;
+  user->p.dx=x;
+  mvprintw(user->p.dy,user->p.dx,"@");
+  move(user->p.dy,user->p.dx);
 }
 

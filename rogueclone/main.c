@@ -56,6 +56,8 @@ rm_t **psetmap(void)
   rm=malloc(sizeof(rm_t)*6);
   rm[0]=pmkrm(13,13,6,8);
   drwrm(rm[0]);
+  rm[1]=pmkrm(13,40,6,8);
+  drwrm(rm[1]);
   return(rm);
 }
 rm_t *pmkrm(int ry,int rx,int rh,int rw)
@@ -70,18 +72,18 @@ rm_t *pmkrm(int ry,int rx,int rh,int rw)
 
   rm->d[0]=malloc(sizeof(lcl_t));
   rm->d[0]->dy=rm->p.dy;
-  rm->d[0]->dx=rand()%rw+rm->p.dx;
+  rm->d[0]->dx=rand()%(rw-2)+rm->p.dx+1;
 
   rm->d[1]=malloc(sizeof(lcl_t));
   rm->d[1]->dy=rm->p.dy+rm->dh-1;
-  rm->d[1]->dx=rand()%rw+rm->p.dx;
+  rm->d[1]->dx=rand()%(rw-2)+rm->p.dx+1;
 
   rm->d[2]=malloc(sizeof(lcl_t));
-  rm->d[2]->dy=rand()%rh+rm->p.dy;
+  rm->d[2]->dy=rand()%(rh-2)+rm->p.dy+1;
   rm->d[2]->dx=rm->p.dx;
 
   rm->d[3]=malloc(sizeof(lcl_t));
-  rm->d[3]->dy=rand()%rh+rm->p.dy;
+  rm->d[3]->dy=rand()%(rh-2)+rm->p.dy+1;
   rm->d[3]->dx=rm->p.dx+rw-1;
   return(rm);
 }

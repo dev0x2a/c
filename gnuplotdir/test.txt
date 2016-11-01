@@ -1,0 +1,11 @@
+reset
+unset key
+set contour base
+set pm3d at ss
+
+set xrange [-2:10]
+set yrange [0:12]
+
+splot for [i=1:10:2] 'out.dat' u (-2):0:i w l lt i, \
+for [i=1:10:2] 'out2.dat' u 0:(12):i w l lt i,\
+'out.dat' matrix w pm3d

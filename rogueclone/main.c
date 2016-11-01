@@ -1,6 +1,21 @@
 #include<ncurses.h>
 #include<stdlib.h>
 
+typedef struct _ent{
+}ent_t;
+
+typedef struct _itm{
+}itm_t;
+
+typedef struct _room{
+  int dy;
+  int dx;
+  int dh;
+  int dw;
+  //ent_t **monst;
+  //itm_t **items;
+}room_t;
+
 typedef struct _user{
   int dy;
   int dx;
@@ -8,7 +23,8 @@ typedef struct _user{
 }user_t;
 
 int psetscr(void);
-int psetmap(void);
+room_t **psetmap(void);
+room_t *pmkrm(int dy,int dx,int dh,int dw);
 int pgetin(int in,user_t *user);
 int pmove(int y,int x,user_t *user);
 int pcheckd(int ny,int nx,user_t *user);
@@ -33,12 +49,17 @@ int psetscr(void)
   refresh();
   return(0);
 }
-int psetmap(void)
+room_t **psetmap(void)
 { mvprintw(13,13,"--------");
   for(int i=14;i<=17;++i){
     mvprintw(i,13,"|......|");
   }
   mvprintw(18,13,"--------");
+//  pmkrm();
+
+}
+room_t *pmkrm(int dy,int dx,int dh,int dw){
+
 }
 user_t *psetuser(void)
 { user_t *user;

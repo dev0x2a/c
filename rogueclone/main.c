@@ -2,8 +2,8 @@
 #include<stdlib.h>
 
 typedef struct _user{
-  int yo;
-  int xo;
+  int dy;
+  int dx;
   int hp;
 }user_t;
 
@@ -11,6 +11,7 @@ int psetscr(void);
 int psetmap(void);
 int pgetin(int in,user_t *user);
 int pmove(int y,int x,user_t *user);
+int pcheckd(int ny,int nx,user_t *user);
 user_t *psetuser(void);
 
 int main()
@@ -42,38 +43,43 @@ int psetmap(void)
 user_t *psetuser(void)
 { user_t *user;
   user=malloc(sizeof(user_t));
-  user->yo=14;
-  user->xo=14;
+  user->dy=14;
+  user->dx=14;
   user->hp=20;
   pmove(14,14,user);
   return(user);
 }
 int pgetin(int in,user_t *user)
-{ switch(in){
-    case 'w':
-    case 'W':
-      pmove(user->yo-1,user->xo,user);
-      break;
-    case 's':
-    case 'S':
-      pmove(user->yo+1,user->xo,user);
-      break;
-    case 'a':
-    case 'A':
-      pmove(user->yo,user->xo-1,user);
-      break;
-    case 'd':
-    case 'D':
-      pmove(user->yo,user->xo+1,user);
-      break;
+{ int ny,nx;
+  switch(in){
+    case('w'):case('W'):
+      ny=user->dy-1;
+      nx=user->dx;break;
+    case('s'):case('S'):
+      ny=user->dy+1;
+      nx=user->dx;break;
+    case('a'):case('A'):
+      ny=user->dy;
+      nx=user->dx-1;break;
+    case('d'):case('D'):
+      ny=user->dy;
+      nx=user->dx+1;break;
     default:break;
+  }
+  pcheckd(ny,nx,user);
+}
+int pcheckd(int ny,int nx,user_t *user)
+{ int s;
+  switch(mvinch(ny,nx)){
+    case('.'):pmove(ny,nx,user);break;
+    default:move(user->dy,user->dx);break;
   }
 }
 int pmove(int y,int x,user_t *user)
-{ mvprintw(user->yo,user->xo,".");
-  user->yo=y;
-  user->xo=x;
-  mvprintw(user->yo,user->xo,"@");
-  move(user->yo,user->xo);
+{ mvprintw(user->dy,user->dx,".");
+  user->dy=y;
+  user->dx=x;
+  mvprintw(user->dy,user->dx,"@");
+  move(user->dy,user->dx);
 }
 

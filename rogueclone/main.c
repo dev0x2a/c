@@ -77,11 +77,11 @@ rm_t *pmkrm(int ry,int rx,int rh,int rw)
   rm->d[1]->dx=rand()%rw+rm->p.dx;
 
   rm->d[2]=malloc(sizeof(lcl_t));
-  rm->d[2]->dy=rand()%rw+rm->p.dy;
+  rm->d[2]->dy=rand()%rh+rm->p.dy;
   rm->d[2]->dx=rm->p.dx;
 
   rm->d[3]=malloc(sizeof(lcl_t));
-  rm->d[3]->dy=rand()%rw+rm->p.dy;
+  rm->d[3]->dy=rand()%rh+rm->p.dy;
   rm->d[3]->dx=rm->p.dx+rw-1;
   return(rm);
 }

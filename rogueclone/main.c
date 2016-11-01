@@ -56,9 +56,9 @@ room_t **psetmap(void)
   }
   mvprintw(18,13,"--------");
 //  pmkrm();
-
 }
-room_t *pmkrm(int dy,int dx,int dh,int dw){
+room_t *pmkrm(int dy,int dx,int dh,int dw)
+{
 
 }
 user_t *psetuser(void)

@@ -3,10 +3,8 @@
 
 typedef struct _ent{
 }ent_t;
-
 typedef struct _itm{
 }itm_t;
-
 typedef struct _room{
   int dy;
   int dx;
@@ -15,21 +13,19 @@ typedef struct _room{
   //ent_t **monst;
   //itm_t **items;
 }room_t;
-
 typedef struct _user{
   int dy;
   int dx;
   int hp;
 }user_t;
-
 int psetscr(void);
 room_t **psetmap(void);
-room_t *pmkrm(int dy,int dx,int dh,int dw);
+room_t *pmkroom(int ry,int rx,int rh,int rw);
+int drwroom(room_t *room);
 int pgetin(int in,user_t *user);
 int pmove(int y,int x,user_t *user);
 int pcheckd(int ny,int nx,user_t *user);
 user_t *psetuser(void);
-
 int main()
 { int ch;
   user_t *user;
@@ -44,22 +40,38 @@ int main()
 }
 int psetscr(void)
 { initscr();
-  printw("... ");
+  //printw("... ");
   noecho();
   refresh();
   return(0);
 }
 room_t **psetmap(void)
-{ mvprintw(13,13,"--------");
-  for(int i=14;i<=17;++i){
-    mvprintw(i,13,"|......|");
-  }
-  mvprintw(18,13,"--------");
-//  pmkrm();
+{ room_t **room;
+  room=malloc(sizeof(room_t)*6);
+  room[0]=pmkroom(13,13,6,8);
+  drwroom(room[0]);
+  return(room);
 }
-room_t *pmkrm(int dy,int dx,int dh,int dw)
-{
-
+room_t *pmkroom(int ry,int rx,int rh,int rw)
+{ room_t *nroom;
+  nroom=malloc(sizeof(room_t));
+  nroom->dy=ry;
+  nroom->dx=rx;
+  nroom->dh=rh;
+  nroom->dw=rw;
+  return(nroom);
+}
+int drwroom(room_t *room)
+{ int wy,wx;
+  for(wx=room->dx;wx<room->dx+room->dw;++wx){
+    mvprintw(room->dy,wx,"-");
+    mvprintw(room->dy+room->dh,wx,"-");
+  }
+  for(wy=room->dy+1;wy<room->dy+room->dh;++wy){
+    mvprintw(wy,room->dx,"|");
+    mvprintw(wy,room->dx+room->dw-1,"|");
+  }
+  return(0);
 }
 user_t *psetuser(void)
 { user_t *user;

@@ -1,38 +1,30 @@
-#include <stdio.h>
+#include<stdio.h>
 
-int
-main(void)
-{
-  int ulim, count;
-  long int num, maxnum, tmp, i;
-  int thismax, max;
+int main(void)
+{ int c,lim,max,thismax;
+  long int i,n,maxn,tmp;
 
-  ulim = 1000000;
-  count = 0;
-  max = 0;
-
-  for (i=3; i<ulim; i+=2) {
-    num = i;
-    tmp = i;
-    do 
-    {
-      if (tmp&0x01) {
-        tmp = 3*tmp + 1;
-        ++count;
-      } else {
-        tmp /= 2;
-        ++count;
+  lim=1000000;
+  c=max=0;
+  for(i=3; i<ulim; i+=2){
+    n=tmp=i;
+    do{
+      if(tmp&0x01){
+        tmp=3*tmp+1;
+        ++c;
+      }else{
+        tmp/=2;
+        ++c;
       }
-    } while (tmp!=1);
-    //printf("num: %6d       count: %d\n", num, count);
-    thismax = count;
-    if (thismax > max) {
-      max = thismax;
-      maxnum = num;
+    }while(tmp!=1);
+    thismax=c;
+    if(thismax>max){
+      max=thismax;
+      maxn=n;
     }
-    count = 0;
+    c=0;
   }
-  printf("%d    %d\n", maxnum, max);
-  return 0;
+  printf("%d    %d\n",maxn,max);
+  return(0);
 }
 

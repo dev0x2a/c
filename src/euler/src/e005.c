@@ -1,35 +1,25 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
 
-int gcd(int a, int b)
+int gcd(int a,int b)
 {
-  while (a != b) {
-    if (a > b)
-      a -= b;
-    else
-      b -= a;
+  while(a!=b){
+    if(a>b)a-=b;
+    else b-=a;
   }
-  return a;
+  return(a);
 }
-
-int lcm(int x, int y)
+int lcm(int x,int y)
 {
-  return (x / gcd(x,y)*y);
+  return(x/gcd(x,y)*y);
 }
-
-int 
-main(void) 
-{
-  int n = 1;
-  bool found = false;
-  
-  for (int i=1; i<21; ++i)
-    n = lcm(n, i+1);
-  found = true;
-  
-  if (found)
-    printf("%d\n", n);
-  return 0;
+int main(void) 
+{ int n=1;
+  bool found=false;
+  for(int i=1; i<21; ++i)n=lcm(n,i+1);
+  found=true;
+  if(found)printf("%d\n",n);
+  return(0);
 }
 

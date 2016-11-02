@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <time.h>
 
 //#include <math.h>
 //#include <gmp.h>
@@ -23,16 +22,8 @@ int arr[15][15] = {
    4,62,98,27,23, 9,70,98,73,93,53,38,60, 4,23,
 };
 
-int
-main(void)
+int main(void)
 {
-  //clock_t start, end;
-  //double cpu_usage;
-  //start = clock();
-
-  //end = clock();
-  //cpu_usage = ((double)(end-start))/CLOCKS_PER_SEC;
-  //printf("\ncpu time: %1f\n", cpu_usage);
-  return 0;
+  return(0);
 }
 

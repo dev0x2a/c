@@ -20,8 +20,7 @@ void init(void);
 void show(void);
 
 int main(int argc,char**argv)
-{
-  double a,r,k;
+{ double a,r,k;
   double x,y;
   char out='*';
   a=1.0;r=0.0;k=0.0;
@@ -42,8 +41,7 @@ int main(int argc,char**argv)
 }
 
 int plot(int x,int y,char o)
-{
-  if(x>XMAX||x<XMIN||y>YMAX||y<YMIN)return(-1);
+{ if(x>XMAX||x<XMIN||y>YMAX||y<YMIN)return(-1);
   grid[Y-y][X+x]=o;
   return(1);
 }
@@ -51,8 +49,7 @@ double f(char*t,double r)
 {
 }
 void init(void)
-{
-  int x,y;
+{ int x,y;
   for(y=0;y<HEIGHT;++y)
     for(x=0;x<WIDTH;++x)
       grid[y][x]=' ';
@@ -61,8 +58,7 @@ void init(void)
   grid[Y][X]='+';
 }
 void show(void)
-{
-  int x,y;
+{ int x,y;
   for(y=0;y<HEIGHT;++y){
     for(x=0;x<WIDTH;++x)
       putchar(grid[y][x]);

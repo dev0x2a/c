@@ -9,61 +9,45 @@
  *
  * See the file LICENSE.TXT for full copyright and licensing information.
  */
-
 #include "curses.h"
 #include "rogue.h"
-
 coord ch_ret;				/* Where chasing takes you */
-
 /*
  * runners:
  *	Make all the running monsters move.
  */
-
 runners()
-{
-    register struct linked_list *item;
-    register struct thing *tp;
-
-    for (item = mlist; item != NULL;)
-    {
-	tp = (struct thing *) ldata(item);
-        item = next(item);
-	if (off(*tp, ISHELD) && on(*tp, ISRUN))
-	{
-	    if (off(*tp, ISSLOW) || tp->t_turn)
-		if (do_chase(tp) == -1)
-                    continue;
-	    if (on(*tp, ISHASTE))
-		if (do_chase(tp) == -1)
-                    continue;
-	    tp->t_turn ^= TRUE;
-	}
-    }
+{ register struct linked_list *item;
+  register struct thing *tp;
+  for(item=mlist;item!=NULL;){
+	tp=(struct thing *)ldata(item);
+  item=next(item);
+	if(off(*tp,ISHELD)&&on(*tp,ISRUN)){
+    if(off(*tp,ISSLOW)||tp->t_turn)if(do_chase(tp)==-1)continue;
+    if(on(*tp, ISHASTE))if(do_chase(tp)==-1)continue;
+    tp->t_turn ^= TRUE;
+  }
+  }
 }
-
 /*
  * do_chase:
  *	Make one thing chase another.
  */
-
 do_chase(th)
 register struct thing *th;
-{
-    register struct room *rer, *ree;	/* room of chaser, room of chasee */
-    register int mindist = 32767, i, dist;
-    register bool stoprun = FALSE;	/* TRUE means we are there */
-    register char sch;
-    coord this;				/* Temporary destination for chaser */
-
-    rer = roomin(&th->t_pos);	/* Find room of chaser */
-    ree = roomin(th->t_dest);	/* Find room of chasee */
+{ register struct room *rer,*ree;	/* room of chaser, room of chasee */
+  register int mindist=32767,i,dist;
+  register bool stoprun=FALSE;	/* TRUE means we are there */
+  register char sch;
+  coord this;				/* Temporary destination for chaser */
+  rer=roomin(&th->t_pos);	/* Find room of chaser */
+  ree=roomin(th->t_dest);	/* Find room of chasee */
     /*
      * We don't count doors as inside rooms for this routine
      */
-    if (mvwinch(stdscr, th->t_pos.y, th->t_pos.x) == DOOR)
-	rer = NULL;
-    this = *th->t_dest;
+  if(mvwinch(stdscr, th->t_pos.y, th->t_pos.x) == DOOR)
+	rer=NULL;
+  this=*th->t_dest;
     /*
      * If the object of our desire is in a different room, 
      * than we are and we ar not in a corridor, run to the

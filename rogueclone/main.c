@@ -3,6 +3,9 @@
 #include<time.h>
 #define ES EXIT_SUCCESS
 #define EF EXIT_FAILURE
+#define M_ES 0
+#define M_EF -1
+#define P_EF NULL
 //typedef struct _ent{
 //}ent_t;
 //typedef struct _itm{

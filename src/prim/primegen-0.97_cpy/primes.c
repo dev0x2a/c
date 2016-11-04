@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include"primegen.h"
 #include"plib.h"
 uint32 mod10[200]={
  0,1,2,3,4,5,6,7,8,9 ,0,1,2,3,4,5,6,7,8,9

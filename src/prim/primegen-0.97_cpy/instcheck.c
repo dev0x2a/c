@@ -1,5 +1,3 @@
-#include<sys/types.h>
-#include<sys/stat.h>
 #include"plib.h"
 extern void hier();
 #define FATAL "instcheck: fatal: "

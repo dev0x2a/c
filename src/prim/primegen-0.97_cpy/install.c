@@ -1,5 +1,3 @@
-#include"strerr.h"
-#include"readwrite.h"
 #include"plib.h"
 extern void hier();
 #define FATAL "install: fatal: "

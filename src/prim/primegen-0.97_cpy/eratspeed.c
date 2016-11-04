@@ -1,10 +1,8 @@
 #define B32 1001
-#define B (B32 * 32)
-
-#include "timing.h"
-#include "uint32.h"
-
-uint32 qtab[3509] = {
+#define B (B32*32)
+#include"timing.h"
+#include"plib.h"
+uint32 qtab[3509]={
 7,11,13,17,19,23,29,31,37,41,43,47,53
 ,59,61,67,71,73,79,83,89,97,101,103,107,109
 ,113,127,131,137,139,149,151,157,163,167,173,179,181
@@ -275,20 +273,18 @@ uint32 qtab[3509] = {
 ,32377,32381,32401,32411,32413,32423,32429,32441,32443,32467,32479,32491,32497
 ,32503,32507,32531,32533,32537,32561,32563,32569,32573,32579,32587,32603,32609
 ,32611,32621,32633,32647,32653,32687,32693,32707,32713,32717,32719,32749
-} ;
-
-static const uint32 two[32] = {
-  0x00000001 , 0x00000002 , 0x00000004 , 0x00000008
-, 0x00000010 , 0x00000020 , 0x00000040 , 0x00000080
-, 0x00000100 , 0x00000200 , 0x00000400 , 0x00000800
-, 0x00001000 , 0x00002000 , 0x00004000 , 0x00008000
-, 0x00010000 , 0x00020000 , 0x00040000 , 0x00080000
-, 0x00100000 , 0x00200000 , 0x00400000 , 0x00800000
-, 0x01000000 , 0x02000000 , 0x04000000 , 0x08000000
-, 0x10000000 , 0x20000000 , 0x40000000 , 0x80000000
-} ;
-
-static const unsigned long pop[256] = {
+};
+static const uint32 two[32]={
+ 0x00000001,0x00000002,0x00000004,0x00000008
+,0x00000010,0x00000020,0x00000040,0x00000080
+,0x00000100,0x00000200,0x00000400,0x00000800
+,0x00001000,0x00002000,0x00004000,0x00008000
+,0x00010000,0x00020000,0x00040000,0x00080000
+,0x00100000,0x00200000,0x00400000,0x00800000
+,0x01000000,0x02000000,0x04000000,0x08000000
+,0x10000000,0x20000000,0x40000000,0x80000000
+};
+static const unsigned long pop[256]={
  0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
@@ -298,39 +294,30 @@ static const unsigned long pop[256] = {
 ,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
 ,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 };
-
 timing start;
 timing_basic startb;
 timing finish;
 timing_basic finishb;
-
 uint32 next[8][3509];
 uint32 a[8][B32];
-
-int dtab[8] = { 1, 7, 11, 13, 17, 19, 23, 29 } ;
-
+int dtab[8]={1,7,11,13,17,19,23,29};
 void init(uint32 L)
-{
-  int i;
+{ int i;
   int d;
   int j;
   uint32 q;
   uint32 qz;
-
-  for (i = 0;i < 8;++i) {
-    d = dtab[i];
-    for (j = 0;j < 3509;++j) {
-      q = qtab[j];
-      qz = q * q;
-      while (qz % 30 != d) qz += q + q;
-      next[i][j] = (qz - d)/30 - L;
-    }
-  }
+  for(i=0; i<8; ++i){
+    d=dtab[i];
+    for(j=0; j<3509; ++j){
+      q=qtab[j];
+      qz=q*q;
+      while(qz%30!=d)qz+=q+q;
+      next[i][j]=(qz-d)/30-L;
+  }}
 }
-
 void doit()
-{
-  int i;
+{ int i;
   uint32 *nexti;
   int j;
   register uint32 k;
@@ -339,98 +326,77 @@ void doit()
   register uint32 pos;
   register uint32 bits;
   register uint32 data;
-
-  for (i = 0;i < 8;++i) {
-    buf = a[i];
-    nexti = next[i];
-    for (k = 0;k < B32;++k)
-      buf[k] = 0;
-    for (j = 0;j < 3509;++j) {
-      k = nexti[j];
-      if (k < B) {
-	q = qtab[j];
-	do {
-	  pos = k;
-	  data = k;
-	  pos >>= 5;
-	  data &= 31;
-	  bits = buf[pos];
-	  data = two[data];
-	  k += q;
-	  bits |= data;
-	  buf[pos] = bits;
-	} while (k < B);
+  for(i=0; i<8; ++i){
+    buf=a[i];
+    nexti=next[i];
+    for(k=0; k<B32; ++k)buf[k]=0;
+    for(j=0; j<3509; ++j){
+      k=nexti[j];
+      if(k<B){
+        q=qtab[j];
+        do{
+          pos=k;
+          data=k;
+          pos>>=5;
+          data&=31;
+          bits=buf[pos];
+          data=two[data];
+          k+=q;
+          bits|=data;
+          buf[pos]=bits;
+        }while(k<B);
       }
-      nexti[j] = k - B;
-    }
-  }
+      nexti[j]=k-B;
+  }}
 }
-
 uint32 total;
-
 void countit()
-{
-  int i;
+{ int i;
   register uint32 *ai;
   register int pos;
   register uint32 bits;
   register uint32 result;
-
-/* To print the primes (slowly), given L:
-  for (k = 0;k < B;++k)
-    for (i = 0;i < 8;++i)
-      if (!(a[i][k / 32] & two[k & 31]))
-	printf("%d\n",30 * (L + k) + dtab[i]);
-*/
-
-  result = 0;
-  for (i = 0;i < 8;++i) {
-    ai = a[i];
-    for (pos = 0;pos < B32;++pos) {
-      bits = ~ai[pos];
-      result += pop[bits & 255]; bits >>= 8;
-      result += pop[bits & 255]; bits >>= 8;
-      result += pop[bits & 255]; bits >>= 8;
-      result += pop[bits];
-    }
-  }
-  total += result;
+/*To print the primes (slowly), given L:
+  for(k=0; k<B; ++k)
+    for(i=0; i<8; ++i)
+      if(!(a[i][k/32]&two[k&31]))
+	printf("%d\n",30*(L+k)+dtab[i]);*/
+  result=0;
+  for(i=0; i<8; ++i){
+    ai=a[i];
+    for(pos=0; pos<B32; ++pos){
+      bits=~ai[pos];
+      result+=pop[bits&255];bits>>=8;
+      result+=pop[bits&255];bits>>=8;
+      result+=pop[bits&255];bits>>=8;
+      result+=pop[bits];
+  }}
+  total+=result;
 }
-
 timing t;
 timing told;
-
 main()
-{
-  int L = 1;
-
+{ int L=1;
   timing_basic_now(&startb);
   timing_now(&start);
-
   timing_now(&told);
-
-  total = 10; /* 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 */
+  total=10;/*2,3,5,7,11,13,17,19,23,29*/
   init(L);
-
   timing_now(&t);
-  printf("Init: %f\n",timing_diff(&t,&told)); told = t;
-
-  do {
+  printf("Init: %f\n",timing_diff(&t,&told));told=t;
+  do{
     doit();
     countit();
     timing_now(&t);
-    printf("Finished L=%d: %f\n",L,timing_diff(&t,&told)); told = t;
-    L += B;
-  } while (L < 33333334);
-
+    printf("Finished L=%d: %f\n",L,timing_diff(&t,&told));told=t;
+    L+=B;
+  }while(L<33333334);
   timing_basic_now(&finishb);
   timing_now(&finish);
-
-  printf("%d primes up to %d.\n",total,30 * L);
-
-  printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",timing_basic_diff(&finishb,&startb) / timing_diff(&finish,&start));
-  printf("Overall seconds: approximately %f.\n",0.000000001 * timing_basic_diff(&finishb,&startb));
+  printf("%d primes up to %d.\n",total,30*L);
+  printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",timing_basic_diff(&finishb,&startb)/timing_diff(&finish,&start));
+  printf("Overall seconds: approximately %f.\n",0.000000001*timing_basic_diff(&finishb,&startb));
   printf("Tick counts may be underestimates on systems without hardware tick support.\n");
-
   exit(0);
 }
+

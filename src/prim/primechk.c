@@ -1,68 +1,74 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-int main(int argc,char *argv[])
-{
-  if(argc!=2){
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+int main(int argc,char*argv[])
+{ if(argc!=2){
     printf("%s <num> to check if prime\n",argv[0]);
     return(-1);
-  }
-  /*int offset[8]={1,7,11,13,17,19,23,29};*/
+  }/*int offset[8]={1,7,11,13,17,19,23,29};*/
   int del[8]={6,4,2,4,2,4,6,2};
-  long int num,div,max;
-  int prime,i,inc;
-  num=0;
-  num=atol(argv[1]);
-  prime=1;
-  inc=0;
-  while(!(num&0x01)){
-    if(prime)printf("not prime %ld = 2",num);
+  int prime=1,inc=0;
+  unsigned long long N=atoi(argv[1]);
+  if((signed)N<1){
+    puts("unsigned values only");
+    return(-1);
+  }if(N==1||N==2){
+    N==1?puts("1 is prime"):puts("2 is prime");
+    return(0);
+  }if(N==3||N==5){
+    N==3?puts("3 is prime"):puts("5 is prime");
+    return(0);
+  }while(!(N&1)){
+    if(prime)printf("not prime %ld = 2",N);
     ++inc;
-    num>>=1;
+    N>>=1;
     prime=0;
   }if(inc>1)printf("^%d",inc);
   inc=0;
-  while(!(num%3)){
-    if(prime)printf("not prime %ld = 3",num);
+  while(!(N%3)){
+    if(prime)printf("not prime %ld = 3",N);
     else if(inc==0)printf("*3");
     ++inc;
-    num/=3;
+    N/=3;
     prime=0;
   }if(inc>1)printf("^%d",inc);
   inc=0;
-  while(!(num%5)){
-    if(prime)printf("not prime %ld = 5",num);
+  while(!(N%5)){
+    if(prime)printf("not prime %ld = 5",N);
     else if(inc==0)printf("*5");
     ++inc;
-    num/=5;
+    N/=5;
     prime=0;
   }if(inc>1)printf("^%d",inc);
-  if(num<=31){
-    if(prime)printf("%ld is prime\n",num);
+  if(N<=31){
+    if(prime)printf("%ld is prime\n",N);
     else{ 
-      if(num!=1)printf("*%ld\n",num);
-      else printf("\n");
+      if(N!=1)printf("*%ld\n",N);
+      else{putchar(10);}
     }return(0);
-  }max=sqrt(num);
+  }
+  long int div,max;
+  int i;
+  max=(unsigned long long)sqrt(N);
   for(div=7,i=1;div<=max;){
     inc=0;
-    while(!(num%div)){
-      if(prime)printf("not prime %ld = %ld",num,div);
+    while(!(N%div)){
+      if(prime)printf("not prime %ld = %ld",N,div);
       else if(inc==0)printf("*%ld",div);
       ++inc;
-      num/=div;
-      max=sqrt(num);
+      N/=div;
+      max=sqrt(N);
       prime=0;
-    }if(inc>1)printf("^%d", inc);
-    if(num==1){
-      printf("\n");
+    }if(inc>1)printf("^%d",inc);
+    if(N==1){
+      putchar(10);
       return(0);
     }div+=del[++i];
     if(i>=8)i=0;
-  }if(prime)printf("%ld is prime\n",num);
+  }if(prime)printf("%ld is prime\n",N);
   else{ 
-    if(num!=1)printf("*%ld\n",num);
-    else printf("\n");
+    if(N!=1)printf("*%ld\n",N);
+    else{putchar(10);}
   }return(0);
 }
 

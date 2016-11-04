@@ -1,4 +1,4 @@
-/usr/local
+/home/ryanku/c/src/prim/primegen-0.97_cpy/
 
 This is the primegen home directory. Programs will be installed in
 .../bin; the primegen library will be installed in .../lib; man pages

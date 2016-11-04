@@ -1,12 +1,9 @@
-#include <errno.h>
-#include "error.h"
-
-#define X(e,s) if (i == e) return s;
-
-char *error_str(i)
+#include<errno.h>
+#include"error.h"
+#define X(e,s) if(i==e)return(s);
+char*error_str(i)
 int i;
-{
-  X(0,"no error")
+{ X(0,"no error")
   X(error_intr,"interrupted system call")
   X(error_nomem,"out of memory")
   X(error_noent,"file does not exist")
@@ -272,5 +269,6 @@ int i;
 #ifdef EREMCHG
   X(EREMCHG,"remote address changed")
 #endif
-  return "unknown error";
+  return("unknown error");
 }
+

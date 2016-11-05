@@ -43,7 +43,7 @@ main(int argc, char *argv[])
 
   srand(seed);
   for (j=0; j<nloops; j++) {
-    r =  rand();
+    r =  myrand();
     printf("%d\n", r);
   }
   exit(EXIT_SUCCESS);

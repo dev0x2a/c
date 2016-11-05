@@ -30,14 +30,14 @@ typedef struct _user{
   int hp;
   //room_t *rm;
 }usr_t;
-rm_t **p_setmap(void);
-rm_t *p_mkrm(int ry,int rx,int rh,int rw);
-usr_t *p_setuser(void);
-int p_setscr(void);
-int p_drwrm(rm_t *rm);
-int p_cntd(lcl_t *d0,lcl_t *d1);
-int p_getin(int in,usr_t *user);
-int p_move(int y,int x,usr_t *user);
-int p_checkd(int ny,int nx,usr_t *user);
+char **__setmap(void);
+rm_t *__mkrm(int ry,int rx,int rh,int rw);
+usr_t *__setuser(void);
+int __setscr(void);
+int __drwrm(rm_t *rm);
+int __cntd(lcl_t *d0,lcl_t *d1);
+int __getin(int in,usr_t *user);
+int __move(int y,int x,usr_t *user);
+int __checkd(int ny,int nx,usr_t *user);
 
 #endif

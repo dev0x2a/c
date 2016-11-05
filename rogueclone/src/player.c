@@ -1,5 +1,5 @@
 #include"rogue.h"
-int p_cntd(lcl_t *d0,lcl_t *d1)
+int __cntd(lcl_t *d0,lcl_t *d1)
 { lcl_t tmp;
   lcl_t prv;
   int c=0;
@@ -33,16 +33,16 @@ int p_cntd(lcl_t *d0,lcl_t *d1)
   }
   return(ES);
 }
-usr_t *p_setuser(void)
+usr_t *__setuser(void)
 { usr_t *user;
   user=malloc(sizeof(usr_t));
   user->p.dy=14;
   user->p.dx=14;
   user->hp=20;
-  p_move(14,14,user);
+  __move(14,14,user);
   return(user);
 }
-int p_getin(int in,usr_t *user)
+int __getin(int in,usr_t *user)
 { int ny,nx;
   switch(in){
     case('w'):case('W'):
@@ -59,18 +59,18 @@ int p_getin(int in,usr_t *user)
       nx=user->p.dx+1;break;
     default:break;
   }
-  p_checkd(ny,nx,user);
+  __checkd(ny,nx,user);
   return(ES);
 }
-int p_checkd(int ny,int nx,usr_t *user)
+int __checkd(int ny,int nx,usr_t *user)
 { //int s;
   switch(mvinch(ny,nx)){
-    case('.'):case('#'):case('+'):p_move(ny,nx,user);break;
+    case('.'):case('#'):case('+'):__move(ny,nx,user);break;
     default:move(user->p.dy,user->p.dx);break;
   }
   return(ES);
 }
-int p_move(int y,int x,usr_t *user)
+int __move(int y,int x,usr_t *user)
 { mvprintw(user->p.dy,user->p.dx,".");
   user->p.dy=y;
   user->p.dx=x;

@@ -1,15 +1,19 @@
 #include"rogue.h"
+
 int main(void)
 { int ch;
+  char **lvl;
+
   usr_t *user;
-  p_setscr();
-  p_setmap();
-  user=p_setuser();
-  while((ch=getch())!='q'){p_getin(ch,user);}
+  lvl=__setmsp();
+  __setscr();
+  __setmap();
+  user=__setuser();
+  while((ch=getch())!='q'){__getin(ch,user);}
   endwin();
   return(0);
 }
-int p_setscr(void)
+int __setscr(void)
 { initscr();
   printw("... ");
   noecho();
@@ -17,3 +21,4 @@ int p_setscr(void)
   srand(time(NULL));
   return(ES);
 }
+

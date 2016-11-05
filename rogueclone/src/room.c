@@ -1,5 +1,5 @@
 #include"rogue.h"
-rm_t **__setmap(void)
+char **__setmap(void)
 { rm_t **rm;
   rm=malloc(sizeof(rm_t)*6);
   rm[0]=__mkrm(13,13,6,8);

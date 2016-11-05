@@ -1,3 +1,6 @@
+#ifndef ROGUE_H
+#define ROGUE_H
+
 #include<ncurses.h>
 #include<stdlib.h>
 #include<time.h>
@@ -37,3 +40,4 @@ int p_getin(int in,usr_t *user);
 int p_move(int y,int x,usr_t *user);
 int p_checkd(int ny,int nx,usr_t *user);
 
+#endif

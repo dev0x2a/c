@@ -1,7 +1,7 @@
 #include"plib.h"
-extern void hier();
 #define FATAL "instcheck: fatal: "
 #define WARNING "instcheck: warning: "
+extern void hier();
 void perm(prefix1,prefix2,prefix3,file,type,uid,gid,mode)
 char*prefix1;
 char*prefix2;
@@ -15,8 +15,7 @@ int mode;
   if(stat(file,&st)==-1){
     if(errno==error_noent)
       strerr_warn6(WARNING,prefix1,prefix2,prefix3,file," does not exist",0);
-    else
-      strerr_warn4(WARNING,"unable to stat .../",file,": ",&strerr_sys);
+    else strerr_warn4(WARNING,"unable to stat .../",file,": ",&strerr_sys);
     return;
   }
   if((uid!=-1)&&(st.st_uid!=uid))
@@ -33,8 +32,7 @@ char*home;
 int uid;
 int gid;
 int mode;
-{ perm("","","",home,S_IFDIR,uid,gid,mode);
-}
+{ perm("","","",home,S_IFDIR,uid,gid,mode);}
 void d(home,subdir,uid,gid,mode)
 char*home;
 char*subdir;

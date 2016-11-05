@@ -1,4 +1,3 @@
-#include <math.h>
 #include "plib.h"
 primegen pg;
 void main()

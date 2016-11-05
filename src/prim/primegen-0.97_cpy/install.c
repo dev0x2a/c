@@ -1,15 +1,14 @@
 #include"plib.h"
-extern void hier();
 #define FATAL "install: fatal: "
+extern void hier();
 int fdsourcedir=-1;
 void h(home,uid,gid,mode)
 char*home;
 int uid;
 int gid;
 int mode;
-{ if(mkdir(home,0700)==-1)
-    if(errno!=error_exist)
-      strerr_die4sys(111,FATAL,"unable to mkdir ",home,": ");
+{ if(mkdir(home,0700)==-1)if(errno!=error_exist)
+    strerr_die4sys(111,FATAL,"unable to mkdir ",home,": ");
   if(chown(home,uid,gid)==-1)
     strerr_die4sys(111,FATAL,"unable to chown ",home,": ");
   if(chmod(home,mode)==-1)
@@ -92,9 +91,8 @@ int mode;
   if(fdout==-1)
     strerr_die6sys(111,FATAL,"unable to write .../",subdir,"/",file,": ");
   substdio_fdbuf(&ssout,write,fdout,outbuf,sizeof(outbuf));
-  while(len-->0)
-    if(substdio_put(&ssout,"",1)==-1)
-      strerr_die6sys(111,FATAL,"unable to write .../",subdir,"/",file,": ");
+  while(len-->0)if(substdio_put(&ssout,"",1)==-1)
+    strerr_die6sys(111,FATAL,"unable to write .../",subdir,"/",file,": ");
   if(substdio_flush(&ssout)==-1)
     strerr_die6sys(111,FATAL,"unable to write .../",subdir,"/",file,": ");
   if(fsync(fdout)==-1)

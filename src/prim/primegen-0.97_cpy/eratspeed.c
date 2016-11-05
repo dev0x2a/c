@@ -1,6 +1,5 @@
 #define B32 1001
 #define B (B32*32)
-#include"timing.h"
 #include"plib.h"
 uint32 qtab[3509]={
 7,11,13,17,19,23,29,31,37,41,43,47,53

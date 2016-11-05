@@ -1,8 +1,6 @@
-#include"readwrite.h"
 #include"plib.h"
 char buf1[256];
 substdio ss1=SUBSTDIO_FDBUF(write,1,buf1,sizeof(buf1));
-
 void puts(s)
 char *s;
 { if(substdio_puts(&ss1,s)==-1)_exit(111);

@@ -1,12 +1,4 @@
 #include"rogue.h"
-int p_setscr(void)
-{ initscr();
-  printw("... ");
-  noecho();
-  refresh();
-  srand(time(NULL));
-  return(ES);
-}
 rm_t **p_setmap(void)
 { rm_t **rm;
   rm=malloc(sizeof(rm_t)*6);

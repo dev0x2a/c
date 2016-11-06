@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include <math.h>
-//#include <gmp.h>
-
-int arr[15][15] = {
+int a[]={
   75,
   95,64,
   17,47,82,
@@ -24,6 +21,12 @@ int arr[15][15] = {
 
 int main(void)
 {
+  int k;
+  for(k=0; k<241/2; ++k)
+    printf("%d ",a[k]);
+  putchar(10);
+
+
   return(0);
 }
 

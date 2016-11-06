@@ -65,6 +65,7 @@ struct strerr{
   char*z;
 };
 typedef struct timeval timing_basic;
+#include"primegen.h"
 struct strerr strerr_sys;
 char subfd_errbuf[256];
 extern void _exit();

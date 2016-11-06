@@ -8,6 +8,12 @@
 #include<fcntl.h>
 #include<errno.h>
 #include<math.h>
+
+typedef unsigned int uint32;
+typedef unsigned long uint64;
+typedef long int64;
+
+typedef struct timeval timing_basic;
 /*
 B is 32 times X.
 Total memory use for one generator is 2B bytes = 64X bytes.
@@ -24,12 +30,14 @@ Possible choices of X:
 
 There are various word-size limits on X; 1000000 should still be okay.
 */
+#define PRIMEGEN_WORDS 2048
 #define B32 PRIMEGEN_WORDS
 #define B (PRIMEGEN_WORDS*32)
+#define B32_ 1001
+#define B_ (B32_*32)
 /**/
 #define str_equal(s,t) (!str_diff((s),(t)))
 #define HASRDTSC 1
-#define PRIMEGEN_WORDS 2048
 #define SUBSTDIO_FDBUF(op,fd,buf,len) {(buf),0,(len),(fd),(op)}
 #define substdio_fileno(s) ((s)->fd)
 #define SUBSTDIO_INSIZE 8192
@@ -40,9 +48,6 @@ There are various word-size limits on X; 1000000 should still be okay.
 (((s)->n!=(s)->p)?((s)->x[(s)->p++]=(c),0):substdio_bput((s),&(c),1))
 #define byte_equal(s,n,t) (!byte_diff((s),(n),(t)))
 
-typedef unsigned int uint32;
-typedef unsigned long uint64;
-typedef long int64;
 typedef struct{
   uint32 buf[16][PRIMEGEN_WORDS];
   uint64 p[512];/*p[num-1]...p[0], in that order*/
@@ -51,6 +56,8 @@ typedef struct{
   uint64 base;
   uint64 L;
 }primegen;
+
+#include"primegen.h"
 typedef struct substdio{
   char *x;
   int p;
@@ -58,14 +65,96 @@ typedef struct substdio{
   int fd;
   int (*op)();
 }substdio;
+
 struct strerr{
-  struct strerr*who;
+  struct strerr *who;
   char *x;
   char *y;
   char *z;
 };
-typedef struct timeval timing_basic;
-#include"primegen.h"
+
+#define timing_basic_now(x) gettimeofday((x),(struct timezone*)0)
+#define timing_basic_diff(x,y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)\
+    +1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
+
+
+#ifdef HASRDTSC
+typedef struct{
+  unsigned long t[2];
+}timing;
+#define timing_now(x)\
+  asm volatile(".byte 15;.byte 49":"=a"((x)->t[0]),"=d"((x)->t[1]))
+#define timing_diff(x,y)\
+  (((x)->t[0]-(double)(y)->t[0])+4294967296.0*((x)->t[1]-(double)(y)->t[1]))
+#else
+
+#ifdef HASGETHRTIME
+typedef struct{
+  hrtime_t t;
+}timing;
+#define timing_now(x) ((x)->t=gethrtime())
+#define timing_diff(x,y) ((double)((x)->t-(y)->t))
+#else
+
+#define timing timing_basic
+#define timing_now timing_basic_now
+#define timing_diff timing_basic_diff
+#endif
+#endif
+
+#define STRERR(r,se,a) {se.who=0;se.x=a;se.y=0;se.z=0;return(r);}
+#define STRERR_SYS(r,se,a) {se.who=&strerr_sys;se.x=a;se.y=0;se.z=0;return(r);}
+#define STRERR_SYS3(r,se,a,b,c)\
+{se.who=&strerr_sys;se.x=a;se.y=b;se.z=c;return(r);}
+#define strerr_warn6(x1,x2,x3,x4,x5,x6,se)\
+strerr_warn((x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
+#define strerr_warn5(x1,x2,x3,x4,x5,se)\
+strerr_warn((x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)(se))
+#define strerr_warn4(x1,x2,x3,x4,se)\
+strerr_warn((x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_warn3(x1,x2,x3,se)\
+strerr_warn((x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_warn2(x1,x2,se)\
+strerr_warn((x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_warn1(x1,se)\
+strerr_warn((x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_die6(e,x1,x2,x3,x4,x5,x6,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
+#define strerr_die5(e,x1,x2,x3,x4,x5,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)(se))
+#define strerr_die4(e,x1,x2,x3,x4,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_die3(e,x1,x2,x3,se)\
+strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_die2(e,x1,x2,se)\
+strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_die1(e,x1,se)\
+strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
+#define strerr_die6sys(e,x1,x2,x3,x4,x5,x6)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),&strerr_sys)
+#define strerr_die5sys(e,x1,x2,x3,x4,x5)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,&strerr_sys)
+#define strerr_die4sys(e,x1,x2,x3,x4)\
+strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,&strerr_sys)
+#define strerr_die3sys(e,x1,x2,x3)\
+strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,&strerr_sys)
+#define strerr_die2sys(e,x1,x2)\
+strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
+#define strerr_die1sys(e,x1)\
+strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
+#define strerr_die6x(e,x1,x2,x3,x4,x5,x6)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)0)
+#define strerr_die5x(e,x1,x2,x3,x4,x5)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)0)
+#define strerr_die4x(e,x1,x2,x3,x4)\
+strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)0)
+#define strerr_die3x(e,x1,x2,x3)\
+strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)0)
+#define strerr_die2x(e,x1,x2)\
+strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
+#define strerr_die1x(e,x1)\
+strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
+
 struct strerr strerr_sys;
 char subfd_errbuf[256];
 extern void _exit();
@@ -141,29 +230,37 @@ extern void byte_copy();
 extern void byte_copyr();
 extern int byte_diff();
 extern void byte_zero();
+
 /**/
 void strerr_sysinit()
-{ strerr_sys.who=0;
+{ 
+  strerr_sys.who=0;
   strerr_sys.x=error_str(errno);
   strerr_sys.y="";
   strerr_sys.z="";
 }
+
+
 void substdio_fdbuf(s,op,fd,buf,len)
-register substdio*s;
+register substdio *s;
 register int (*op)();
 register int fd;
 register char *buf;
 register int len;
-{ s->x=buf;
+{ 
+  s->x=buf;
   s->fd=fd;
   s->op=op;
   s->p=0;
   s->n=len;
 }
+
+
 int substdio_copy(ssout,ssin)
 register substdio *ssout;
 register substdio *ssin;
-{ register int n;
+{ 
+  register int n;
   register char *x;
   for(;;){
     n=substdio_feed(ssin);
@@ -174,22 +271,37 @@ register substdio *ssin;
     substdio_SEEK(ssin,n);
   }
 }
+
+
 int open_read(fn)char *fn;
-{ return(open(fn,O_RDONLY|O_NDELAY));}
+{ 
+  return(open(fn,O_RDONLY|O_NDELAY));
+}
+
+
 int open_trunc(fn)char *fn;
-{ return(open(fn,O_WRONLY|O_NDELAY|O_TRUNC|O_CREAT,0644));}
+{ 
+  return(open(fn,O_WRONLY|O_NDELAY|O_TRUNC|O_CREAT,0644));
+}
+
+
 unsigned int scan_uint64(char *s,uint64 *u)
-{ unsigned int pos=0;
+{ 
+  unsigned int pos=0;
   uint64 result=0;
   uint64 c;
   while((c=(uint64)(unsigned char)(s[pos]-'0'))<10){
     result=result*10+c;
     ++pos;
-  }*u=result;
+  }
+  *u=result;
   return(pos);
 }
+
+
 unsigned int fmt_uint64(char *s,uint64 u)
-{ unsigned int len=1;
+{ 
+  unsigned int len=1;
   uint64 q=u;
   while(q>9){++len;q/=10;}
   if(s){
@@ -200,8 +312,11 @@ unsigned int fmt_uint64(char *s,uint64 u)
     }while(u);}
   return(len);
 }
+
+
 void primegen_init(primegen*pg)
-{ pg->L=1;
+{ 
+  pg->L=1;
   pg->base=60;
   pg->pos=PRIMEGEN_WORDS;
   pg->p[0]=59;
@@ -223,22 +338,28 @@ void primegen_init(primegen*pg)
   pg->p[16]=2;
   pg->num=17;
 }
+
+
 void byte_copy(to,n,from)
 register char *to;
 register unsigned int n;
 register char *from;
-{ for(;;){
+{ 
+  for(;;){
     if(!n)return;*to++=*from++;--n;
     if(!n)return;*to++=*from++;--n;
     if(!n)return;*to++=*from++;--n;
     if(!n)return;*to++=*from++;--n;
   }
 }
+
+
 void byte_copyr(to,n,from)
 register char *to;
 register unsigned int n;
 register char *from;
-{ to+=n;
+{ 
+  to+=n;
   from+=n;
   for(;;){
     if(!n)return;*--to=*--from;--n;
@@ -247,9 +368,12 @@ register char *from;
     if(!n)return;*--to=*--from;--n;
   }
 }
+
+
 unsigned int str_len(s)
 register char *s;
-{ register char *t;
+{ 
+  register char *t;
   t=s;
   for(;;){
     if(!*t)return(t-s);++t;
@@ -258,79 +382,12 @@ register char *s;
     if(!*t)return(t-s);++t;
   }
 }
-#define STRERR(r,se,a) {se.who=0;se.x=a;se.y=0;se.z=0;return(r);}
-#define STRERR_SYS(r,se,a) {se.who=&strerr_sys;se.x=a;se.y=0;se.z=0;return(r);}
-#define STRERR_SYS3(r,se,a,b,c)\
-{se.who=&strerr_sys;se.x=a;se.y=b;se.z=c;return(r);}
-#define strerr_warn6(x1,x2,x3,x4,x5,x6,se)\
-strerr_warn((x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
-#define strerr_warn5(x1,x2,x3,x4,x5,se)\
-strerr_warn((x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)(se))
-#define strerr_warn4(x1,x2,x3,x4,se)\
-strerr_warn((x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_warn3(x1,x2,x3,se)\
-strerr_warn((x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_warn2(x1,x2,se)\
-strerr_warn((x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_warn1(x1,se)\
-strerr_warn((x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_die6(e,x1,x2,x3,x4,x5,x6,se)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
-#define strerr_die5(e,x1,x2,x3,x4,x5,se)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)(se))
-#define strerr_die4(e,x1,x2,x3,x4,se)\
-strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_die3(e,x1,x2,x3,se)\
-strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_die2(e,x1,x2,se)\
-strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_die1(e,x1,se)\
-strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
-#define strerr_die6sys(e,x1,x2,x3,x4,x5,x6)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),&strerr_sys)
-#define strerr_die5sys(e,x1,x2,x3,x4,x5)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,&strerr_sys)
-#define strerr_die4sys(e,x1,x2,x3,x4)\
-strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,&strerr_sys)
-#define strerr_die3sys(e,x1,x2,x3)\
-strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,&strerr_sys)
-#define strerr_die2sys(e,x1,x2)\
-strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
-#define strerr_die1sys(e,x1)\
-strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
-#define strerr_die6x(e,x1,x2,x3,x4,x5,x6)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)0)
-#define strerr_die5x(e,x1,x2,x3,x4,x5)\
-strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)0)
-#define strerr_die4x(e,x1,x2,x3,x4)\
-strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)0)
-#define strerr_die3x(e,x1,x2,x3)\
-strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)0)
-#define strerr_die2x(e,x1,x2)\
-strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
-#define strerr_die1x(e,x1)\
-strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
-#define timing_basic_now(x) gettimeofday((x),(struct timezone*) 0)
-#define timing_basic_diff(x,y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)+1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
-static substdio it=SUBSTDIO_FDBUF(write,2,subfd_errbuf,256);
-substdio*subfderr=&it;
-#ifdef HASRDTSC
-typedef struct{unsigned long t[2];}timing;
-#define timing_now(x) asm volatile(".byte 15;.byte 49":"=a"((x)->t[0]),"=d"((x)->t[1]))
-#define timing_diff(x,y) (((x)->t[0]-(double)(y)->t[0])+4294967296.0*((x)->t[1]-(double)(y)->t[1]))
-#else
-#ifdef HASGETHRTIME
-typedef struct{hrtime_t t;}timing;
-#define timing_now(x) ((x)->t=gethrtime())
-#define timing_diff(x,y) ((double)((x)->t-(y)->t))
-#else
-#define timing timing_basic
-#define timing_now timing_basic_now
-#define timing_diff timing_basic_diff
-#endif
-#endif
+
+
+
 void primegen_fill(primegen *pg)
-{ int i;
+{ 
+  int i;
   uint32 mask;
   uint32 bits0,bits1,bits2,bits3,bits4,bits5,bits6,bits7;
   uint32 bits8,bits9,bits10,bits11,bits12,bits13,bits14,bits15;
@@ -381,14 +438,22 @@ void primegen_fill(primegen *pg)
     if(bits0&mask)pg->p[pg->num++]=base+1;
   }
 }
-uint64 primegen_next(primegen*pg)
-{ while(!pg->num)primegen_fill(pg);
+
+
+uint64 primegen_next(primegen *pg)
+{ 
+  while(!pg->num)primegen_fill(pg);
   return(pg->p[--pg->num]);
 }
-uint64 primegen_peek(primegen*pg)
-{ while(!pg->num)primegen_fill(pg);
+
+
+uint64 primegen_peek(primegen *pg)
+{ 
+  while(!pg->num)primegen_fill(pg);
   return(pg->p[pg->num-1]);
 }
+
+
 static const unsigned long pop[256]={
  0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
@@ -399,8 +464,11 @@ static const unsigned long pop[256]={
 ,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
 ,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 };
-uint64 primegen_count(primegen*pg,uint64 to)
-{ uint64 count=0;
+
+
+uint64 primegen_count(primegen *pg,uint64 to)
+{ 
+  uint64 count=0;
   register int pos;
   register int j;
   register uint32 bits;
@@ -445,8 +513,11 @@ uint64 primegen_count(primegen*pg,uint64 to)
     primegen_fill(pg);
   }
 }
-void primegen_skipto(primegen*pg,uint64 to)
-{ int pos;
+
+
+void primegen_skipto(primegen *pg,uint64 to)
+{ 
+  int pos;
   for(;;){
     while(pg->num){
       if(pg->p[pg->num-1]>=to)return;
@@ -466,10 +537,13 @@ void primegen_skipto(primegen*pg,uint64 to)
     primegen_fill(pg);
   }
 }
+
+
 void strerr_warn(x1,x2,x3,x4,x5,x6,se)
 char *x1;char *x2;char *x3;char *x4;char* x5;char *x6;
 struct strerr *se;
-{ strerr_sysinit();
+{ 
+  strerr_sysinit();
   if(x1)substdio_puts(subfderr,x1);
   if(x2)substdio_puts(subfderr,x2);
   if(x3)substdio_puts(subfderr,x3);
@@ -485,30 +559,39 @@ struct strerr *se;
   substdio_puts(subfderr,"\n");
   substdio_flush(subfderr);
 }
+
+
 void strerr_die(e,x1,x2,x3,x4,x5,x6,se)
 int e;
 char *x1;char *x2;char *x3;char *x4;char *x5;char *x6;
 struct strerr*se;
-{ strerr_warn(x1,x2,x3,x4,x5,x6,se);
+{ 
+  strerr_warn(x1,x2,x3,x4,x5,x6,se);
   _exit(e);
 }
+
+
 static int oneread(op,fd,buf,len)
 register int (*op)();
 register int fd;
 register char *buf;
 register int len;
-{ register int r;
+{ 
+  register int r;
   for(;;){
     r=op(fd,buf,len);
     if(r==-1)if(errno==error_intr)continue;
     return(r);
   }
 }
+
+
 static int getthis(s,buf,len)
 register substdio *s;
 register char *buf;
 register int len;
-{ register int r;
+{ 
+  register int r;
   register int q;
   r=s->p;
   q=r-len;
@@ -517,9 +600,12 @@ register int len;
   s->n+=r;
   return(r);
 }
+
+
 int substdio_feed(s)
 register substdio *s;
-{ register int r;
+{ 
+  register int r;
   register int q;
   if(s->p)return(s->p);
   q=s->n;
@@ -531,42 +617,57 @@ register substdio *s;
   if(q>0)byte_copyr(s->x+q,r,s->x);/*damn, gotta shift*/
   return(r);
 }
+
+
 int substdio_bget(s,buf,len)
 register substdio *s;
 register char *buf;
 register int len;
-{ register int r;
+{ 
+  register int r;
   if(s->p>0)return(getthis(s,buf,len));
   r=s->n;if(r<=len)return(oneread(s->op,s->fd,buf,r));
   r=substdio_feed(s);if(r<=0)return(r);
   return(getthis(s,buf,len));
 }
+
+
 int substdio_get(s,buf,len)
 register substdio *s;
-register char*buf;
+register char *buf;
 register int len;
-{ register int r;
+{ 
+  register int r;
   if(s->p>0)return(getthis(s,buf,len));
   if(s->n<=len)return(oneread(s->op,s->fd,buf,len));
   r=substdio_feed(s);if(r<=0)return(r);
   return(getthis(s,buf,len));
 }
-char*substdio_peek(s)
+
+
+char *substdio_peek(s)
 register substdio *s;
-{ return(s->x+s->n);
+{ 
+  return(s->x+s->n);
 }
+
+
 void substdio_seek(s,len)
 register substdio *s;
 register int len;
-{ s->n+=len;
+{ 
+  s->n+=len;
   s->p-=len;
 }
+
+
 static int allwrite(op,fd,buf,len)
 register int (*op)();
 register int fd;
 register char *buf;
 register int len;
-{ register int w;
+{ 
+  register int w;
   while(len){
     w=op(fd,buf,len);
     if(w==-1){
@@ -577,19 +678,25 @@ register int len;
     len-=w;
   }return(0);
 }
+
+
 int substdio_flush(s)
 register substdio *s;
-{ register int p;
+{ 
+  register int p;
   p=s->p;
   if(!p)return(0);
   s->p=0;
   return(allwrite(s->op,s->fd,s->x,p));
 }
+
+
 int substdio_bput(s,buf,len)
 register substdio *s;
 register char *buf;
 register int len;
-{ register int n;
+{ 
+  register int n;
   while(len>(n=s->n-s->p)){
     byte_copy(s->x+s->p,n,buf);s->p+=n;buf+=n;len-=n;
     if(substdio_flush(s)==-1)return(-1);
@@ -598,11 +705,14 @@ register int len;
   s->p+=len;
   return(0);
 }
+
+
 int substdio_put(s,buf,len)
 register substdio *s;
-register char*buf;
+register char *buf;
 register int len;
-{ register int n;
+{ 
+  register int n;
   n=s->n;
   if(len>n-s->p) {
     if(substdio_flush(s)==-1)return(-1);
@@ -618,25 +728,44 @@ register int len;
   s->p+=len;
   return(0);
 }
+
+
 int substdio_putflush(s,buf,len)
 register substdio *s;
 register char *buf;
 register int len;
-{ if(substdio_flush(s)==-1)return(-1);
+{ 
+  if(substdio_flush(s)==-1)return(-1);
   return(allwrite(s->op,s->fd,buf,len));
 }
+
+
 int substdio_bputs(s,buf)
 register substdio *s;
 register char *buf;
-{ return(substdio_bput(s,buf,str_len(buf)));}
+{ 
+  return(substdio_bput(s,buf,str_len(buf)));
+}
+
+
 int substdio_puts(s,buf)
 register substdio *s;
 register char *buf;
-{ return(substdio_put(s,buf,str_len(buf)));}
+{ 
+  return(substdio_put(s,buf,str_len(buf)));
+}
+
+
 int substdio_putsflush(s,buf)
 register substdio *s;
 register char *buf;
-{ return(substdio_putflush(s,buf,str_len(buf)));}
+{ 
+  return(substdio_putflush(s,buf,str_len(buf)));
+
+}
+
+static substdio it=SUBSTDIO_FDBUF(write,2,subfd_errbuf,256);
+substdio *subfderr=&it;
 
 /*warning: as coverage improves here, should update error_{str,temp}*/
 int error_intr=

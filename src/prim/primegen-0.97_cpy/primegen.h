@@ -1,4 +1,7 @@
 #include"plib.h"
+#define _B32 2048
+#define _B (_B32*32)
+
 static const uint32 two[32]={
  0x00000001,0x00000002,0x00000004,0x00000008
 ,0x00000010,0x00000020,0x00000040,0x00000080
@@ -9,16 +12,36 @@ static const uint32 two[32]={
 ,0x01000000,0x02000000,0x04000000,0x08000000
 ,0x10000000,0x20000000,0x40000000,0x80000000
 };
-static void clear(register uint32(*buf)[B32])
-{ register int i;
+
+/*squares of primes>=7,< 240*/
+uint32 qqtab[49]={
+ 49,121,169,289,361,529,841,961,1369,1681
+,1849,2209,2809,3481,3721,4489,5041,5329,6241,6889
+,7921,9409,10201,10609,11449,11881,12769,16129,17161,18769
+,19321,22201,22801,24649,26569,27889,29929,32041,32761,36481
+,37249,38809,39601,44521,49729,51529,52441,54289,57121
+};
+/*(qq * 11 + 1)/ 60 or(qq * 59 + 1)/ 60*/
+uint32 qq60tab[49]={
+ 9,119,31,53,355,97,827,945,251,1653
+,339,405,515,3423,3659,823,4957,977,6137
+,1263,7789,1725,10031,1945,2099,11683,2341,2957
+,16875,3441,18999,21831,22421,4519,4871,5113,5487
+,31507,32215,35873,6829,7115,38941,43779,9117,9447,51567,9953,56169
+};
+
+static void clear(register uint32 (*buf)[_B32])
+{ 
+  register int i;
   register int j;
   for(j=0; j<16; ++j){
-    for(i=0; i<B32; ++i)(*buf)[i]=~0;
+    for(i=0; i<_B32; ++i)(*buf)[i]=~0;
     ++buf;
   }
 }
 static void doit4(register uint32 *a,register long x,register long y,int64 start)
-{ long i0;
+{ 
+  long i0;
   long y0;
   register long i;
   register uint32 data;
@@ -28,10 +51,16 @@ static void doit4(register uint32 *a,register long x,register long y,int64 start
   x+=15;
   y+=15;
   start+=1000000000;
-  while(start<0){start+=x;x+=30;}
+  while(start<0){
+    start+=x;
+    x+=30;
+  }
   start-=1000000000;
   i=start;
-  while(i<B){i+=x;x+=30;}
+  while(i<_B){
+    i+=x;
+    x+=30;
+  }
   for(;;){
     x-=30;
     if(x<=15)return;
@@ -39,7 +68,7 @@ static void doit4(register uint32 *a,register long x,register long y,int64 start
     while(i<0){i+=y;y+=30;}
     i0=i;
     y0=y;
-    while(i<B){
+    while(i<_B){
       pos=i;
       data=i;
       pos>>=5;
@@ -56,7 +85,8 @@ static void doit4(register uint32 *a,register long x,register long y,int64 start
   }
 }
 static void doit6(register uint32 *a,register long x,register long y,int64 start)
-{ long i0;
+{ 
+  long i0;
   long y0;
   register long i;
   register uint32 data;
@@ -65,17 +95,27 @@ static void doit6(register uint32 *a,register long x,register long y,int64 start
   x+=5;
   y+=15;
   start+=1000000000;
-  while(start<0){start+=x;x+=10;}
+  while(start<0){
+    start+=x;
+    x+=10;
+  }
   start-=1000000000;
   i=start;
-  while(i<B){i+=x;x+=10;}
+  while(i<_B){
+    i+=x;
+    x+=10;
+  }
   for(;;){
     x-=10;
     if(x<=5)return;
     i-=x;
-    while(i<0){i+=y;y+=30;}
-    i0=i;y0=y;
-    while(i<B){
+    while(i<0){
+      i+=y;
+      y+=30;
+    }
+    i0=i;
+    y0=y;
+    while(i<_B){
       pos=i;
       data=i;
       pos>>=5;
@@ -91,8 +131,10 @@ static void doit6(register uint32 *a,register long x,register long y,int64 start
     y=y0;
   }
 }
+
 static void doit12(register uint32 *a,register long x,register long y,int64 start)
-{ long i0;
+{ 
+  long i0;
   long y0;
   register long i;
   register uint32 data;
@@ -100,14 +142,20 @@ static void doit12(register uint32 *a,register long x,register long y,int64 star
   register uint32 bits;
   x+=5;
   start+=1000000000;
-  while(start<0){start+=x;x+=10;}
+  while(start<0){
+    start+=x;
+    x+=10;
+  }
   start-=1000000000;
   i=start;
-  while(i<0){i+=x;x+=10;}
+  while(i<0){
+    i+=x;
+    x+=10;
+  }
   y+=15;
   x+=10;
   for(;;){
-    while(i>=B){
+    while(i>=_B){
       if(x<=y)return;
       i-=y;
       y+=30;
@@ -132,22 +180,25 @@ static void doit12(register uint32 *a,register long x,register long y,int64 star
     x+=10;
   }
 }
+
 static const int deltainverse[60]={
- -1,B32*0,-1,-1,-1,-1,-1,B32*1,-1,-1,-1,B32*2,-1,B32*3,-1
-,-1,-1,B32*4,-1,B32*5,-1,-1,-1,B32*6,-1,-1,-1,-1,-1,B32*7
-,-1,B32*8,-1,-1,-1,-1,-1,B32*9,-1,-1,-1,B32*10,-1,B32*11,-1
-,-1,-1,B32*12,-1,B32*13,-1,-1,-1,B32*14,-1,-1,-1,-1,-1,B32*15
+ -1,_B32*0,-1,-1,-1,-1,-1,_B32*1,-1,-1,-1,_B32*2,-1,_B32*3,-1
+,-1,-1,_B32*4,-1,_B32*5,-1,-1,-1,_B32*6,-1,-1,-1,-1,-1,_B32*7
+,-1,_B32*8,-1,-1,-1,-1,-1,_B32*9,-1,-1,-1,_B32*10,-1,_B32*11,-1
+,-1,-1,_B32*12,-1,_B32*13,-1,-1,-1,_B32*14,-1,-1,-1,-1,-1,_B32*15
 };
-static void squarefree1big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
-{ uint64 i;
+
+static void squarefree1big(uint32 (*buf)[_B32],uint64 base,uint32 q,uint64 qq)
+{ 
+  uint64 i;
   uint32 pos;
   int n;
-  uint64 bound=base+60*B;
+  uint64 bound=base+60*_B;
   while(qq<bound){
     if(bound<2000000000)i=qq-(((uint32)base)%((uint32)qq));
-    else i=qq-(base % qq);
+    else i=qq-(base%qq);
     if(!(i&1))i+=qq;
-    if(i<B*60){ 
+    if(i<_B*60){ 
       pos=i;
       n=deltainverse[pos%60];
       if(n>=0){
@@ -158,26 +209,26 @@ static void squarefree1big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
     q+=1800;
   }
 }
-static void squarefree1(register uint32 (*buf)[B32],uint64 L,uint32 q)
-{ uint32 qq;
+static void squarefree1(register uint32 (*buf)[_B32],uint64 L,uint32 q)
+{ 
+  uint32 qq,i;
+  uint64 base;
   register uint32 qqhigh;
-  uint32 i;
   register uint32 ilow;
   register uint32 ihigh;
   register int n;
-  uint64 base;
   base=60*L;
   qq=q*q;
   q=60*q+900;
-  while(qq<B*60){
+  while(qq<_B*60){
     if(base<2000000000)i=qq-(((uint32)base)%qq);
-    else i=qq-(base % qq);
+    else i=qq-(base%qq);
     if(!(i&1))i+=qq;
-    if(i<B*60){ 
+    if(i<_B*60){ 
       qqhigh=qq/60;
       ilow=i%60;ihigh=i/60;
       qqhigh+=qqhigh;
-      while(ihigh<B){
+      while(ihigh<_B){
         n=deltainverse[ilow];
         if(n>=0)(*buf)[n+(ihigh>>5)]|=two[ihigh&31];
         ilow+=2;
@@ -189,16 +240,18 @@ static void squarefree1(register uint32 (*buf)[B32],uint64 L,uint32 q)
   }
   squarefree1big(buf,base,q,qq);
 }
-static void squarefree49big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
-{ uint64 i;
-  uint32 pos;
+
+static void squarefree49big(uint32 (*buf)[_B32],uint64 base,uint32 q,uint64 qq)
+{ 
   int n;
-  uint64 bound=base+60*B;
+  uint64 i;
+  uint32 pos;
+  uint64 bound=base+60*_B;
   while(qq<bound){
     if(bound<2000000000)i=qq-(((uint32)base)%((uint32)qq));
     else i=qq-(base%qq);
     if(!(i&1))i+=qq;
-    if(i<B*60){ 
+    if(i<_B*60){ 
       pos=i;
       n=deltainverse[pos%60];
       if(n>=0){
@@ -209,63 +262,53 @@ static void squarefree49big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
     q+=1800;
   }
 }
-static void squarefree49(register uint32 (*buf)[B32],uint64 L,uint32 q)
-{ uint32 qq;
+static void squarefree49(register uint32 (*buf)[_B32],uint64 L,uint32 q)
+{ 
+  uint32 qq,i;
   register uint32 qqhigh;
-  uint32 i;
   register uint32 ilow;
   register uint32 ihigh;
   register int n;
   uint64 base=60*L;
   qq=q*q;
   q=60*q+900;
-  while(qq<B*60){
+  while(qq<_B*60){
     if(base<2000000000)i=qq-(((uint32)base)%qq);
     else i=qq-(base%qq);
     if(!(i&1))i+=qq;
-    if(i<B*60){ 
+    if(i<_B*60){ 
       qqhigh=qq/60;
       ilow=i%60;
       ihigh=i/60;
       qqhigh+=qqhigh;
       qqhigh+=1;
-      while(ihigh<B){
+      while(ihigh<_B){
         n=deltainverse[ilow];
         if(n>=0)(*buf)[n+(ihigh>>5)]|=two[ihigh&31];
         ilow+=38;
         ihigh+=qqhigh;
-        if(ilow>=60){ilow-=60;ihigh+=1;}
-    }}
+        if(ilow>=60){
+          ilow-=60;
+          ihigh+=1;
+    }}}
     qq+=q;
     q+=1800;
   }
   squarefree49big(buf,base,q,qq);
-}/*squares of primes>=7,< 240*/
-uint32 qqtab[49]={
- 49,121,169,289,361,529,841,961,1369,1681
-,1849,2209,2809,3481,3721,4489,5041,5329,6241,6889
-,7921,9409,10201,10609,11449,11881,12769,16129,17161,18769
-,19321,22201,22801,24649,26569,27889,29929,32041,32761,36481
-,37249,38809,39601,44521,49729,51529,52441,54289,57121
-};/*(qq * 11 + 1)/ 60 or(qq * 59 + 1)/ 60*/
-uint32 qq60tab[49]={
- 9,119,31,53,355,97,827,945,251,1653
-,339,405,515,3423,3659,823,4957,977,6137
-,1263,7789,1725,10031,1945,2099,11683,2341,2957
-,16875,3441,18999,21831,22421,4519,4871,5113,5487
-,31507,32215,35873,6829,7115,38941,43779,9117,9447,51567,9953,56169
-};
+}
+
 static void squarefreetiny(register uint32 *a,uint32 *Lmodqq,int d)
-{ int j;
+{ 
+  int j;
   register uint32 k;
   register uint32 qq;
   register uint32 pos;
   register uint32 data;
   register uint32 bits;
-  for(j=0;j<49;++j){
+  for(j=0; j<49; ++j){
     qq=qqtab[j];
     k=qq-1-((Lmodqq[j]+qq60tab[j]*d-1)%qq);
-    while(k<B){
+    while(k<_B){
       pos=k;
       data=k;
       pos>>=5;
@@ -283,6 +326,7 @@ typedef struct{
   char g;
   char k;
 }todo;
+
 static const todo for4[]={
  {0,2,15,4},{0,3,5,1},{0,3,25,11},{0,5,9,3}
 ,{0,5,21,9},{0,7,15,7},{0,8,15,8},{0,10,9,8}
@@ -315,7 +359,9 @@ static const todo for4[]={
 ,{14,1,7,0},{14,1,13,2},{14,1,17,4},{14,1,23,8}
 ,{14,4,7,1},{14,4,13,3},{14,4,17,5},{14,4,23,9}
 ,{14,11,7,8},{14,11,13,10},{14,11,17,12},{14,11,23,16}
-,{14,14,7,13},{14,14,13,15},{14,14,17,17},{14,14,23,21}};
+,{14,14,7,13},{14,14,13,15},{14,14,17,17},{14,14,23,21}
+};
+
 static const todo for6[]={
  {1,1,2,0},{1,1,8,1},{1,1,22,8},{1,1,28,13}
 ,{1,3,10,2},{1,3,20,7},{1,7,10,4},{1,7,20,9}
@@ -328,7 +374,9 @@ static const todo for6[]={
 ,{8,7,2,2},{8,7,8,3},{8,7,22,10},{8,7,28,15}
 ,{11,1,10,1},{11,1,20,6},{11,3,4,0},{11,3,14,3}
 ,{11,3,16,4},{11,3,26,11},{11,7,4,2},{11,7,14,5}
-,{11,7,16,6},{11,7,26,13},{11,9,10,5},{11,9,20,10}};
+,{11,7,16,6},{11,7,26,13},{11,9,10,5},{11,9,20,10}
+};
+
 static const todo for12[]={
  {2,2,1,0},{2,2,11,-2},{2,2,19,-6},{2,2,29,-14}
 ,{2,3,4,0},{2,3,14,-3},{2,3,16,-4},{2,3,26,-11}
@@ -353,11 +401,14 @@ static const todo for12[]={
 ,{15,5,4,0},{15,5,14,-3},{15,5,16,-4},{15,5,26,-11}
 ,{15,6,7,0},{15,6,13,-2},{15,6,17,-4},{15,6,23,-8}
 ,{15,9,2,3},{15,9,8,2},{15,9,22,-5},{15,9,28,-10}
-,{15,10,1,4},{15,10,11,2},{15,10,19,-2},{15,10,29,-10}};
+,{15,10,1,4},{15,10,11,2},{15,10,19,-2},{15,10,29,-10}
+};
+
 void primegen_sieve(primegen *pg)
-{ uint32 (*buf)[B32];
-  uint64 L;
+{ 
   int i;
+  uint32 (*buf)[_B32];
+  uint64 L;
   uint32 Lmodqq[49];
   buf=pg->buf;
   L=pg->L;

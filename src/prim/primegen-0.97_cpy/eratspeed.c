@@ -1,6 +1,5 @@
-#define B32_ 1001
-#define B_ (B32_*32)
 #include"plib.h"
+
 uint32 qtab[3509]={
 7,11,13,17,19,23,29,31,37,41,43,47,53
 ,59,61,67,71,73,79,83,89,97,101,103,107,109
@@ -273,6 +272,7 @@ uint32 qtab[3509]={
 ,32503,32507,32531,32533,32537,32561,32563,32569,32573,32579,32587,32603,32609
 ,32611,32621,32633,32647,32653,32687,32693,32707,32713,32717,32719,32749
 };
+
 static const uint32 _two[32]={
  0x00000001,0x00000002,0x00000004,0x00000008
 ,0x00000010,0x00000020,0x00000040,0x00000080
@@ -283,6 +283,7 @@ static const uint32 _two[32]={
 ,0x01000000,0x02000000,0x04000000,0x08000000
 ,0x10000000,0x20000000,0x40000000,0x80000000
 };
+
 static const unsigned long _pop[256]={
  0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
@@ -293,19 +294,22 @@ static const unsigned long _pop[256]={
 ,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
 ,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 };
+
 timing start;
 timing_basic startb;
 timing finish;
 timing_basic finishb;
+
 uint32 next[8][3509];
 uint32 a[8][B32_];
+
 int dtab[8]={1,7,11,13,17,19,23,29};
+
 void init(uint32 L)
-{ int i;
-  int d;
-  int j;
-  uint32 q;
-  uint32 qz;
+{ 
+  int i,d,j;
+  uint32 q,qz;
+  
   for(i=0; i<8; ++i){
     d=dtab[i];
     for(j=0; j<3509; ++j){
@@ -315,14 +319,15 @@ void init(uint32 L)
       next[i][j]=(qz-d)/30-L;
   }}
 }
+
 void doit()
-{ int i;
+{ 
+  int i,j;
   uint32 *nexti;
-  int j;
   register uint32 k;
-  register uint32 *buf;
   register uint32 q;
   register uint32 pos;
+  register uint32 *buf;
   register uint32 bits;
   register uint32 data;
   for(i=0; i<8; ++i){
@@ -348,11 +353,14 @@ void doit()
       nexti[j]=k-B_;
   }}
 }
+
 uint32 total;
+
 void countit()
-{ int i;
-  register uint32 *ai;
+{
+  int i;
   register int pos;
+  register uint32 *ai;
   register uint32 bits;
   register uint32 result;
 /*To print the primes (slowly), given L:
@@ -372,15 +380,20 @@ void countit()
   }}
   total+=result;
 }
+
 timing t;
 timing told;
-main()
-{ int L=1;
+
+void main()
+{ 
+  int L=1;
   timing_basic_now(&startb);
   timing_now(&start);
   timing_now(&told);
-  total=10;/*2,3,5,7,11,13,17,19,23,29*/
+  
+  total=10; /* 2,3,5,7,11,13,17,19,23,29 */
   init(L);
+
   timing_now(&t);
   printf("Init: %f\n",timing_diff(&t,&told));
   told=t;
@@ -395,8 +408,10 @@ main()
   timing_basic_now(&finishb);
   timing_now(&finish);
   printf("%d primes up to %d.\n",total,30*L);
-  printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",timing_basic_diff(&finishb,&startb)/timing_diff(&finish,&start));
-  printf("Overall seconds: approximately %f.\n",0.000000001*timing_basic_diff(&finishb,&startb));
+  printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",
+      timing_basic_diff(&finishb,&startb)/timing_diff(&finish,&start));
+  printf("Overall seconds: approximately %f.\n",
+      0.000000001*timing_basic_diff(&finishb,&startb));
   printf("Tick counts may be underestimates on systems without hardware tick support.\n");
   exit(0);
 }

@@ -1,13 +1,13 @@
 #include "plib.h"
 primegen pg;
-void main()
+void main(void)
 { uint64 p;
   uint64 lastp;
   uint32 diff;
   uint32 maxdiff;
   primegen_init(&pg);
   primegen_next(&pg);
-  lastp = primegen_next(&pg);
+  lastp=primegen_next(&pg);
   maxdiff=0;
   for(;;){
     p=primegen_next(&pg);
@@ -19,5 +19,6 @@ void main()
       maxdiff=diff;
     }
     lastp=p;
-  }
+    }
 }
+

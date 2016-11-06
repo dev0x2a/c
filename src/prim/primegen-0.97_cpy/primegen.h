@@ -17,7 +17,7 @@ static void clear(register uint32(*buf)[B32])
     ++buf;
   }
 }
-static void doit4(register uint32*a,register long x,register long y,int64 start)
+static void doit4(register uint32 *a,register long x,register long y,int64 start)
 { long i0;
   long y0;
   register long i;
@@ -55,7 +55,7 @@ static void doit4(register uint32*a,register long x,register long y,int64 start)
     y=y0;
   }
 }
-static void doit6(register uint32*a,register long x,register long y,int64 start)
+static void doit6(register uint32 *a,register long x,register long y,int64 start)
 { long i0;
   long y0;
   register long i;
@@ -91,7 +91,7 @@ static void doit6(register uint32*a,register long x,register long y,int64 start)
     y=y0;
   }
 }
-static void doit12(register uint32*a,register long x,register long y,int64 start)
+static void doit12(register uint32 *a,register long x,register long y,int64 start)
 { long i0;
   long y0;
   register long i;
@@ -138,7 +138,7 @@ static const int deltainverse[60]={
 ,-1,B32*8,-1,-1,-1,-1,-1,B32*9,-1,-1,-1,B32*10,-1,B32*11,-1
 ,-1,-1,B32*12,-1,B32*13,-1,-1,-1,B32*14,-1,-1,-1,-1,-1,B32*15
 };
-static void squarefree1big(uint32(*buf)[B32],uint64 base,uint32 q,uint64 qq)
+static void squarefree1big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
 { uint64 i;
   uint32 pos;
   int n;
@@ -158,7 +158,7 @@ static void squarefree1big(uint32(*buf)[B32],uint64 base,uint32 q,uint64 qq)
     q+=1800;
   }
 }
-static void squarefree1(register uint32(*buf)[B32],uint64 L,uint32 q)
+static void squarefree1(register uint32 (*buf)[B32],uint64 L,uint32 q)
 { uint32 qq;
   register uint32 qqhigh;
   uint32 i;
@@ -189,7 +189,7 @@ static void squarefree1(register uint32(*buf)[B32],uint64 L,uint32 q)
   }
   squarefree1big(buf,base,q,qq);
 }
-static void squarefree49big(uint32(*buf)[B32],uint64 base,uint32 q,uint64 qq)
+static void squarefree49big(uint32 (*buf)[B32],uint64 base,uint32 q,uint64 qq)
 { uint64 i;
   uint32 pos;
   int n;
@@ -209,7 +209,7 @@ static void squarefree49big(uint32(*buf)[B32],uint64 base,uint32 q,uint64 qq)
     q+=1800;
   }
 }
-static void squarefree49(register uint32(*buf)[B32],uint64 L,uint32 q)
+static void squarefree49(register uint32 (*buf)[B32],uint64 L,uint32 q)
 { uint32 qq;
   register uint32 qqhigh;
   uint32 i;
@@ -255,7 +255,7 @@ uint32 qq60tab[49]={
 ,16875,3441,18999,21831,22421,4519,4871,5113,5487
 ,31507,32215,35873,6829,7115,38941,43779,9117,9447,51567,9953,56169
 };
-static void squarefreetiny(register uint32*a,uint32*Lmodqq,int d)
+static void squarefreetiny(register uint32 *a,uint32 *Lmodqq,int d)
 { int j;
   register uint32 k;
   register uint32 qq;
@@ -277,7 +277,12 @@ static void squarefreetiny(register uint32*a,uint32*Lmodqq,int d)
       a[pos]=bits;
   }}
 }
-typedef struct{char index;char f;char g;char k;}todo;
+typedef struct{
+  char index;
+  char f;
+  char g;
+  char k;
+}todo;
 static const todo for4[]={
  {0,2,15,4},{0,3,5,1},{0,3,25,11},{0,5,9,3}
 ,{0,5,21,9},{0,7,15,7},{0,8,15,8},{0,10,9,8}
@@ -310,8 +315,7 @@ static const todo for4[]={
 ,{14,1,7,0},{14,1,13,2},{14,1,17,4},{14,1,23,8}
 ,{14,4,7,1},{14,4,13,3},{14,4,17,5},{14,4,23,9}
 ,{14,11,7,8},{14,11,13,10},{14,11,17,12},{14,11,23,16}
-,{14,14,7,13},{14,14,13,15},{14,14,17,17},{14,14,23,21}
-};
+,{14,14,7,13},{14,14,13,15},{14,14,17,17},{14,14,23,21}};
 static const todo for6[]={
  {1,1,2,0},{1,1,8,1},{1,1,22,8},{1,1,28,13}
 ,{1,3,10,2},{1,3,20,7},{1,7,10,4},{1,7,20,9}
@@ -324,8 +328,7 @@ static const todo for6[]={
 ,{8,7,2,2},{8,7,8,3},{8,7,22,10},{8,7,28,15}
 ,{11,1,10,1},{11,1,20,6},{11,3,4,0},{11,3,14,3}
 ,{11,3,16,4},{11,3,26,11},{11,7,4,2},{11,7,14,5}
-,{11,7,16,6},{11,7,26,13},{11,9,10,5},{11,9,20,10}
-};
+,{11,7,16,6},{11,7,26,13},{11,9,10,5},{11,9,20,10}};
 static const todo for12[]={
  {2,2,1,0},{2,2,11,-2},{2,2,19,-6},{2,2,29,-14}
 ,{2,3,4,0},{2,3,14,-3},{2,3,16,-4},{2,3,26,-11}
@@ -350,10 +353,9 @@ static const todo for12[]={
 ,{15,5,4,0},{15,5,14,-3},{15,5,16,-4},{15,5,26,-11}
 ,{15,6,7,0},{15,6,13,-2},{15,6,17,-4},{15,6,23,-8}
 ,{15,9,2,3},{15,9,8,2},{15,9,22,-5},{15,9,28,-10}
-,{15,10,1,4},{15,10,11,2},{15,10,19,-2},{15,10,29,-10}
-};
+,{15,10,1,4},{15,10,11,2},{15,10,19,-2},{15,10,29,-10}};
 void primegen_sieve(primegen *pg)
-{ uint32(*buf)[B32];
+{ uint32 (*buf)[B32];
   uint64 L;
   int i;
   uint32 Lmodqq[49];
@@ -421,3 +423,4 @@ void primegen_sieve(primegen *pg)
   squarefree1(buf,L,259);
   squarefree1(buf,L,269);
 }
+

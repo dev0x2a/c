@@ -1,5 +1,5 @@
 #include"plib.h"
-static const unsigned long pop[256]={
+static const unsigned long __pop[256]={
  0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
@@ -10,12 +10,12 @@ static const unsigned long pop[256]={
 ,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8};
 timing told;
 timing t;
-uint64 timedcount(primegen*pg,uint64 to)
+uint64 timedcount(primegen *pg,uint64 to)
 { uint64 count=0;
-  uint32(*buf)[B32]=pg->buf;
+  uint32 (*buf)[B32]=pg->buf;
   int pos;
   int j;
-  register uint32*bufj;
+  register uint32 *bufj;
   register uint32 bits;
   register uint32 smallcount;
   timing_now(&told);
@@ -30,10 +30,10 @@ uint64 timedcount(primegen*pg,uint64 to)
     while((pos<B32)&&(pg->base+1920<to)){
       for(j=0; j<16; ++j){
         bits=~buf[j][pos];
-        smallcount+=pop[bits&255];bits>>=8;
-        smallcount+=pop[bits&255];bits>>=8;
-        smallcount+=pop[bits&255];bits>>=8;
-        smallcount+=pop[bits];
+        smallcount+=__pop[bits&255];bits>>=8;
+        smallcount+=__pop[bits&255];bits>>=8;
+        smallcount+=__pop[bits&255];bits>>=8;
+        smallcount+=__pop[bits];
       }
       pg->base+=1920;
       ++pos;
@@ -51,10 +51,10 @@ uint64 timedcount(primegen*pg,uint64 to)
         bufj=buf[j];
         for(pos=0; pos<B32; ++pos){
           bits=~bufj[pos];
-          smallcount+=pop[bits&255];bits>>=8;
-          smallcount+=pop[bits&255];bits>>=8;
-          smallcount+=pop[bits&255];bits>>=8;
-          smallcount+=pop[bits];
+          smallcount+=__pop[bits&255];bits>>=8;
+          smallcount+=__pop[bits&255];bits>>=8;
+          smallcount+=__pop[bits&255];bits>>=8;
+          smallcount+=__pop[bits];
       }}
       count+=smallcount;
       pg->base+=B*60;
@@ -71,7 +71,7 @@ timing_basic finishb;
 /**/
 void main(argc,argv)
 int argc;
-char**argv;
+char **argv;
 { uint64 high=1000000000;
   uint64 result;
   int loop;

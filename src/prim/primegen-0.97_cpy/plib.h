@@ -52,17 +52,17 @@ typedef struct{
   uint64 L;
 }primegen;
 typedef struct substdio{
-  char*x;
+  char *x;
   int p;
   int n;
   int fd;
-  int(*op)();
+  int (*op)();
 }substdio;
 struct strerr{
   struct strerr*who;
-  char*x;
-  char*y;
-  char*z;
+  char *x;
+  char *y;
+  char *z;
 };
 typedef struct timeval timing_basic;
 #include"primegen.h"
@@ -83,7 +83,7 @@ extern unsigned int str_rchr();
 extern int str_start();
 extern struct strerr strerr_sys;
 extern void strerr_sysinit();
-extern char*strerr();
+extern char *strerr();
 extern void strerr_warn();
 extern void strerr_die();
 extern void primegen_sieve(primegen*);
@@ -93,11 +93,11 @@ extern uint64 primegen_next(primegen*);
 extern uint64 primegen_peek(primegen*);
 extern uint64 primegen_count(primegen*,uint64 to);
 extern void primegen_skipto(primegen*,uint64 to);
-extern substdio*subfdin;
-extern substdio*subfdinsmall;
-extern substdio*subfdout;
-extern substdio*subfdoutsmall;
-extern substdio*subfderr;
+extern substdio *subfdin;
+extern substdio *subfdinsmall;
+extern substdio *subfdout;
+extern substdio *subfdoutsmall;
+extern substdio *subfderr;
 extern int subfd_read();
 extern int subfd_readsmall();
 extern void substdio_fdbuf();
@@ -111,7 +111,7 @@ extern int substdio_putsflush();
 extern int substdio_get();
 extern int substdio_bget();
 extern int substdio_feed();
-extern char*substdio_peek();
+extern char *substdio_peek();
 extern void substdio_seek();
 extern int substdio_copy();
 extern int errno;
@@ -128,7 +128,7 @@ extern int error_again;
 extern int error_pipe;
 extern int error_perm;
 extern int error_acces;
-extern char*error_str();
+extern char *error_str();
 extern int error_temp();
 extern int open_read();
 extern int open_excl();
@@ -150,9 +150,9 @@ void strerr_sysinit()
 }
 void substdio_fdbuf(s,op,fd,buf,len)
 register substdio*s;
-register int(*op)();
+register int (*op)();
 register int fd;
-register char*buf;
+register char *buf;
 register int len;
 { s->x=buf;
   s->fd=fd;
@@ -161,10 +161,10 @@ register int len;
   s->n=len;
 }
 int substdio_copy(ssout,ssin)
-register substdio*ssout;
-register substdio*ssin;
+register substdio *ssout;
+register substdio *ssin;
 { register int n;
-  register char*x;
+  register char *x;
   for(;;){
     n=substdio_feed(ssin);
     if(n<0)return(-2);
@@ -174,11 +174,11 @@ register substdio*ssin;
     substdio_SEEK(ssin,n);
   }
 }
-int open_read(fn)char*fn;
+int open_read(fn)char *fn;
 { return(open(fn,O_RDONLY|O_NDELAY));}
-int open_trunc(fn)char*fn;
+int open_trunc(fn)char *fn;
 { return(open(fn,O_WRONLY|O_NDELAY|O_TRUNC|O_CREAT,0644));}
-unsigned int scan_uint64(char*s,uint64*u)
+unsigned int scan_uint64(char *s,uint64 *u)
 { unsigned int pos=0;
   uint64 result=0;
   uint64 c;
@@ -188,11 +188,16 @@ unsigned int scan_uint64(char*s,uint64*u)
   }*u=result;
   return(pos);
 }
-unsigned int fmt_uint64(char*s,uint64 u)
+unsigned int fmt_uint64(char *s,uint64 u)
 { unsigned int len=1;
   uint64 q=u;
   while(q>9){++len;q/=10;}
-  if(s){s+=len;do{*--s='0'+(u%10);u/=10;}while(u);}
+  if(s){
+    s+=len;
+    do{
+      *--s='0'+(u%10);
+      u/=10;
+    }while(u);}
   return(len);
 }
 void primegen_init(primegen*pg)
@@ -219,9 +224,9 @@ void primegen_init(primegen*pg)
   pg->num=17;
 }
 void byte_copy(to,n,from)
-register char*to;
+register char *to;
 register unsigned int n;
-register char*from;
+register char *from;
 { for(;;){
     if(!n)return;*to++=*from++;--n;
     if(!n)return;*to++=*from++;--n;
@@ -230,9 +235,9 @@ register char*from;
   }
 }
 void byte_copyr(to,n,from)
-register char*to;
+register char *to;
 register unsigned int n;
-register char*from;
+register char *from;
 { to+=n;
   from+=n;
   for(;;){
@@ -243,8 +248,8 @@ register char*from;
   }
 }
 unsigned int str_len(s)
-register char*s;
-{ register char*t;
+register char *s;
+{ register char *t;
   t=s;
   for(;;){
     if(!*t)return(t-s);++t;
@@ -307,7 +312,8 @@ strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
 strerr_die((e),(x1),(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
 #define timing_basic_now(x) gettimeofday((x),(struct timezone*) 0)
 #define timing_basic_diff(x,y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)+1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
-static substdio it=SUBSTDIO_FDBUF(write,2,subfd_errbuf,256);substdio*subfderr=&it;
+static substdio it=SUBSTDIO_FDBUF(write,2,subfd_errbuf,256);
+substdio*subfderr=&it;
 #ifdef HASRDTSC
 typedef struct{unsigned long t[2];}timing;
 #define timing_now(x) asm volatile(".byte 15;.byte 49":"=a"((x)->t[0]),"=d"((x)->t[1]))
@@ -323,7 +329,7 @@ typedef struct{hrtime_t t;}timing;
 #define timing_diff timing_basic_diff
 #endif
 #endif
-void primegen_fill(primegen*pg)
+void primegen_fill(primegen *pg)
 { int i;
   uint32 mask;
   uint32 bits0,bits1,bits2,bits3,bits4,bits5,bits6,bits7;
@@ -408,7 +414,7 @@ uint64 primegen_count(primegen*pg,uint64 to)
     smallcount=0;
     pos=pg->pos;
     while((pos<B32)&&(pg->base+1920<to)){
-      for(j=0;j<16;++j){
+      for(j=0; j<16; ++j){
         bits=~pg->buf[j][pos];
         smallcount+=pop[bits&255];bits>>=8;
         smallcount+=pop[bits&255];bits>>=8;
@@ -461,8 +467,8 @@ void primegen_skipto(primegen*pg,uint64 to)
   }
 }
 void strerr_warn(x1,x2,x3,x4,x5,x6,se)
-char*x1;char*x2;char*x3;char*x4;char*x5;char*x6;
-struct strerr*se;
+char *x1;char *x2;char *x3;char *x4;char* x5;char *x6;
+struct strerr *se;
 { strerr_sysinit();
   if(x1)substdio_puts(subfderr,x1);
   if(x2)substdio_puts(subfderr,x2);
@@ -481,15 +487,15 @@ struct strerr*se;
 }
 void strerr_die(e,x1,x2,x3,x4,x5,x6,se)
 int e;
-char*x1;char*x2;char*x3;char*x4;char*x5;char*x6;
+char *x1;char *x2;char *x3;char *x4;char *x5;char *x6;
 struct strerr*se;
 { strerr_warn(x1,x2,x3,x4,x5,x6,se);
   _exit(e);
 }
 static int oneread(op,fd,buf,len)
-register int(*op)();
+register int (*op)();
 register int fd;
-register char*buf;
+register char *buf;
 register int len;
 { register int r;
   for(;;){
@@ -499,8 +505,8 @@ register int len;
   }
 }
 static int getthis(s,buf,len)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 register int len;
 { register int r;
   register int q;
@@ -512,7 +518,7 @@ register int len;
   return(r);
 }
 int substdio_feed(s)
-register substdio*s;
+register substdio *s;
 { register int r;
   register int q;
   if(s->p)return(s->p);
@@ -526,8 +532,8 @@ register substdio*s;
   return(r);
 }
 int substdio_bget(s,buf,len)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 register int len;
 { register int r;
   if(s->p>0)return(getthis(s,buf,len));
@@ -536,7 +542,7 @@ register int len;
   return(getthis(s,buf,len));
 }
 int substdio_get(s,buf,len)
-register substdio*s;
+register substdio *s;
 register char*buf;
 register int len;
 { register int r;
@@ -546,19 +552,19 @@ register int len;
   return(getthis(s,buf,len));
 }
 char*substdio_peek(s)
-register substdio*s;
+register substdio *s;
 { return(s->x+s->n);
 }
 void substdio_seek(s,len)
-register substdio*s;
+register substdio *s;
 register int len;
 { s->n+=len;
   s->p-=len;
 }
 static int allwrite(op,fd,buf,len)
-register int(*op)();
+register int (*op)();
 register int fd;
-register char*buf;
+register char *buf;
 register int len;
 { register int w;
   while(len){
@@ -572,7 +578,7 @@ register int len;
   }return(0);
 }
 int substdio_flush(s)
-register substdio*s;
+register substdio *s;
 { register int p;
   p=s->p;
   if(!p)return(0);
@@ -580,8 +586,8 @@ register substdio*s;
   return(allwrite(s->op,s->fd,s->x,p));
 }
 int substdio_bput(s,buf,len)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 register int len;
 { register int n;
   while(len>(n=s->n-s->p)){
@@ -593,7 +599,7 @@ register int len;
   return(0);
 }
 int substdio_put(s,buf,len)
-register substdio*s;
+register substdio *s;
 register char*buf;
 register int len;
 { register int n;
@@ -613,23 +619,23 @@ register int len;
   return(0);
 }
 int substdio_putflush(s,buf,len)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 register int len;
 { if(substdio_flush(s)==-1)return(-1);
   return(allwrite(s->op,s->fd,buf,len));
 }
 int substdio_bputs(s,buf)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 { return(substdio_bput(s,buf,str_len(buf)));}
 int substdio_puts(s,buf)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 { return(substdio_put(s,buf,str_len(buf)));}
 int substdio_putsflush(s,buf)
-register substdio*s;
-register char*buf;
+register substdio *s;
+register char *buf;
 { return(substdio_putflush(s,buf,str_len(buf)));}
 
 /*warning: as coverage improves here, should update error_{str,temp}*/
@@ -712,7 +718,7 @@ EACCES;
 -13;
 #endif
 #define X(e,s) if(i==e)return(s);
-char*error_str(i)
+char *error_str(i)
 int i;
 { X(0,"no error")
   X(error_intr,"interrupted system call")

@@ -13,8 +13,8 @@ uolife: uolife.c
 	$(CC) uolife.c -o $(UO) $(CFLAGS)
 
 clean:
-	$(RM) a.out
-	$(RM) -i `find . -perm /111 -type f`
+	$(RM) -i life uolife
+	#$(RM) -i `find . -perm /111 -type f`
 
 help:
 	@echo -e "$(LIFE):\tmake $(LIFE).c"

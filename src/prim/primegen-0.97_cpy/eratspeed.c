@@ -1,5 +1,5 @@
 #include"plib.h"
-
+/*{{{*/
 uint32 qtab[3509]={
 7,11,13,17,19,23,29,31,37,41,43,47,53
 ,59,61,67,71,73,79,83,89,97,101,103,107,109
@@ -284,7 +284,7 @@ static const uint32 _two[32]={
 ,0x10000000,0x20000000,0x40000000,0x80000000
 };
 
-static const unsigned long _pop[256]={
+static const unsigned long pop_[256]={
  0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
 ,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
@@ -294,7 +294,7 @@ static const unsigned long _pop[256]={
 ,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
 ,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 };
-
+/*}}}*/
 timing start;
 timing_basic startb;
 timing finish;
@@ -373,10 +373,10 @@ void countit()
     ai=a[i];
     for(pos=0; pos<B32; ++pos){
       bits=~ai[pos];
-      result+=_pop[bits&255];bits>>=8;
-      result+=_pop[bits&255];bits>>=8;
-      result+=_pop[bits&255];bits>>=8;
-      result+=_pop[bits];
+      result+=pop_[bits&255];bits>>=8;
+      result+=pop_[bits&255];bits>>=8;
+      result+=pop_[bits&255];bits>>=8;
+      result+=pop_[bits];
   }}
   total+=result;
 }

@@ -1,9 +1,7 @@
 Game of Life
 ============
-
 Sean Murphy
 -----------
-
 This is my first submission to IOCCC, so I apologize in advance for anything I screw up. That being said, I'm pretty sure my program is "simple" enough that there shouldn't be any problem. 
 
 Compiling: 
@@ -75,7 +73,7 @@ We now take the remainder of this and 04000 (which is octal for 2048, the array 
 
 We now find the value of the array at this index and check to see if the 5th bit is set. This is the argument of the if statement. This boils down to "for each possible neighbor, if the neighbor is currently alive then do:"
 
-`*(_+(__>>2))=-~_[__>>2]`
+*(_+(__>>2))=-~_[__>>2]
 We add the address of the array to our index, dereference that to get the life cell value, and add one to it. I could have used square brackets instead, but where's the fun in that? Also, more bitwise math. Can you tell I like bitwise math? (I'm used to 8-bit microcontrollers and direct hardware access.)
 
 So, what we have done here with this line and the next is add in the total neighbor count to each cell.

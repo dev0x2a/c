@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+
 #if 0
 int rand(void);
 

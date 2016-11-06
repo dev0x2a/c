@@ -2,9 +2,12 @@
  * compare.c
  * this program compares two subsequences of integer arrays
  */
+
 #include<stdio.h>
 #include<stdlib.h>
+
 /*#define NULL 0*/
+
 int readint();
 int equalseq(int*,int*,int);
 
@@ -54,12 +57,13 @@ int readint()
   return(x);
 }
 
-int equalseq(p,q,n) int *p,*q,n;
+int equalseq(p,q,n)
+int *p,*q,n;
 { 
   int tmp,*qn;
   qn=q+n;
   tmp=*qn;
-  *qn=*(p+n)+1; /*  now sentinel q[n] differs from p[n] */
+  *qn=*(p+n)+1; /* now sentinel q[n] differs from p[n] */
   while (*p++ == *q++);
   *qn=tmp; /*  restores old q[n] */
   return(q>qn);

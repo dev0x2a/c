@@ -3,40 +3,32 @@
 #
 #		ryan keleti
 #
-##	include ../../Makefile
-#
+
+CC:=cc
+RM:=rm
+SHELL:=/bin/sh
 
 SRCS:=$(wildcard *.c)
 OBJS:=${SRCS:.c=.o}
 NAME:=$(patsubst %.c,%,$(SRCS))
 
-INCLUDE_DIR:=
-LIBRARY_DIR:=
-LIBS:=
+CFLAGS:=-lm -Wall 
 
-LDFLAGS +=$(foreach libdir,$(LIBRARY_DIR),-L$(libdir))
-LDFLAGS +=$(foreach lib,$(LIBS),-l$(lib))
-CFLAGS:=-lm 
-
-.PHONY: all clean distclean remove
+.PHONY: all clean remove delete help
 
 all: $(OBJS)	
 
-$(OBJS): %.o: %.c
-	cc $< -o $@ $(CFLAGS)
-	mv *.o ../bin
+$(OBJS):%.o:%.c
+	$(CC) $< -o $@ $(CFLAGS)
 
-clean: 
-	@- $(RM) $(NAME)
-	@- $(RM) $(OBJS)
-
-distclean: clean
+clean:
+	$(RM) -I *.o
 
 remove:
-	rm -i `find ../bin -perm /111 -type f`
+	$(RM) -i `find . -perm /111 -type f`
 
 delete:
-	rm -I `find ../bin -perm /111 -type f`
+	$(RM) -I `find . -perm /111 -type f`
 
 help:
 	@echo
@@ -44,11 +36,9 @@ help:
 	@echo
 	@echo 'usage: make [TARGET]'
 	@echo
-	@echo '   all:        make all *.c in bin'
-	@echo '   clean:      rm *.o in bin'
-	@echo '   distclean:  clean'
+	@echo '   all:        make all *.c'
+	@echo '   clean:      rm *.o'
 	@echo '   remove:     rm files w/ exec bit set (safer)'
 	@echo '   delete:     rm files w/ exec bit set'
-	@echo
 	@echo
 

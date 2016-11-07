@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char *str[256]={
+char *str[]={
 	"nul", "soh", "stx", "etx", "eot", "enq", "ack", "bel",
 	"bs ", "ht ", "nl ", "vt ", "np ", "cr ", "so ", "si ",
 	"dle", "dc1", "dc2", "dc3", "dc4", "nak", "syn", "etb",
@@ -36,16 +36,40 @@ char *str[256]={
 	" ø ", " ù ", " ú ", " û ", " ü ", " ý ", " þ ", " ÿ "
 };
 
+char *posix[]={
+  "NUL", "BEL", "BS ", "HT ", "LF ", "VT ", "FF ", "CR ", "spc",
+  " ! ", " \" "," # ", " $ ", " % ", " & ", " ' ", " ( ", " ) ",
+  " * ", " + ", " , ", " - ", " . ", " / ", " 0 ", " 1 ", " 2 ",
+  " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " : ", " ; ",
+  " < ", " = ", " > ", " ? ", " @ ", " A ", " B ", " C ", " D ",
+  " E ", " F ", " G ", " H ", " I ", " J ", " K ", " L ", " M ",
+  " N ", " O ", " P ", " Q ", " R ", " S ", " T ", " U ", " V ",
+  " W ", " X ", " Y ", " Z ", " [ ", " \\ "," ] ", " ^ ", " _ ",
+	" ` ", " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ",
+  " i ", " j ", " k ", " l ", " m ", " n ", " o ", " p ", " q ", 
+  " r ", " s ", " t ", " u ", " v ", " w ", " x ", " y ", " z ", 
+  " { ", " | ", " } ", " ~ "
+};
+
 int
-main(void)
+main(int argc,char *argv[])
 {
-  int j=-1;
-  for (int i=0; i<256; ++i) {
+  int i,j=-1;
+  int setposix;
+
+  if (argc>1) {
+    setposix=atoi(argv[1]);
+    if (setposix>=1) setposix=1;
+    else setposix=0;
+  }
+  if (argc==1) setposix=0;
+
+  for (i=0 ;i<(setposix?103:256); ++i) {
     if (i%8==0)
       printf("\n\t%2d\t", ++j);
-    printf("%s ", str[i]);
+    printf("%s ", setposix?posix[i]:str[i]);
   }
-  printf("\n");
+  puts("\n");
 	return(0);
 }
 

@@ -36,210 +36,174 @@ typedef struct timeval timing_basic;
 #define B32_ 1001
 #define B_ (B32_*32)
 
-#define str_equal(s, t) (!str_diff((s), (t)))
 #define HASRDTSC 1
-#define SUBSTDIO_FDBUF(op, fd, buf, len) {(buf), 0, (len), (fd), (op)}
-#define substdio_fileno(s) ((s)->fd)
 #define SUBSTDIO_INSIZE 8192
 #define SUBSTDIO_OUTSIZE 8192
+
+#define substdio_fileno(s) ((s)->fd)
+#define str_equal(s,t) (!str_diff((s),(t)))
+#define byte_equal(s,n,t) (!byte_diff((s),(n),(t)))
+
 #define substdio_PEEK(s) ((s)->x+(s)->n)
-#define substdio_SEEK(s, len) (((s)->p -= (len)), ((s)->n += (len)))
-#define substdio_BPUTC(s, c)\
-  (((s)->n != (s)->p)?((s)->x[(s)->p++] = (c), 0):substdio_bput((s), &(c), 1))
-#define byte_equal(s, n, t) (!byte_diff((s), (n), (t)))
+#define substdio_SEEK(s,len) (((s)->p-=(len)),((s)->n+=(len)))
+#define substdio_BPUTC(s,c)\
+(((s)->n!=(s)->p)?((s)->x[(s)->p++]=(c),0):substdio_bput((s),&(c),1))
+#define SUBSTDIO_FDBUF(op,fd,buf,len) {(buf),0,(len),(fd),(op)}
 
 typedef struct {
   uint32 buf[16][PRIMEGEN_WORDS];
   uint64 p[512];  /* p[num-1]...p[0],  in that order */
-  int num;
-  int pos;        /* next entry to use in buf; WORDS to restart */
-  uint64 base;
-  uint64 L;
+  int num, pos;   /* next entry to use in buf; WORDS to restart */
+  uint64 base, L;
 } primegen;
 
 #include "primegen.h"
 
 typedef struct substdio {
   char *x;
-  int p;
-  int n;
-  int fd;
+  int p, n, fd;
   int (*op)();
 } substdio;
 
 struct strerr {
   struct strerr *who;
-  char *x;
-  char *y;
-  char *z;
+  char *x, *y, *z;
 };
 
 #define timing_basic_now(x) gettimeofday((x), (struct timezone*)0)
-#define timing_basic_diff(x, y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)\
-    +1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
-
+#define timing_basic_diff(x,y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)+\
+  1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
 
 #ifdef HASRDTSC
 typedef struct {
-  unsigned long t[2];
+  uint64 t[2];
 } timing;
 
 #define timing_now(x)\
-  asm volatile(".byte 15;.byte 49":" = a"((x)->t[0]), " = d"((x)->t[1]))
-#define timing_diff(x, y)\
+  asm volatile(".byte 15;.byte 49":"=a"((x)->t[0]),"=d"((x)->t[1]))
+#define timing_diff(x,y)\
   (((x)->t[0]-(double)(y)->t[0])+4294967296.0*((x)->t[1]-(double)(y)->t[1]))
 
 #else
-
 #ifdef HASGETHRTIME
 typedef struct {
   hrtime_t t;
 } timing;
 
 #define timing_now(x) ((x)->t = gethrtime())
-#define timing_diff(x, y) ((double)((x)->t-(y)->t))
+#define timing_diff(x,y) ((double)((x)->t-(y)->t))
 
 #else
-
 #define timing timing_basic
 #define timing_now timing_basic_now
 #define timing_diff timing_basic_diff
+
 #endif
 #endif
 
-#define STRERR(r, se, a)\
-  {se.who = 0;se.x = a;se.y = 0;se.z = 0;return(r);}
+#define STRERR(r,se,a)\
+{se.who=0; se.x=a; se.y=0; se.z=0; return(r);}
 
-#define STRERR_SYS(r, se, a)\
-  {se.who = &strerr_sys;se.x = a;se.y = 0;se.z = 0;return(r);}
+#define STRERR_SYS(r,se,a)\
+{se.who=&strerr_sys; se.x=a; se.y=0; se.z=0; return(r);}
 
-#define STRERR_SYS3(r, se, a, b, c)\
-  {se.who = &strerr_sys;se.x = a;se.y = b;se.z = c;return(r);}
+#define STRERR_SYS3(r,se,a,b,c)\
+{se.who=&strerr_sys; se.x=a; se.y=b; se.z=c; return(r);}
 
-#define strerr_warn6(x1, x2, x3, x4, x5, x6, se)\
-  strerr_warn((x1), (x2), (x3), (x4), (x5), (x6), (struct strerr*)(se))
+#define strerr_warn6(x1,x2,x3,x4,x5,x6,se)\
+strerr_warn((x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
 
 #define strerr_warn5(x1, x2, x3, x4, x5, se)\
-  strerr_warn((x1), (x2), (x3), (x4), (x5), (char*)0, (struct strerr*)(se))
+strerr_warn((x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)(se))
 
-#define strerr_warn4(x1, x2, x3, x4, se)\
-  strerr_warn((x1), (x2), (x3), (x4),\
-      (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_warn4(x1,x2,x3,x4,se)\
+strerr_warn((x1),(x2),(x3),(x4),\
+(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_warn3(x1, x2, x3, se)\
-  strerr_warn((x1), (x2), (x3), (char*)0, (char*)0, \
-      (char*)0, (struct strerr*)(se))
+#define strerr_warn3(x1,x2,x3,se)\
+strerr_warn((x1),(x2),(x3),\
+(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_warn2(x1, x2, se)\
-  strerr_warn((x1), (x2), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_warn2(x1,x2,se)\
+strerr_warn((x1),(x2),(char*)0,(char*)0,\
+(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_warn1(x1, se)\
-  strerr_warn((x1), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_warn1(x1,se)\
+strerr_warn((x1),\
+(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_die6(e, x1, x2, x3, x4, x5, x6, se)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5), (x6), (struct strerr*)(se))
+#define strerr_die6(e,x1,x2,x3,x4,x5,x6,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)(se))
 
-#define strerr_die5(e, x1, x2, x3, x4, x5, se)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5),\
-      (char*)0, (struct strerr*)(se))
+#define strerr_die5(e,x1,x2,x3,x4,x5,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),\
+(char*)0,(struct strerr*)(se))
 
-#define strerr_die4(e, x1, x2, x3, x4, se)\
-  strerr_die((e), (x1), (x2), (x3), (x4),\
-      (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_die4(e,x1,x2,x3,x4,se)\
+strerr_die((e),(x1),(x2),(x3),(x4),\
+(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_die3(e, x1, x2, x3, se)\
-  strerr_die((e), (x1), (x2), (x3), (char*)0, (char*)0, \
-      (char*)0, (struct strerr*)(se))
+#define strerr_die3(e,x1,x2,x3,se)\
+strerr_die((e),(x1),(x2),(x3),\
+(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_die2(e, x1, x2, se)\
-  strerr_die((e), (x1), (x2), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_die2(e,x1,x2,se)\
+strerr_die((e),(x1),(x2),\
+(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_die1(e, x1, se)\
-  strerr_die((e), (x1), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (char*)0, (struct strerr*)(se))
+#define strerr_die1(e,x1,se)\
+strerr_die((e),(x1),\
+(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)(se))
 
-#define strerr_die6sys(e, x1, x2, x3, x4, x5, x6)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5), (x6), &strerr_sys)
+#define strerr_die6sys(e,x1,x2,x3,x4,x5,x6)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),&strerr_sys)
 
-#define strerr_die5sys(e, x1, x2, x3, x4, x5)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5),(char*)0, &strerr_sys)
+#define strerr_die5sys(e,x1,x2,x3,x4,x5)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,&strerr_sys)
 
-#define strerr_die4sys(e, x1, x2, x3, x4)\
-  strerr_die((e), (x1), (x2), (x3), (x4),\
-      (char*)0, (char*)0, &strerr_sys)
+#define strerr_die4sys(e,x1,x2,x3,x4)\
+strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,&strerr_sys)
 
-#define strerr_die3sys(e, x1, x2, x3)\
-  strerr_die((e), (x1), (x2), (x3),\
-      (char*)0, (char*)0, (char*)0, &strerr_sys)
+#define strerr_die3sys(e,x1,x2,x3)\
+strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,&strerr_sys)
 
-#define strerr_die2sys(e, x1, x2)\
-  strerr_die((e), (x1), (x2), (char*)0, (char*)0,\
-      (char*)0, (char*)0, &strerr_sys)
+#define strerr_die2sys(e,x1,x2)\
+strerr_die((e),(x1),(x2),(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
 
-#define strerr_die1sys(e, x1)\
-  strerr_die((e), (x1), (char*)0, (char*)0,\
-      (char*)0, (char*)0, (char*)0, &strerr_sys)
+#define strerr_die1sys(e,x1)\
+strerr_die((e),(x1),\
+(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,&strerr_sys)
 
-#define strerr_die6x(e, x1, x2, x3, x4, x5, x6)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5), (x6), (struct strerr*)0)
+#define strerr_die6x(e,x1,x2,x3,x4,x5,x6)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(x6),(struct strerr*)0)
 
-#define strerr_die5x(e, x1, x2, x3, x4, x5)\
-  strerr_die((e), (x1), (x2), (x3), (x4), (x5), (char*)0, (struct strerr*)0)
+#define strerr_die5x(e,x1,x2,x3,x4,x5)\
+strerr_die((e),(x1),(x2),(x3),(x4),(x5),(char*)0,(struct strerr*)0)
 
-#define strerr_die4x(e, x1, x2, x3, x4)\
-  strerr_die((e), (x1), (x2), (x3), (x4),\
-      (char*)0, (char*)0, (struct strerr*)0)
+#define strerr_die4x(e,x1,x2,x3,x4)\
+strerr_die((e),(x1),(x2),(x3),(x4),(char*)0,(char*)0,(struct strerr*)0)
 
-#define strerr_die3x(e, x1, x2, x3)\
-  strerr_die((e), (x1), (x2), (x3), (char*)0, (char*)0,\
-      (char*)0, (struct strerr*)0)
+#define strerr_die3x(e,x1,x2,x3)\
+strerr_die((e),(x1),(x2),(x3),(char*)0,(char*)0,(char*)0,(struct strerr*)0)
 
-#define strerr_die2x(e, x1, x2)\
-  strerr_die((e), (x1), (x2), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (struct strerr*)0)
+#define strerr_die2x(e,x1,x2)\
+strerr_die((e),(x1),(x2),\
+(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
 
-#define strerr_die1x(e, x1)\
-  strerr_die((e), (x1), (char*)0, (char*)0, \
-      (char*)0, (char*)0, (char*)0, (struct strerr*)0)
+#define strerr_die1x(e,x1)\
+strerr_die((e),(x1),\
+(char*)0,(char*)0,(char*)0,(char*)0,(char*)0,(struct strerr*)0)
 
 char subfd_errbuf[256];
 struct strerr strerr_sys;
-extern void _exit();
-extern char auto_home[];
+extern struct strerr strerr_sys;
 extern int read();
 extern int write();
-extern unsigned int scan_uint64(char*, uint64*);
-extern unsigned int fmt_uint64(char*, uint64);
-extern unsigned int str_copy();
 extern int str_diff();
 extern int str_diffn();
-extern unsigned int str_len();
-extern unsigned int str_chr();
-extern unsigned int str_rchr();
 extern int str_start();
-extern struct strerr strerr_sys;
-extern void strerr_sysinit();
-extern char *strerr();
-extern void strerr_warn();
-extern void strerr_die();
-extern void primegen_sieve(primegen*);
-extern void primegen_fill(primegen*);
-extern void primegen_init(primegen*);
-extern uint64 primegen_next(primegen*);
-extern uint64 primegen_peek(primegen*);
-extern uint64 primegen_count(primegen*, uint64 to);
-extern void primegen_skipto(primegen*, uint64 to);
-extern substdio *subfdin;
-extern substdio *subfdinsmall;
-extern substdio *subfdout;
-extern substdio *subfdoutsmall;
-extern substdio *subfderr;
 extern int subfd_read();
 extern int subfd_readsmall();
-extern void substdio_fdbuf();
 extern int substdio_flush();
 extern int substdio_put();
 extern int substdio_bput();
@@ -250,8 +214,6 @@ extern int substdio_putsflush();
 extern int substdio_get();
 extern int substdio_bget();
 extern int substdio_feed();
-extern char *substdio_peek();
-extern void substdio_seek();
 extern int substdio_copy();
 extern int errno;
 extern int error_intr;
@@ -267,19 +229,46 @@ extern int error_again;
 extern int error_pipe;
 extern int error_perm;
 extern int error_acces;
-extern char *error_str();
 extern int error_temp();
 extern int open_read();
 extern int open_excl();
 extern int open_append();
 extern int open_trunc();
 extern int open_write();
-extern unsigned int byte_chr();
-extern unsigned int byte_rchr();
+extern int byte_diff();
+extern char *error_str();
+extern char *substdio_peek();
+extern char *strerr();
+extern char auto_home[];
+extern void _exit();
+extern void strerr_sysinit();
+extern void strerr_warn();
+extern void strerr_die();
+extern void primegen_sieve(primegen*);
+extern void primegen_fill(primegen*);
+extern void primegen_init(primegen*);
+extern void primegen_skipto(primegen*, uint64 to);
+extern void substdio_fdbuf();
+extern void substdio_seek();
 extern void byte_copy();
 extern void byte_copyr();
-extern int byte_diff();
 extern void byte_zero();
+extern uint32 str_copy();
+extern uint32 str_len();
+extern uint32 str_chr();
+extern uint32 str_rchr();
+extern uint32 scan_uint64(char*, uint64*);
+extern uint32 fmt_uint64(char*, uint64);
+extern uint32 byte_chr();
+extern uint32 byte_rchr();
+extern uint64 primegen_next(primegen*);
+extern uint64 primegen_peek(primegen*);
+extern uint64 primegen_count(primegen*, uint64 to);
+extern substdio *subfdin;
+extern substdio *subfdinsmall;
+extern substdio *subfdout;
+extern substdio *subfdoutsmall;
+extern substdio *subfderr;
 
 void strerr_sysinit(void)
 { 
@@ -331,11 +320,11 @@ int open_trunc(char *fn)
 }
 
 
-unsigned int scan_uint64(char *s, uint64 *u)
+uint32 scan_uint64(char *s, uint64 *u)
 { 
-  unsigned int pos = 0;
-  uint64 result = 0;
-  uint64 c;
+  uint32 pos = 0;
+  uint64 c, result = 0;
+
   while ((c=(uint64)(unsigned char)(s[pos]-'0')) < 10) {
     result = result*10+c;
     ++pos;
@@ -345,9 +334,9 @@ unsigned int scan_uint64(char *s, uint64 *u)
 }
 
 
-unsigned int fmt_uint64(char *s, uint64 u)
+uint32 fmt_uint64(char *s, uint64 u)
 { 
-  unsigned int len = 1;
+  uint32 len = 1;
   uint64 q = u;
   while (q > 9) {
     ++len;
@@ -364,7 +353,7 @@ unsigned int fmt_uint64(char *s, uint64 u)
 }
 
 
-void primegen_init(primegen*pg)
+void primegen_init(primegen *pg)
 { 
   pg->L = 1;
   pg->base = 60;
@@ -390,40 +379,52 @@ void primegen_init(primegen*pg)
 }
 
 
-void byte_copy(register char *to, register unsigned int n,
+void byte_copy(register char *to, register uint32 n,
     register char *from)
 { 
   for (;;) {
-    if (!n)return; *to++ = *from++; --n;
-    if (!n)return; *to++ = *from++; --n;
-    if (!n)return; *to++ = *from++; --n;
-    if (!n)return; *to++ = *from++; --n;
+    if (!n) return;
+    *to++ = *from++; --n;
+    if (!n) return;
+    *to++ = *from++; --n;
+    if (!n) return;
+    *to++ = *from++; --n;
+    if (!n) return;
+    *to++ = *from++; --n;
   }
 }
 
 
-void byte_copyr(register char *to,register unsigned int n,
+void byte_copyr(register char *to,register uint32 n,
     register char *from)
 { 
   to += n;
   from += n;
   for (;;) {
-    if (!n)return; *--to = *--from; --n;
-    if (!n)return; *--to = *--from; --n;
-    if (!n)return; *--to = *--from; --n;
-    if (!n)return; *--to = *--from; --n;
+    if (!n) return;
+    *--to = *--from; --n;
+    if (!n) return;
+    *--to = *--from; --n;
+    if (!n) return;
+    *--to = *--from; --n;
+    if (!n) return;
+    *--to = *--from; --n;
   }
 }
 
 
-unsigned int str_len(register char *s)
+uint32 str_len(register char *s)
 { 
   register char *t = s;
   for (;;) {
-    if (!*t)return(t-s); ++t;
-    if (!*t)return(t-s); ++t;
-    if (!*t)return(t-s); ++t;
-    if (!*t)return(t-s); ++t;
+    if (!*t) return(t-s);
+    ++t;
+    if (!*t) return(t-s);
+    ++t;
+    if (!*t) return(t-s);
+    ++t;
+    if (!*t) return(t-s);
+    ++t;
   }
 }
 
@@ -431,10 +432,10 @@ unsigned int str_len(register char *s)
 void primegen_fill(primegen *pg)
 { 
   int i;
-  uint32 mask;
-  uint32 bits0, bits1, bits2, bits3, bits4, bits5, bits6, bits7;
+  uint32 mask, bits0, bits1, bits2, bits3, bits4, bits5, bits6, bits7;
   uint32 bits8, bits9, bits10, bits11, bits12, bits13, bits14, bits15;
   uint64 base;
+
   i = pg->pos;
   if (i == B32) {
     primegen_sieve(pg);
@@ -463,22 +464,22 @@ void primegen_fill(primegen *pg)
   pg->num = 0;
   for (mask=0x80000000; mask; mask>>=1) {
     base -= 60;
-    if (bits15&mask)pg->p[pg->num++] = base+59;
-    if (bits14&mask)pg->p[pg->num++] = base+53;
-    if (bits13&mask)pg->p[pg->num++] = base+49;
-    if (bits12&mask)pg->p[pg->num++] = base+47;
-    if (bits11&mask)pg->p[pg->num++] = base+43;
-    if (bits10&mask)pg->p[pg->num++] = base+41;
-    if (bits9&mask)pg->p[pg->num++] = base+37;
-    if (bits8&mask)pg->p[pg->num++] = base+31;
-    if (bits7&mask)pg->p[pg->num++] = base+29;
-    if (bits6&mask)pg->p[pg->num++] = base+23;
-    if (bits5&mask)pg->p[pg->num++] = base+19;
-    if (bits4&mask)pg->p[pg->num++] = base+17;
-    if (bits3&mask)pg->p[pg->num++] = base+13;
-    if (bits2&mask)pg->p[pg->num++] = base+11;
-    if (bits1&mask)pg->p[pg->num++] = base+7;
-    if (bits0&mask)pg->p[pg->num++] = base+1;
+    if (bits15&mask) pg->p[pg->num++] = base+59;
+    if (bits14&mask) pg->p[pg->num++] = base+53;
+    if (bits13&mask) pg->p[pg->num++] = base+49;
+    if (bits12&mask) pg->p[pg->num++] = base+47;
+    if (bits11&mask) pg->p[pg->num++] = base+43;
+    if (bits10&mask) pg->p[pg->num++] = base+41;
+    if (bits9&mask) pg->p[pg->num++] = base+37;
+    if (bits8&mask) pg->p[pg->num++] = base+31;
+    if (bits7&mask) pg->p[pg->num++] = base+29;
+    if (bits6&mask) pg->p[pg->num++] = base+23;
+    if (bits5&mask) pg->p[pg->num++] = base+19;
+    if (bits4&mask) pg->p[pg->num++] = base+17;
+    if (bits3&mask) pg->p[pg->num++] = base+13;
+    if (bits2&mask) pg->p[pg->num++] = base+11;
+    if (bits1&mask) pg->p[pg->num++] = base+7;
+    if (bits0&mask) pg->p[pg->num++] = base+1;
   }
 }
 
@@ -499,7 +500,7 @@ uint64 primegen_peek(primegen *pg)
 }
 
 
-static const unsigned long pop[256] = {
+static const uint64 pop[256] = {
   0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
@@ -768,11 +769,11 @@ int substdio_put(register substdio *s, register char *buf,
     register int len)
 { 
   register int n = s->n;
-  if (len>n-s->p) {
+  if (len > n-s->p) {
     if (substdio_flush(s) == -1)
       return(-1);
     /* now s->p == 0 */
-    if (n<SUBSTDIO_OUTSIZE)
+    if (n < SUBSTDIO_OUTSIZE)
       n = SUBSTDIO_OUTSIZE;
     while (len>s->n) {
       if (n>len)

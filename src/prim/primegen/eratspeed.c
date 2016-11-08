@@ -1,4 +1,4 @@
-#include "plib.h"
+#include "timing.h"
 
 #define B32_E 1001
 #define B_E (B32_E*32)
@@ -359,7 +359,7 @@ void countit(void)
   result = 0;
   for (i=0; i<8; ++i) {
     ai = a[i];
-    for (pos=0; pos<B32; ++pos) {
+    for (pos=0; pos<B32_E; ++pos) {
       bits = ~ai[pos];
       result += E_pop[bits&255]; bits >>= 8;
       result += E_pop[bits&255]; bits >>= 8;

@@ -13,7 +13,6 @@ typedef unsigned int uint32;
 typedef unsigned long uint64;
 typedef long int64;
 
-typedef struct timeval timing_basic;
 /*
  * B is 32 times X.
  * Total memory use for one generator is 2B bytes  =  64X bytes.
@@ -34,8 +33,6 @@ typedef struct timeval timing_basic;
 #define B32 PRIMEGEN_WORDS
 #define B (PRIMEGEN_WORDS*32)
 
-#define HASRDTSC 1
-#define HASGETHRTIME 0
 #define SUBSTDIO_INSIZE 8192
 #define SUBSTDIO_OUTSIZE 8192
 
@@ -68,37 +65,6 @@ struct strerr {
   struct strerr *who;
   char *x, *y, *z;
 };
-
-#define timing_basic_now(x) gettimeofday((x),(struct timezone*)0)
-#define timing_basic_diff(x,y) (1000.0*((x)->tv_usec-(double)(y)->tv_usec)+\
-  1000000000.0*((x)->tv_sec-(double)(y)->tv_sec))
-
-#ifdef HASRDTSC
-typedef struct {
-  uint64 t[2];
-} timing;
-
-#define timing_now(x)\
-  asm volatile(".byte 15;.byte 49":"=a"((x)->t[0]),"=d"((x)->t[1]))
-#define timing_diff(x,y)\
-  (((x)->t[0]-(double)(y)->t[0])+4294967296.0*((x)->t[1]-(double)(y)->t[1]))
-
-#else
-#ifdef HASGETHRTIME
-typedef struct {
-  hrtime_t t;
-} timing;
-
-#define timing_now(x) ((x)->t = gethrtime())
-#define timing_diff(x,y) ((double)((x)->t-(y)->t))
-
-#else
-#define timing timing_basic
-#define timing_now timing_basic_now
-#define timing_diff timing_basic_diff
-
-#endif
-#endif
 
 #define STRERR(r,se,a)\
 {se.who=0; se.x=a; se.y=0; se.z=0; return(r);}

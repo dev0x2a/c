@@ -43,9 +43,9 @@ typedef struct timeval timing_basic;
 #define SUBSTDIO_INSIZE 8192
 #define SUBSTDIO_OUTSIZE 8192
 #define substdio_PEEK(s) ((s)->x+(s)->n)
-#define substdio_SEEK(s, len) (((s)->p - =  (len)), ((s)->n + =  (len)))
+#define substdio_SEEK(s, len) (((s)->p -= (len)), ((s)->n += (len)))
 #define substdio_BPUTC(s, c)\
-(((s)->n ! =  (s)->p)?((s)->x[(s)->p++] = (c), 0):substdio_bput((s), &(c), 1))
+  (((s)->n != (s)->p)?((s)->x[(s)->p++] = (c), 0):substdio_bput((s), &(c), 1))
 #define byte_equal(s, n, t) (!byte_diff((s), (n), (t)))
 
 typedef struct {
@@ -283,35 +283,38 @@ extern void byte_zero();
 
 void strerr_sysinit(void)
 { 
-  strerr_sys.who  =  0;
-  strerr_sys.x  =  error_str(errno);
-  strerr_sys.y  =  "";
-  strerr_sys.z  =  "";
+  strerr_sys.who = 0;
+  strerr_sys.x = error_str(errno);
+  strerr_sys.y = "";
+  strerr_sys.z = "";
 }
 
 
-void substdio_fdbuf(register substdio *s,  register int (*op)(), 
-    register int fd,  register char *buf,  register int len)
+void substdio_fdbuf(register substdio *s, register int (*op)(), 
+    register int fd,register char *buf, register int len)
 { 
-  s->x  =  buf;
-  s->fd  =  fd;
-  s->op  =  op;
-  s->p  =  0;
-  s->n  =  len;
+  s->x = buf;
+  s->fd = fd;
+  s->op = op;
+  s->p = 0;
+  s->n = len;
 }
 
 
-int substdio_copy(register substdio *ssout,  register substdio *ssin)
+int substdio_copy(register substdio *ssout, register substdio *ssin)
 { 
   register int n;
   register char *x;
   for (;;) {
     n = substdio_feed(ssin);
-    if (n<0)return(-2);
-    if (!n)return(0);
+    if (n < 0)
+      return(-2);
+    if (!n)
+      return(0);
     x = substdio_PEEK(ssin);
-    if (substdio_put(ssout, x, n)  =  =  -1)return(-3);
-    substdio_SEEK(ssin,  n);
+    if (substdio_put(ssout, x, n) == -1)
+      return(-3);
+    substdio_SEEK(ssin, n);
   }
 }
 

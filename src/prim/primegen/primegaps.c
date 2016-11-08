@@ -2,7 +2,7 @@
 
 primegen pg;
 
-void main(void)
+int main(void)
 {
   uint32 diff, maxdiff;
   uint64 p, lastp;
@@ -19,9 +19,10 @@ void main(void)
     if (diff > maxdiff) {
       printf("%.0f %.0f %f\n" ,(double)p, (double)diff
           ,log((double)diff)/log(log((double)p)));
-      maxdiff =d iff;
+      maxdiff = diff;
     }
     lastp = p;
   }
+  return(0);
 }
 

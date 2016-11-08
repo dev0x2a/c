@@ -12,7 +12,7 @@ primespeed:
 	$(CC) primespeed.c -o primespeed $(CFLAGS)
 
 primegaps:
-	$(CC) primegaps.c -o primesgaps  $(CFLAGS)
+	$(CC) primegaps.c -o primegaps  $(CFLAGS)
 
 eratspeed:
 	$(CC) eratspeed.c -o eratspeed $(CFLAGS)

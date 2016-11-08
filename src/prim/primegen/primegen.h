@@ -33,7 +33,7 @@ uint32 qq60tab[49] = {
 static void clear(register uint32 (*buf)[B32_G])
 { 
   register int i, j;
-  for (j= ; j<16; ++j) {
+  for (j=0; j<16; ++j) {
     for (i=0; i<B32_G; ++i)(*buf)[i] = ~0;
     ++buf;
   }
@@ -137,12 +137,12 @@ static void doit6(register uint32 *a, register long x,
       pos = i;
       data = i;
       pos >>= 5;
-      data& = 31;
+      data &= 31;
       i += y;
       y += 30;
       bits = a[pos];
       data = two[data];
-      bits^ = data;
+      bits ^= data;
       a[pos] = bits;
     }
     i = i0;
@@ -260,7 +260,7 @@ static void squarefree1(register uint32 (*buf)[B32_G], uint64 L, uint32 q)
       while (ihigh < B_G) {
         n = deltainverse[ilow];
         if (n >= 0)
-          (*buf)[n+(ihigh>>5)]| = two[ihigh&31];
+          (*buf)[n+(ihigh>>5)] |= two[ihigh&31];
         ilow += 2;
         ihigh += qqhigh;
         if (ilow >= 60) {
@@ -325,6 +325,7 @@ static void squarefree49(register uint32 (*buf)[B32_G], uint64 L, uint32 q)
       ihigh = i/60;
       qqhigh += qqhigh;
       qqhigh += 1;
+
       while (ihigh < B_G) {
         n = deltainverse[ilow];
         if (n >= 0)
@@ -356,7 +357,7 @@ static void squarefreetiny(register uint32 *a, uint32 *Lmodqq, int d)
       pos = k;
       data = k;
       pos >>= 5;
-      data& = 31;
+      data &= 31;
       k += qq;
       bits = a[pos];
       data = two[data];
@@ -431,8 +432,7 @@ static const todo for12[] = {
 void primegen_sieve(primegen *pg)
 { 
   int i;
-  uint32 (*buf)[B32_G];
-  uint32 Lmodqq[49];
+  uint32 (*buf)[B32_G], Lmodqq[49];
   uint64 L;
 
   buf = pg->buf;

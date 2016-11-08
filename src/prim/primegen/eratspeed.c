@@ -1,5 +1,8 @@
 #include "plib.h"
 
+#define B32_E 1001
+#define B_E (B32_E*32)
+
 /*{{{*/
 uint32 qtab[3509] = {
   7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,
@@ -261,7 +264,7 @@ uint32 qtab[3509] = {
 };
 /*}}}*/
 
-static const uint32 _two[32] = {
+static const uint32 E_two[32] = {
   0x00000001,0x00000002,0x00000004,0x00000008,
   0x00000010,0x00000020,0x00000040,0x00000080,
   0x00000100,0x00000200,0x00000400,0x00000800,
@@ -272,7 +275,7 @@ static const uint32 _two[32] = {
   0x10000000,0x20000000,0x40000000,0x80000000
 };
 
-static const unsigned long pop_[256] = {
+static const uint64 E_pop[256] = {
   0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
   1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
   1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
@@ -289,7 +292,8 @@ timing_basic startb;
 timing_basic finishb;
 
 uint32 next[8][3509];
-uint32 a[8][B32_];
+uint32 a[8][B32_E];
+
 int dtab[8] = {1,7,11,13,17,19,23,29};
 
 void init(uint32 L)
@@ -317,11 +321,11 @@ void doit(void)
   for (i=0; i<8; ++i) {
     buf = a[i];
     nexti = next[i];
-    for (k=0; k<B32_; ++k)
+    for (k=0; k<B32_E; ++k)
       buf[k] = 0;
     for (j=0; j<3509; ++j) {
       k = nexti[j];
-      if (k < B_) {
+      if (k < B_E) {
         q = qtab[j];
         do {
           pos = k;
@@ -329,13 +333,13 @@ void doit(void)
           pos >>= 5;
           data &= 31;
           bits = buf[pos];
-          data = _two[data];
+          data = E_two[data];
           k += q;
           bits |= data;
           buf[pos] = bits;
-        } while (k < B_);
+        } while (k < B_E);
       }
-      nexti[j] = k-B_;
+      nexti[j] = k-B_E;
     }
   }
 }
@@ -357,10 +361,10 @@ void countit(void)
     ai = a[i];
     for (pos=0; pos<B32; ++pos) {
       bits = ~ai[pos];
-      result += pop_[bits&255]; bits >>= 8;
-      result += pop_[bits&255]; bits >>= 8;
-      result += pop_[bits&255]; bits >>= 8;
-      result += pop_[bits];
+      result += E_pop[bits&255]; bits >>= 8;
+      result += E_pop[bits&255]; bits >>= 8;
+      result += E_pop[bits&255]; bits >>= 8;
+      result += E_pop[bits];
     }
   }
   total += result;
@@ -388,15 +392,16 @@ int main(void)
     doit();
     countit();
     timing_now(&t);
-    printf("Finished L=%d: %f\n", L,timing_diff(&t,&told));
+    printf("Finished L=%d: %f\n", L,timing_diff(&t, &told));
     told = t;
-    L += B_;
-  } while ( L< 33333334);
+    L += B_E;
+  } while (L < 33333334);
 
   timing_basic_now(&finishb);
   timing_now(&finish);
 
   printf("%d primes up to %d.\n", total,30*L);
+
   printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",
       timing_basic_diff(&finishb, &startb)/timing_diff(&finish, &start));
   printf("Overall seconds: approximately %f.\n",

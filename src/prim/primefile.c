@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-  int i,k;
+  int i, k;
   unsigned long long n;
   char c;
   FILE *fp;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   fp = fopen(argv[1], "r");
   i = 0;
   
-  while (fscanf(fp, "%llu,", &n) > 0) {
+  while (fscanf(fp, "%llu,", &n) != EOF) {
     p[++i] = n;
     printf("%llu\n", p[i++]);
   }

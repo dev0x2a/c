@@ -1,7 +1,7 @@
 SHELL:=/bin/sh
 CC:=cc
 RM:=rm -i
-CFLAGS:=-lm -Wall
+CFLAGS:=-lm -Wall -O
 
 .PHONY: primes primespeed eratspeed clean remove
 

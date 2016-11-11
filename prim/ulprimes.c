@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
 
   int i;
   double k, v, tmp, lim, n;
-  
   char c = (argc >= 4) ? ',': ' ';
     
   n = atof(argv[1]);

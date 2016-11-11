@@ -12,8 +12,8 @@ int main(int argc, char*argv[])
     31,37,41,43,47,
     53,59,61,67,71
   }; 
-  unsigned long int pprime, num, div, max;
   int prime, i, j, inc; 
+  unsigned long int pprime, num, div, max;
   
   pprime = 1;
   num = 0;

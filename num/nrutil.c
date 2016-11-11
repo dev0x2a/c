@@ -143,3 +143,87 @@ float **submatrix(float **a, int oldrl, int oldrh, int oldcl, int oldch,
   return m;
 }
 
+/* frees a float vector allocated by vector() */
+void free_vector(float *v, int nl, int nh)
+{
+  free((char *) (v+nl));
+}
+
+/* frees an int vector allocated by ivector() */
+void free_ivector(int *v, int nl, int nh)
+{
+  free((char *) (v+nl));
+}
+
+/* frees a double vector allocated by dvector() */
+void free_dvector(double *v, int nl, int nh)
+{
+  free((char *) (v+nl));
+}
+
+/* frees a matrix allocated with matrix() */
+void free_matrix(float **m, int nrl, int nrh, int ncl, int nch)
+{
+  int i;
+
+  for (i=nrh; i>=nrl; --i)
+    free((char *) (m[i]+ncl));
+  free((char *) (m+nrl));
+}
+
+/* frees a matrix allocated with dmatrix() */
+void free_matrix(double **m, int nrl, int nrh, int ncl, int nch)
+{
+  int i;
+
+  for (i=nrh; i>=nrl; --i)
+    free((char *) (m[i]+ncl));
+  free((char *) (m+nrl));
+}
+
+/* frees a matrix allocated with imatrix() */
+void free_matrix(int **m, int nrl, int nrh, int ncl, int nch)
+{
+  int i;
+
+  for (i=nrh; i>=nrl; --i)
+    free((char *) (m[i]+ncl));
+  free((char *) (m+nrl));
+}
+
+/* frees a submatrix allocated by submatrix() */
+void free_submatrix(float **b, int nrl, int nrh, int ncl, int nch)
+{
+  free((char *) (b+nrl));
+}
+
+/* allocate a float matrix m[nrl..nrh][ncl..nch] that points to the 
+ * matrix a declared in the standard C manner as a[nrow][ncol], where
+ * nrow = nrh-nrl+1 and ncol = nch-ncl+1. The routine should be called
+ * with the address &a[0][0] as the first arguement
+ */
+float **convert_matrix(float *a, int nrl, int nrh, int ncl, int nch)
+{
+  int i, j, nrow, ncol;
+  float **m;
+
+  nrow = nrh-nrl+1;
+  ncol = nch-ncl+1;
+
+  /* allocate pointers to rows */
+  m = (float **)malloc((unsigned) (nrow)*sizeof(float *));
+  if (!m)
+    nrerror("allocation failure in convert_matrix()");
+  m -= nrl;
+
+  for (i=0,j=nrl; i<=nrow-1; ++i,++j)
+    m[j] = a+ncol*i-ncl; /* set pointers to rows */
+  return m; /* return pointer to array of pointers tp rows */
+}
+
+/* free a matrix allocated by convert_matrix() */
+void free_convert_matrix(float **b, int nrl, int nrh, int ncl, int nch)
+{
+  free((char *) (b+nrl));
+}
+

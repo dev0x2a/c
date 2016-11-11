@@ -31,7 +31,7 @@ void nrerror(char error_text[])
 void c_atoi(int k, int argc)
 {
   if (argc < k) {
-    fprintf(stderr, "Invalid argument count\n\n");
+    fprintf(stderr, "Invalid argument count (argc > %d)\n\n", k);
     exit(-1);
   }
 }

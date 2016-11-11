@@ -2,6 +2,7 @@
 #define PRIM_H
 
 #include "prutil.h"
+#include "typedef.h"
 
 #define PRAND_MAX 2147483647
 

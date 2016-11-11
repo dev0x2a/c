@@ -4,8 +4,8 @@ int main(int argc, char *argv[])
 {
   int i, k;
   unsigned long long n;
-  char c;
   FILE *fp;
+  char c;
 
   if (argc < 2) {
     fprintf(stderr, "%s [FILE]\n", argv[0]);

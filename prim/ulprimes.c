@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "prutil.h"
+
 #define	tsize (sizeof(tbl)/sizeof(*(tbl+0)))
 #define	wsize (sizeof(whl)/sizeof(*(whl+0)))
 #define	psize (sizeof(pt)/sizeof(*(pt+0)))
@@ -37,12 +39,6 @@ void mark(double n, long k)
   }
 }
 
-void limit(void)
-{
-  puts("limits exceeded");
-  exit(-1);
-}
-
 int main(int argc, char *argv[])
 {
   if (argc <= 1) {
@@ -63,11 +59,11 @@ int main(int argc, char *argv[])
     if (lim < n)
       exit(0);
     if (lim > N)
-      limit();
+      pr_error("limits exceeded (1)", argv[0]);
   }
 
   if (n<0 || n>N)
-    limit();
+    pr_error("limits exceeded (2)", argv[0]);
   if (n == 0)
     n = 1;
   

@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-char *str[]={
+char *str[] = {
 	"nul", "soh", "stx", "etx", "eot", "enq", "ack", "bel",
 	"bs ", "ht ", "nl ", "vt ", "np ", "cr ", "so ", "si ",
 	"dle", "dc1", "dc2", "dc3", "dc4", "nak", "syn", "etb",
@@ -36,7 +35,7 @@ char *str[]={
 	" ø ", " ù ", " ú ", " û ", " ü ", " ý ", " þ ", " ÿ "
 };
 
-char *posix[]={
+char *posix[] = {
   "NUL", "BEL", "BS ", "HT ", "LF ", "VT ", "FF ", "CR ", "spc",
   " ! ", " \" "," # ", " $ ", " % ", " & ", " ' ", " ( ", " ) ",
   " * ", " + ", " , ", " - ", " . ", " / ", " 0 ", " 1 ", " 2 ",
@@ -51,25 +50,21 @@ char *posix[]={
   " { ", " | ", " } ", " ~ "
 };
 
-int
-main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-  int i,j=-1;
-  int setposix;
+  int i, j = -1, setposix;
 
-  if (argc>1) {
-    setposix=atoi(argv[1]);
-    if (setposix>=1) setposix=1;
-    else setposix=0;
-  }
-  if (argc==1) setposix=0;
+  if (argc > 1) {
+    setposix = 1;
+  } else
+    setposix = 0;
 
-  for (i=0 ;i<(setposix?103:256); ++i) {
-    if (i%8==0)
+  for (i=0; i<(setposix?103:256); ++i) {
+    if (i%8 == 0)
       printf("\n\t%2d\t", ++j);
-    printf("%s ", setposix?posix[i]:str[i]);
+    printf("%s ", setposix ? posix[i] : str[i]);
   }
-  puts("\n");
+  putchar('\n');
 	return(0);
 }
 

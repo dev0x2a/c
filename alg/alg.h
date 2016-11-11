@@ -8,20 +8,38 @@
 #define LRAND_MAX 2147483647
 
 /* algorithm standard error handler */
-void nrerror(char error_text[], char name[])
+void aerror(char error_text[], char pgrm[])
 {
   void exit();
 
-  fprintf(stderr, "%s: run-time error...\n", name);
+  fprintf(stderr, "%s: run-time error...\n", pgrm);
   fprintf(stderr, "%s\n", error_text);
   fprintf(stderr, "...now exiting to system...\n");
   exit(1);
 }
 
-/* prints title for program */
-void tprint(char title[])
+void nrerror(char error_text[])
 {
-  printf("***%s***\n\n", title);
+  void exit();
+
+  fprintf(stderr, "run-time error...\n");
+  fprintf(stderr, "%s\n", error_text);
+  fprintf(stderr, "...now exiting to system...\n");
+  exit(1);
+}
+
+void aexit(int k, char pgrm[])
+{
+  void exit();
+
+  fprintf(stdout, "\n***Terminating %s***\n\n", pgrm);
+  exit(k);
+}
+
+/* prints title for program */
+void tprint(char pgrm[])
+{
+  printf("\n***%s***\n\n", pgrm);
 }
 
 int m_atoi(const char s[])

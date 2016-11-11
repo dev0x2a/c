@@ -1,15 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "alg.h"
+#define DEBUG 1
 
 int main(int argc, char *argv[])
 {
-  int i, j, key;
+  tprint("Insertion Sort");
 
+  int i, j, key, *a;
   unsigned int k = m_atoi(argv[1]);
-  int *a;
+  
   a = (int *)malloc(k*sizeof(int));
-  printf("a[%d] = ", k);
+  printf("a[%d] =\n", k);
 
   for (i=0; i<k; ++i) {
     a[i] = m_rand(); 
@@ -17,27 +17,24 @@ int main(int argc, char *argv[])
   }
   puts("\nsort:\n");
 
-  i = 0;
-  for (j=2; j<k; ++j) {
+#if DEBUG
+  for (j=1; j<k; ++j) {
     key = a[j];
     /* insert a[j] into the sorted seq [1..j-1] */
     i = j-1;  
-    do {
+    while (i>=0 && a[i]>key) {
       a[i+1] = a[i];
       i -= 1;
-    } while (i>0 && a[i]>key);
+    }
     a[i+1] = key;
   }
-
-
-
-#if 1
   for (i=0; i<k; ++i) {
     printf("%d ", a[i]);
   }
-#endif
-  putchar('\n');
   free(a);
-
+  putchar('\n');
+#endif
+  
+  aexit(0, "Insertion Sort");
 }
 

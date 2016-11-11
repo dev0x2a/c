@@ -28,6 +28,14 @@ void nrerror(char error_text[])
   exit(1);
 }
 
+void c_atoi(int k, int argc)
+{
+  if (argc < k) {
+    fprintf(stderr, "Invalid argument count\n\n");
+    exit(-1);
+  }
+}
+
 void aexit(int k, char pgrm[])
 {
   void exit();

@@ -1,7 +1,6 @@
 #ifndef PRIM_H
 #define PRIM_H
 
-
 #include "prutil.h"
 
 #define PRAND_MAX 2147483647
@@ -11,34 +10,7 @@ int pr_atoi(const char*);
 int pr_rand(void);
 void pr_srand(unsigned int);
 
-
-static unsigned long int anext = 1;
-
-
-int pr_atoi(const char s[])
-{
-  int i, n;
-
-  n = 0;
-  for (i=0; s[i]>='0' && s[i]<='9'; ++i) {
-    n = 10*n+(s[i]-'0');
-  }
-  return n;
-}
-
-int pr_rand(void)
-{
-  anext = anext*1103515245+12345;
-
-  return((unsigned)(anext/65536)%32768);
-}
-
-void pr_srand(unsigned int seed)
-{
-  anext = seed;
-}
-
-unsigned char pr_bittab[] = {
+unsigned char pr_bittab2[] = {
   1,2,4,8,16,32,64,128
 };
 

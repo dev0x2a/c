@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-  int n,p,lim;
+  int n, p, lim;
   
   if (argc < 4) {
     puts("\nn (mod p), enter n,p,lim");

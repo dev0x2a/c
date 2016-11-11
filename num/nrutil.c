@@ -1,4 +1,5 @@
 #include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 /* Numerical Recipes standard error handler */
@@ -37,7 +38,7 @@ int *ivector(int nl, int nh)
 }
 
 /* allocates a double vector with range [nl..nh] */
-double *ivector(int nl, int nh)
+double *dvector(int nl, int nh)
 {
   double *v;
 
@@ -49,7 +50,7 @@ double *ivector(int nl, int nh)
 }
 
 /* allocates a float matrix with range [nrl..nrh][ncl] */
-float **matrix(int ncl, int nrh, int ncl, int nch)
+float **matrix(int nrl, int nrh, int ncl, int nch)
 {
   int i;
   float **m;
@@ -73,7 +74,7 @@ float **matrix(int ncl, int nrh, int ncl, int nch)
 }
 
 /* allocates a double matrix with range [nrl..nrh][ncl] */
-double **dmatrix(int ncl, int nrh, int ncl, int nch)
+double **dmatrix(int nrl, int nrh, int ncl, int nch)
 {
   int i;
   double **m;
@@ -97,7 +98,7 @@ double **dmatrix(int ncl, int nrh, int ncl, int nch)
 }
 
 /* allocates a double matrix with range [nrl..nrh][ncl] */
-int **imatrix(int ncl, int nrh, int ncl, int nch)
+int **imatrix(int nrl, int nrh, int ncl, int nch)
 {
   int i, **m;
 
@@ -172,7 +173,7 @@ void free_matrix(float **m, int nrl, int nrh, int ncl, int nch)
 }
 
 /* frees a matrix allocated with dmatrix() */
-void free_matrix(double **m, int nrl, int nrh, int ncl, int nch)
+void free_dmatrix(double **m, int nrl, int nrh, int ncl, int nch)
 {
   int i;
 
@@ -182,7 +183,7 @@ void free_matrix(double **m, int nrl, int nrh, int ncl, int nch)
 }
 
 /* frees a matrix allocated with imatrix() */
-void free_matrix(int **m, int nrl, int nrh, int ncl, int nch)
+void free_imatrix(int **m, int nrl, int nrh, int ncl, int nch)
 {
   int i;
 

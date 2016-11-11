@@ -1,5 +1,4 @@
 #include <math.h>
-#include "nrutil.c"
 
 #define RAD (3.14159265/180.0)
 
@@ -15,7 +14,7 @@ void flmoon(int n, int nph, long *jd, float *frac)
 {
   int i;
   float am, as, c, t, t2, xtra;
-  void nerror();
+  void nrerror();
 
   c = n+nph/4.0;
   t = c/1236.85;

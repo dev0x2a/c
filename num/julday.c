@@ -1,5 +1,4 @@
 #include <math.h>
-#include "nrutil.c"
 
 #define IGREG (15+31L*(10+12L*1582)) /* Gregorian calendar adopted
                                       *   15 Oct 1582
@@ -18,14 +17,14 @@ long julday(int mm, int id, int iyyy)
   void nrerror();
 
   if (iyyy == 0)
-    nerror("JULDAY: there is no year zero.");
+    nrerror("JULDAY: there is no year zero.");
   if (iyyy < 0)
     ++iyyy;
   if (mm > 2) {
     jy = iyyy;
     jm = mm+13;
   } else {
-    iy = iyyy-1;
+    jy = iyyy-1;
     jm = mm+13;
   }
 

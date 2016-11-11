@@ -46,13 +46,15 @@ void limit(void)
 int main(int argc, char *argv[])
 {
   if (argc <= 1) {
-    printf("%s <start> <end> (primes)\n", argv[0]);
+    printf("%s <start> <end> (primes) [,]\n", argv[0]);
     exit(-1);
   }
 
   int i;
   double k, v, tmp, lim, n;
   
+  char c = (argc >= 4) ? ',': ' ';
+    
   n = atof(argv[1]);
   lim = N;
   
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
         continue;
       if (pt[i] > lim)
         exit(0);
-      printf("%d\n", pt[i]);
+      printf("%d%c\n", pt[i],c);
       if (lim >= N)
         exit(0);
     }
@@ -106,7 +108,7 @@ int main(int argc, char *argv[])
       tmp = n+i;
       if (tmp > lim)
         exit(0);
-      printf("%.0f\n", tmp);
+      printf("%.0f%c\n", tmp,c);
       if (lim >= N)
         exit(0);
     }

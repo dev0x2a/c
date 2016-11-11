@@ -19,41 +19,28 @@
  *	% a.out 216091 16384 100 1
  *
  **************************************************************/
-
-/* Include Files */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-
-
-/* definitions */
 
 #define TWOPI (double)(2*3.1415926535897932384626433)
 #define SQRTHALF (double)(0.707106781186547524400844362104)
 #define SQRT2 (double)(1.414213562373095048801688724209)
 #define BITS 16
 
-
 /* compiler options */
-
 #ifdef _WIN32
 #pragma warning( disable : 4127 4706 ) /* disable conditional is constant warning */
 #endif
 
-
 /* global variables */
-
 double *cn, *sn, *two_to_phi, *two_to_minusphi, *scrambled;
 double high,low,highinv,lowinv;
 int b, c, *permute;
 
-
 /* function prototypes */
-
 void showusage(void);
-
 
 /**************************************************************
  *
@@ -380,7 +367,6 @@ squareg(double *x, int size)
 
 
 /* ------------ Lucas Test - specific routines ------------------- */
-
 void
 init_lucas(int q, int N)
 {

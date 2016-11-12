@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-  c_atoi(2, argc);
+  c_atoi(2, argc, "<vector size>");
   tprint("Insertion Sort");
 
   int i, j, key, *a;

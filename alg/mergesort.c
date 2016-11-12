@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
   char *pgrm = "Merge Sort";
-  c_atoi(4, argc);
+  c_atoi(4, argc, "<vector 1> <vector 2> <vector 3>");
   tprint(pgrm);
 
   int i, j, k, n1, n2;

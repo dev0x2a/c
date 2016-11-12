@@ -1,5 +1,13 @@
 #ifndef ALG_H
 #define ALG_H
+/*
+ * "Introduction to Algorithms"
+ *
+ * standard header by Ryan Keleti
+ * uses some code from "Numerical Recipes"
+ * 
+ * @ryankeleti
+ */
 
 #include <malloc.h>
 #include <stdlib.h>
@@ -17,21 +25,22 @@ void aerror(char error_text[], char pgrm[])
   fprintf(stderr, "...now exiting to system...\n");
   exit(1);
 }
-
-void nrerror(char error_text[])
+/* internal algorithm standard error handler */
+void inerror(char error_text[], char cmd[])
 {
   void exit();
 
-  fprintf(stderr, "run-time error...\n");
+  fprintf(stderr, "***%s*** run-time error...\n", cmd);
   fprintf(stderr, "%s\n", error_text);
   fprintf(stderr, "...now exiting to system...\n");
   exit(1);
 }
 
-void c_atoi(int k, int argc)
+void c_atoi(int k, int argc, char args[])
 {
   if (argc < k) {
-    fprintf(stderr, "Invalid argument count (argc > %d)\n\n", k);
+    fprintf(stderr, "\nInvalid argument count (argc > %d)\n\n", k);
+    fprintf(stderr, "use: ./prog %s\n\n", args);
     exit(-1);
   }
 }
@@ -65,7 +74,6 @@ static unsigned long int anext = 1;
 int m_rand(void)
 {
   anext = anext*1103515245+12345;
-
   return((unsigned)(anext/65536)%32768);
 }
 
@@ -78,11 +86,10 @@ void m_srand(unsigned int seed)
 float *vector(int nl, int nh)
 {
   float *v;
-
   v = (float *)malloc((unsigned) (nh-nl+1)*sizeof(float));
 
   if (!v)
-    nrerror("allocation failure in vector()");
+    inerror("allocation failure","vector()");
   return v-nl;
 }
 
@@ -90,11 +97,10 @@ float *vector(int nl, int nh)
 int *ivector(int nl, int nh)
 {
   int *v;
-
   v = (int *)malloc((unsigned) (nh-nl+1)*sizeof(int));
 
   if (!v)
-    nrerror("allocation failure in ivector()");
+    inerror("allocation failure", "ivector()");
   return v-nl;
 }
 
@@ -102,11 +108,10 @@ int *ivector(int nl, int nh)
 double *dvector(int nl, int nh)
 {
   double *v;
-
   v = (double *)malloc((unsigned) (nh-nl+1)*sizeof(double));
 
   if (!v)
-    nrerror("allocation failure in dvector()");
+    inerror("allocation failure","dvector()");
   return v-nl;
 }
 
@@ -119,14 +124,14 @@ float **matrix(int nrl, int nrh, int ncl, int nch)
   /* allocate pointers to rows */
   m = (float **)malloc((unsigned) (nrh-nrl+1)*sizeof(float *));
   if (!m)
-    nrerror("allocation failure 1 in matrix()");
+    inerror("allocation failure 1", "matrix()");
   m -= nrl;
 
   /* allocate rows and set pointers to them */
   for (i=nrl; i<=nrh; ++i) {
     m[i] = (float *)malloc((unsigned) (nch-ncl+1)*sizeof(float));
     if (!m[i])
-      nrerror("allocation failure 2 in matrix()");
+      inerror("allocation failure 2", "matrix()");
     m[i] -= ncl;
   }
 
@@ -143,14 +148,14 @@ double **dmatrix(int nrl, int nrh, int ncl, int nch)
   /* allocate pointers to rows */
   m = (double **)malloc((unsigned) (nrh-nrl+1)*sizeof(double *));
   if (!m)
-    nrerror("allocation failure 1 in dmatrix()");
+    inerror("allocation failure 1", "dmatrix()");
   m -= nrl;
 
   /* allocate rows and set pointers to them */
   for (i=nrl; i<=nrh; ++i) {
     m[i] = (double *)malloc((unsigned) (nch-ncl+1)*sizeof(double));
     if (!m[i])
-      nrerror("allocation failure 2 in dmatrix()");
+      inerror("allocation failure 2", "dmatrix()");
     m[i] -= ncl;
   }
 
@@ -166,14 +171,14 @@ int **imatrix(int nrl, int nrh, int ncl, int nch)
   /* allocate pointers to rows */
   m = (int **)malloc((unsigned) (nrh-nrl+1)*sizeof(int *));
   if (!m)
-    nrerror("allocation failure 1 in imatrix()");
+    inerror("allocation failure 1", "imatrix()");
   m -= nrl;
 
   /* allocate rows and set pointers to them */
   for (i=nrl; i<=nrh; ++i) {
     m[i] = (int *)malloc((unsigned) (nch-ncl+1)*sizeof(int));
     if (!m[i])
-      nrerror("allocation failure 2 in imatrix()");
+      inerror("allocation failure 2", "imatrix()");
     m[i] -= ncl;
   }
 
@@ -195,7 +200,7 @@ float **submatrix(float **a, int oldrl, int oldrh, int oldcl, int oldch,
   /* allocate pointers to arrows */
   m = (float **)malloc((unsigned) (oldrh-oldrl+1)*sizeof(float *));
   if (!m)
-    nrerror("allocation failure in submatrix()");
+    inerror("allocation failure", "submatrix()");
   
   /* set pointers to rows */
   for (i=oldrl,j=newrl; i<=oldrh; ++i,++j)
@@ -275,7 +280,7 @@ float **convert_matrix(float *a, int nrl, int nrh, int ncl, int nch)
   /* allocate pointers to rows */
   m = (float **)malloc((unsigned) (nrow)*sizeof(float *));
   if (!m)
-    nrerror("allocation failure in convert_matrix()");
+    inerror("allocation failure", "convert_matrix()");
   m -= nrl;
 
   for (i=0,j=nrl; i<=nrow-1; ++i,++j)

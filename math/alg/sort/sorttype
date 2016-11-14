@@ -1,0 +1,13 @@
+Linear_Search(A[], N, val, pos)
+  Step 1: Set pos=-1 and k=0;
+  Step 2: Repeat while k<N
+          Begin
+  Step 3: if A[k]=val
+            Set pos=k;
+            print pos;
+            Goto Step 5
+          End while
+  Step 4: print "Value is not present"
+  Step 5: Exit
+
+

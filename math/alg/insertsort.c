@@ -1,10 +1,13 @@
 #include "alg.h"
+#define PGRM "Insertion Sort"
 #define DEBUG 1
 
 int main(int argc, char *argv[])
 {
+
+#if DEBUG
   c_atoi(2, argc, "<vector size>");
-  tprint("Insertion Sort");
+  tprint(PGRM);
 
   int i, j, key, *a;
   unsigned int k = m_atoi(argv[1]);
@@ -22,7 +25,6 @@ int main(int argc, char *argv[])
   }
   puts("\nsort:\n");
 
-#if DEBUG
   for (j=1; j<k; ++j) {
     key = a[j];
     /* insert a[j] into the sorted seq [1..j-1] */
@@ -40,6 +42,6 @@ int main(int argc, char *argv[])
   putchar('\n');
 #endif
   
-  aexit(0, "Insertion Sort");
+  aexit(0, PGRM);
 }
 

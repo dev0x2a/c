@@ -1,10 +1,20 @@
 #ifndef PRUTIL_H
 #define PRUTIL_H
+#define USEVECTOR 0
 
 static unsigned long int anext = 1;
 unsigned char pr_bittab[] = {
   1,2,4,8,16,32,64,128
 };
+
+void pr_error(char*, char*);
+void inerror(char*, char*);
+int pr_atoi(const char*);
+int pr_rand(void);
+void pr_srand(unsigned int);
+void catoi(int, int, char*);
+void pr_exit(int, char*);
+void tprint(char*);
 
 /* prim.h standard error handler */
 void pr_error(char error_text[], char pgrm[])
@@ -60,8 +70,9 @@ void catoi(int k, int argc, char args[])
     exit(-1);
   }
 }
+
 /* exit with message */
-void aexit(int k, char pgrm[])
+void pr_exit(int k, char pgrm[])
 {
   void exit();
 
@@ -74,7 +85,7 @@ void tprint(char pgrm[])
 {
   printf("\n***%s***\n\n", pgrm);
 }
-
+#if USEVECTOR
 /* allocates a float vector with range [nl..nh] */
 float *vector(int nl, int nh)
 {
@@ -286,6 +297,5 @@ void free_convert_matrix(float **b, int nrl, int nrh, int ncl, int nch)
 {
   free((char *) (b+nrl));
 }
-
+#endif /* USEVECTOR */
 #endif /* PRUTIL_H */
-

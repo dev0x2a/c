@@ -7,28 +7,28 @@
 
 int main(int argc, char *argv[])
 { 
-  if (argc != 3) {
-    printf("%s <file1> <file2>\n", argv[0]);
+  if (argc < 2) {
+    printf("%s [file1] [file2] (default out.txt)\n", argv[0]);
     exit(-1);
   }
   char ch;
-  char *file1,*file2;
-  FILE *fp,*ft;
-  unsigned long int i;
+  char *file1, *file2;
+  FILE *fp, *ft;
+  unsigned long int i = 0;
 
-  i = 0;
   file1 = argv[1];
-  file2 = argv[2];
   fp = fopen(file1, "r");
-  ft = fopen(file2, "w");
-  
+
   if (!fp) {
-    printf("cannot open file %s\n\
-        %s:\n\
-            [file1] encripted to [file2]\n\
-            [file2] will be overwritten\n",
+    printf("%s: cannot open file %s\n"
+           "[file1] encripted to [file2]\n",
             file1,argv[0]);
     exit(-1);
+  }
+  file2 = argv[2];
+  ft = fopen(file2, "w");
+  if (!ft) {
+    ft = fopen("out.txt", "w");
   }
   while (!feof(fp)) {
     ch = getc(fp);

@@ -1,4 +1,4 @@
-#include "alg.h"
+#include "../alg.h"
 #define PGRM "Merge Sort"
 #define DEBUG 0
 

@@ -1,4 +1,4 @@
-#include "alg.h"
+#include "../alg.h"
 #define PGRM "Insertion Sort"
 #define DEBUG 1
 

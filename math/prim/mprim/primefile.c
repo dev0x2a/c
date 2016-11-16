@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   printf("\ninit p[%d]\n\n", k);
 
   unsigned long long p[k];
-  fp = fopen(argv[1], "r");
+  fp = fopen(argv[1], "w");
   i = 0;
   
   while (fscanf(fp, "%llu,", &n) != EOF) {

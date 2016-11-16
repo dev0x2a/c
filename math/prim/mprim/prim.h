@@ -20,18 +20,15 @@ typedef struct decprime {
   int pe;
 } decprime_t;
 
-
-
-int pr_atoi(const char*);
-int pr_rand(void);
-void pr_srand(uint);
 int pr_bin(int);
-u64 pr_bpwr(u64, u64);
-int pr_modular(int, uint, uint);
+int pr_rand(void);
+int pr_cprimes(int)
 int pr_gcd(int, int);
 int pr_lcm(int, int);
-int pr_cprimes(int)
-int pr_sieve(int, int)
+int pr_atoi(const char*);
+int pr_modular(int, uint, uint);
+u64 pr_bpwr(u64, u64);
+void pr_srand(uint);
 
 u8 pr_bittab2[] = {
   1,2,4,8,16,32,64,128
@@ -109,24 +106,6 @@ int pr_cprimes(int n)
     if (pr_isprime(i))
       ++c;
   return(c);
-}
-
-int pr_sieve(int min, int max)
-{
-  int i, j, k;
-  int set = ++max;
-  int *nums = malloc(sizeof(int)*set);
-  for (i=0; i<set; ++i)
-    nums[i] = ++i;
-  for (j=2; j<set; ++j) 
-    if (nums[j] != 0) 
-      for (k=2*j; k<set; k+=j)
-        nums[k] = 0;
-  for (i=min; i<set; ++i)
-    if (nums[i] != 0)
-      printf("%2d ", i);
-  free(nums);
-  return(0);
 }
 
 int pr_bin(int n)

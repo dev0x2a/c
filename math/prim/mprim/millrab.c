@@ -12,8 +12,8 @@ int ptab[9] = {
 };
 
 int pwr(int b, uint e);
-int primality(u64 n, u64 trials);
 int witness(u64 a, u64 n);
+int primality(u64 n, u64 trials);
 u64 bpwr(u64 p, const u64 q, const u64 a);
 u64 msb(u64 u);
 
@@ -111,9 +111,9 @@ int witness(u64 a, u64 n)
     w = x;
     x = (w*w)%n;
     if (x==1 && w!=1 && w!=n-1)
-      return 1;
+      return(1);
   }
-  return(x!=1);
+  return(x != 1);
 }
 
 u64 msb(u64 u)

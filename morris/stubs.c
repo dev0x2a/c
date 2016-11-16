@@ -1,5 +1,3 @@
-/* dover */
-
 /*  The version of crypt() used in the worm program has the same tables as
  * Berkeley's 4.3 crypt(), but uses different code.  Since I don't know where
  * we put our 4.2 tape I can't check it against that code to find the exact

@@ -4,12 +4,12 @@
 #define T_SQ2_1 0
 
 #if TLOG2_1
-int main()
+int main(void)
 {
   int a=1000, b=0,
-      c=7973, d,
+      c=7973,
       f[7974],
-      n=800, k;
+      n=800, d, k;
   for ( ; b<c; f[b++]=5);
   for ( ; n--; d+=*f*a,printf("%.3d",d/a),*f=d%a)
     for (d=0,k=c; --k; d/=b,d*=k)
@@ -17,7 +17,7 @@ int main()
 #endif
 
 #if TLOG2_2
-int main()
+int main(void)
 {
   int a=1000, b=0,
       c=2658, d=75,
@@ -31,9 +31,16 @@ int main()
 #endif
 
 #if T_SQ2_1
-main(){int a=1000,b=0,c=1413,d,f[1414],n=800,k;
-for(;b<c;f[b++]=14);
-for(;n--;d+=*f*a,printf("%.3d",d/a),*f=d%a)
-for(d=0,k=c;--k;d/=b,d*=2*k-1)f[k]=(d+=f[k]*a)%(b=100*k);}
+int main(void)
+{
+  int a=1000, b=0,
+      c=1413,
+      f[1414],
+      n=800, d, k;
+  for ( ;b<c; f[b++]=14);
+  for ( ;n--; d+=*f*a,printf("%.3d",d/a),*f=d%a)
+    for (d=0,k=c; --k; d/=b,d*=2*k-1)
+      f[k]=(d+=f[k]*a)%(b=100*k);
+}
 #endif
 

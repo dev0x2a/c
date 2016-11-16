@@ -19,7 +19,7 @@ typedef struct decprime {
   int e;
   int pe;
 } decprime_t;
-
+/*
 int pr_bin(int);
 int pr_rand(void);
 int pr_cprimes(int)
@@ -29,7 +29,7 @@ int pr_atoi(const char*);
 int pr_modular(int, uint, uint);
 u64 pr_bpwr(u64, u64);
 void pr_srand(uint);
-
+*/
 u8 pr_bittab2[] = {
   1,2,4,8,16,32,64,128
 };

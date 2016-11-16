@@ -3,7 +3,7 @@
 #include <time.h>
 #include "typedef.h"
 
-u8 bittab2[] = {
+u8 bittab[8] = {
   1,2,4,8,16,32,64,128
 };
 
@@ -12,33 +12,39 @@ int ptab[9] = {
 };
 
 int pwr(int b, uint e);
+int primality(u64 n, u64 trials);
+int witness(u64 a, u64 n);
+u64 bpwr(u64 p, const u64 q, const u64 a);
+u64 msb(u64 u);
 
 int main(int argc, char *argv[])
 {
-  unsigned long long n, k, r, a, x, d;
-  int i, j;
+  u64 n, k, r, x, d;
 
   n = atoi(argv[1]);
-
-  if (!(n&1)) {
-    printf("%d not prime\n");
+  if (n == 2) {
+    puts("2 is prime");
     exit(0);
   }
-  k = 100;
-  d = 1;
-  r = 1;
 
+  if (!(n&1) || n%2==0 || (signed)n<=1) {
+    printf("%lld not prime\n");
+    exit(0);
+  }
+  k = 100000;
+  primality(n, k);
 
+#if 0
   /*
    * write n-1 as (2^r)*d, with d odd
    *  by factoring powers 2 from n-1
    */
-  srand(time(NULL));
-
-  for (i=0; i<=k; ++i) {
-    a = rand()%((n-2)-2+1)+2;
-    d+=2;
-    ++r;
+    /*
+    int w = 0;
+    while ((n-1)%2 == 0) {
+      (n-1) /= 2;
+      ++w;
+    }*/
 
     x = pwr(a, d)%n;
     if (x==1 || x==n-1) {
@@ -58,7 +64,7 @@ int main(int argc, char *argv[])
     /* loc C */
     puts("prob prime (C)");
   }
-
+#endif
 
   exit(0);
 }
@@ -71,19 +77,70 @@ int pwr(int b, uint e)
   return(r);
 }
 
-#if 0
-u64 pr_bpwr(u64 n, u64 e)
+int primality(u64 n, u64 trials)
+{
+  u64 a;
+  int i;
+  srand(time(NULL));
+
+  for (i=0; i<trials; ++i) {
+    a = rand()%(n-1)+1;
+    if (witness(a, n)) {
+      printf("%llu not prime\n", n);
+      exit(1);
+    }
+  }
+  printf("%llu is probably prime\n", n);
+  exit(0);
+}
+
+int witness(u64 a, u64 n)
+{
+  u64 u, t, x, w, i;
+  int mask;
+
+  u = n-1;
+  t = 0;
+  while (u&1 == 0) {
+    u >>= 1;
+    t++;
+  }
+
+  x = bpwr(u, a, n);
+  for (i=0; i<t; ++i) {
+    w = x;
+    x = (w*w)%n;
+    if (x==1 && w!=1 && w!=n-1)
+      return 1;
+  }
+  return(x!=1);
+}
+
+u64 msb(u64 u)
+{
+  u |= u>>bittab[0];
+  u |= u>>bittab[1];
+  u |= u>>bittab[2];
+  u |= u>>bittab[3];
+  u |= u>>bittab[4];
+  u |= u>>bittab[5];
+  
+  return(u&~(u>>1));
+}
+
+u64 bpwr(u64 p, const u64 q, const u64 a)
 {
   u64 r = 1;
-  while (e > 0) {
-    if ((e&1) != 0)
-      r *= n;
-    n *= n;
-    e >>= 1;
+  u64 mask = msb(p);
+  while (mask) {
+    if (mask&p)
+      r = (r*q)%a;
+    mask >>= 1;
   }
   return(r);
 }
 
+#if 0
 int pr_modular(int b, uint e, uint m)
 {
   int i,

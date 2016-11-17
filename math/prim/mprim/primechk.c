@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "typedef.h"
+
+#define PGRM "Prime Check"
 
 int main(int argc, char *argv[])
 { 
@@ -12,20 +15,17 @@ int main(int argc, char *argv[])
   int del[8] = {6,4,2,4,2,4,6,2};
   int i, prime = 1, inc = 0;
   long int div, max;
-  unsigned long long N = atoi(argv[1]);
+  u64 N = atoi(argv[1]);
   
-  if ((signed)N < 1) {
-    N==0 ? puts("0 is not prime") : puts("unsigned values only");
-    exit(-1);
-  }
-  if (N==1 || N==2) {
-    N==1 ? puts("1 is not prime") : puts("2 is prime");
+  if ((signed)N<=1 || N==2) {
+    N==2 ? puts("2 is prime") : puts("try n>1 (1 not prime)");
     exit(0);
   }
   if (N==3 || N==5) {
     N==3 ? puts("3 is prime") : puts("5 is prime");
     exit(0);
   }
+
   while (!(N&1)) {
     if (prime)
       printf("not prime %ld = 2", N);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  max = (unsigned long long)sqrt(N);
+  max = (u64)sqrt(N);
   for (div=7,i=1; div<=max; ) {
     inc = 0;
     while (!(N%div)) {
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     }
     div += del[++i];
     if (i >= 8)
-      i=0;
+      i = 0;
   }
   if (prime)
     printf("%ld is prime\n", N);

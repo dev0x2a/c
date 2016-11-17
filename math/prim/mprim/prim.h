@@ -2,55 +2,37 @@
 #define PRIM_H
 
 #include "prutil.h"
-#include "typedef.h"
 
-#define PRAND_MAX 2147483647
 
-#ifndef min
-#define min(a,b) ((a<b)?a:b)
-#endif
-
-#ifndef max
-#define max(a,b) ((a>b)?a:b)
-#endif
-
-typedef struct decprime {
-  int p;
-  int e;
-  int pe;
-} decprime_t;
 /*
 int pr_bin(int);
-int pr_rand(void);
 int pr_cprimes(int)
 int pr_gcd(int, int);
 int pr_lcm(int, int);
 int pr_atoi(const char*);
 int pr_modular(int, uint, uint);
 u64 pr_bpwr(u64, u64);
-void pr_srand(uint);
 */
-u8 pr_bittab2[] = {
-  1,2,4,8,16,32,64,128
-};
 
+u64 pr_bpwr(u64 x, u64 n)
+{
+  u64 r = 1, y = x;
+  while (n > 1) {
+    if (n&1)
+      r *= y;
+    n = (int)(n/2);
+    y *= y;
+  }
+  r *= y
+  return(r);
+}
+
+#if 0
 int pr_pwr(int b, uint e)
 {
   int i, r = 1; 
   for (i=0; i<e; ++i)
     r *= b;
-  return(r);
-}
-
-u64 pr_bpwr(u64 n, u64 e)
-{
-  u64 r = 1;
-  while (e > 0) {
-    if ((e&1) != 0)
-      r *= n;
-    n *= n;
-    e >>= 1;
-  }
   return(r);
 }
 
@@ -98,7 +80,6 @@ int pr_isprime(int n)
   return(1);
 }
 
-
 int pr_cprimes(int n)
 {
   int i, c = 0;
@@ -124,5 +105,5 @@ int pr_bin(int n)
   putchar('\n');
   return(0);
 }
-
+#endif
 #endif /* PRIM_H */

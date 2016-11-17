@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
   int i, k;
-  unsigned long long n, p[k];
+  unsigned long long n;
   FILE *fp;
   char c;
 
@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
   }
   fclose(fp);
   printf("\ninit p[%d]\n\n", k);
+  unsigned long long p[k];
 
   fp = fopen(argv[1], "r");
   i = 0;

@@ -3,14 +3,6 @@
 #include <time.h>
 #include "typedef.h"
 
-u8 bittab[8] = {
-  1,2,4,8,16,32,64,128
-};
-
-int ptab[9] = {
-  2,3,5,7,11,13,17,19,23
-};
-
 int pwr(int b, uint e);
 int witness(u64 a, u64 n);
 int primality(u64 n, u64 trials);

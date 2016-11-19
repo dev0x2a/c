@@ -22,7 +22,7 @@ void printint(int w, int x)
     putchar(digs[i]);
 }
 
-int main()
+int main(void)
 {
   printint(1, 3);
   putchar('\n');

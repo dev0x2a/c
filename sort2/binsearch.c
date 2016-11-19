@@ -19,12 +19,12 @@ int binsearch(int x, int k[], int n)
   return right;
 }
 
-int main()
+int main(void)
 {
-  int a[7] = {3,5,4,8,9,1,2};
-  int x=4, n;
+  int a[7] = {0,1,2,3,4,5,6};
+  int i, x=4, n=7;
 
-  int i = binsearch(x, a, 0);
+  i = binsearch(x, a, n);
 
   if (i<n && x==a[i]) {
     printf("found (A) %d\n", i);

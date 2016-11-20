@@ -50,7 +50,7 @@ int *solution(int s)
 {
   int x, u, i, j, min, imin, *destin, *source, aux;
   p[0] = getints(1);
-  p[0][0] = 0; /* = F(0) */
+  p[0][0] = 0; /* =F(0) */
   for (x=1; x<=s; ++x) {
     min = BIG;
     for (i=0; i<n; ++i) {

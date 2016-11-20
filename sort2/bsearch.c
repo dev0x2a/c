@@ -54,7 +54,7 @@ main(int argc, char *argv[])
     key.name = argv[i];
     res = bsearch(&key, months, nr_of_months,
         sizeof(struct mi), compmi);
-    if (res == NULL)
+    if (!res)
       printf("'%s': unknown month\n", argv[i]);
     else
       printf("%s: month #%d\n", res->name, res->nr);

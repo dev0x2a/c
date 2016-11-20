@@ -1,7 +1,8 @@
 
-void qsort1(float *left, float *right)
+void
+qsort1(float *left, float *right)
 {
-  float *p=left, *q=right, w, x = *(left+(right-left>>1));
+  float w, *p=left, *q=right, x=*(left+(right-left>>1));
   do {
     while (*p < x)
       p++;

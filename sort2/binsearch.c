@@ -1,6 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int binsearch(int x, int k[], int n)
+int a[7] = {0,1,2,3,4,5,6};
+
+int
+binsearch(int x, int k[], int n)
 {
   int middle, left, right;
   if (x <= k[0])
@@ -19,17 +23,19 @@ int binsearch(int x, int k[], int n)
   return right;
 }
 
-int main(void)
+int
+main(int argc, char *argv[])
 {
-  int a[7] = {0,1,2,3,4,5,6};
-  int i, x=4, n=7;
+  int i, x, n;
 
+  x = atoi(argv[1]);
+  n = atoi(argv[2]);
   i = binsearch(x, a, n);
 
   if (i<n && x==a[i]) {
-    printf("found (A) %d\n", i);
+    printf("found %d\n", i);
   } else {
-    printf("not found (B) %d\n", i);
+    printf("not found %d\n", i);
   }
   return 0;
 }

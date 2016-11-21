@@ -10,7 +10,7 @@
  */
 
 /*rate of output*/
-const int rate=20000; 
+const int rate=10000; 
 const char *str="\x01?@A";
 
 int main(int argc,char *argv[])

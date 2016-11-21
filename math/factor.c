@@ -11,15 +11,15 @@ int main(int argc, char *argv[])
     printf("%s <num> to factor\n", argv[0]);
     return(-1);
   }
-  unsigned long long n,d,r;
+  unsigned long long n, d, r;
   
-  n=atol(argv[1]);
+  n = atol(argv[1]);
   d = 2;
 
   do {
     r = n%d;
     if (r == 0) {
-      printf("%llu ",d);
+      printf("%llu ", d);
       n /= d;
     } else
       d += 1;

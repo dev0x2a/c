@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int rdint()
+int rdint(void)
 {
   int i, neg, d;
   char ch;
@@ -24,9 +24,8 @@ int rdint()
   return neg ? -i : i;
 }
 
-int main()
+int main(void)
 {
-  //rdint();
   printf("%d\n", rdint());
   return 0;
 }

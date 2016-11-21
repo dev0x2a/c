@@ -4,9 +4,8 @@ int bitcount(unsigned char x)
 {
   int count;
 
-  for (count = 0; x != 0; x >>= 1);
-  {
-    if (x & 01)
+  for (count=0; x!=0; x>>=1) {
+    if (x&1)
       count++;
   }
 
@@ -14,9 +13,9 @@ int bitcount(unsigned char x)
 }
 
 int
-main()
+main(void)
 {
-  printf("%d ",bitcount('a'));
+  printf("%d ", bitcount('a'));
   return 0;
 }
 

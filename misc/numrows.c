@@ -1,23 +1,25 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-const int num_rows = 7;
-const int num_columns = 5;
 
 int
-main ()
+main(int argc, char *argv[])
 {
-  int box[num_rows][num_columns];
-  int row, column;
+  const int nrow = atoi(argv[1]);
+  const int ncol = atoi(argv[2]);
 
-  for (row = 0; row < num_rows; row++)
-    for (column = 0; column < num_columns; column++)
-      box[row][column] = column + (row * num_columns);
+  int m[nrow][ncol];
+  int row, col;
 
-  for (row = 0; row < num_rows; row++) {
-    for (column = 0; column < num_columns; column++) {
-      printf("%4d", box[row][column]);
+  for (row=0; row<nrow; ++row)
+    for (col=0; col<ncol; ++col)
+      m[row][col] = col+(row*ncol);
+
+  for (row=0; row<nrow; ++row) {
+    for (col=0; col<ncol; ++col) {
+      printf("%4d ", m[row][col]);
     }
-    printf("\n");
+    putchar('\n');
   }
   return 0;
 }

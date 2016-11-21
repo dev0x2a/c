@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     printf("%lld not prime\n");
     exit(0);
   }
-  k = 100000;
+  k = 10000;
   primality(n, k);
 
 #if 0

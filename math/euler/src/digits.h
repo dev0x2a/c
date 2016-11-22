@@ -1,10 +1,7 @@
 #ifndef DIGITS_H
 #define DIGITS_H
 
-#include <stdlib.h>
-
-int
-dgt(int dgt_t, int dgt_n)
+int dgt(int dgt_t, int dgt_n)
 {
   int dgt_arr[200];
   int dgt_i, dgt_j, dgt_tmp, dgt_m, dgt_x;
@@ -27,15 +24,14 @@ dgt(int dgt_t, int dgt_n)
     for (dgt_i=dgt_m-1; dgt_i>=0; --dgt_i)
       printf("%d", dgt_arr[dgt_i]);
   }
-  printf("\n");
+  putchar('\n');
   return(0);
 }
 
 int dgt_max = 5000;
-void
-dgt_factorial(int a[], int n)
+void dgt_factorial(int a[], int n)
 {
-  /*  factorial in array  */
+  /* factorial in array */
   if (!n) 
     return;
   int carry=0;
@@ -47,13 +43,12 @@ dgt_factorial(int a[], int n)
   dgt_factorial(arr, n-1);
 }
 
-void
-dgt_display(int a[])
+void dgt_display(int a[])
 {
-  /*  to print array  */
+  /* to print array */
   int c=0;
   int i=0;
-  for (i=0; i<dgt_max; ++i){
+  for (i=0; i<dgt_max; ++i) {
     if (!c && a[i])      
       c=1;
     if (c)
@@ -61,8 +56,7 @@ dgt_display(int a[])
   }
 }
 
-int
-dgt_main(int num)
+int dgt_main(int num)
 {
   int *a=calloc(dgt_max,sizeof(int));
   a[dgt_max-1]=1;
@@ -73,6 +67,4 @@ dgt_main(int num)
   free(a);
   return(0);
 }
-
 #endif 
-

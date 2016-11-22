@@ -1,8 +1,9 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(void)
-{ int a[20][20]={
+{
+  int a[20][20] = {
     { 8, 2,22,97,38,15, 0,40, 0,75, 4, 5, 7,78,52,12,50,77,91, 8},
     {49,49,99,40,17,81,18,57,60,87,17,40,98,43,69,48, 4,56,62, 0},
     {81,49,31,73,55,79,14,29,93,71,40,67,53,88,30, 3,49,13,36,65},
@@ -23,8 +24,8 @@ int main(void)
     {20,69,36,41,72,30,23,88,34,62,99,69,82,67,59,85,74, 4,36,16},
     {20,73,35,29,78,31,90, 1,74,31,49,71,48,86,81,16,23,57, 5,54},
     { 1,70,54,71,83,51,54,69,16,92,33,48,61,43,52, 1,89,19,67,48}};
-  long int p,mp;
-  int i,j;
+  long int p, mp=0;
+  int i, j;
   /*print a
   for(i=0; i<=19; ++i){
     for(j=0; j<=19; ++j){
@@ -32,40 +33,39 @@ int main(void)
     }
     putchar(10);
   }*/
-  mp=0;
-  for(i=0; i<20; ++i){
-    for(j=0; j<20-3; ++j){
+  for (i=0; i<20; ++i) {
+    for (j=0; j<20-3; ++j) {
       p=a[i][j]*a[i][j+1]*a[i][j+2]*a[i][j+3];
-      if(p>mp){
+      if (p>mp) {
         printf("%d*%d*%d*%d\t\t%ld\n",
             a[i][j],a[i][j+1],a[i][j+2],a[i][j+3],p);
         mp=p;
   }}}
-  for(i=0; i<20-3; ++i){
-    for(j=0; j<20; ++j){
+  for (i=0; i<20-3; ++i) {
+    for (j=0; j<20; ++j) {
       p=a[i][j]*a[i+1][j]*a[i+2][j]*a[i+3][j];
-      if(p>mp){
+      if (p>mp) {
         printf("%d*%d*%d*%d\t\t%ld\n", 
             a[i][j],a[i+1][j],a[i+2][j],a[i+3][j],p);
         mp=p;
   }}}
-  for(i=0; i<20-3; ++i){
-    for(j=0; j<20-3; ++j){
+  for (i=0; i<20-3; ++i) {
+    for (j=0; j<20-3; ++j) {
       p=a[i][j]*a[i+1][j+1]*a[i+2][j+2]*a[i+3][j+3];
-      if(p>mp){
+      if (p>mp) {
         printf("%d*%d*%d*%d\t\t%ld\n", 
             a[i][j],a[i+1][j+1],a[i+2][j+2],a[i+3][j+3],p);
         mp=p;
   }}}
-  for(i=0; i<20-3; ++i){
-    for(j=3; j<20; ++j){
+  for (i=0; i<20-3; ++i) {
+    for (j=3; j<20; ++j) {
       p=a[i][j]*a[i+1][j-1]*a[i+2][j-2]*a[i+3][j-3];
-      if(p>mp){
+      if (p>mp) {
         printf("%d*%d*%d*%d\t\t%ld\n",
             a[i][j],a[i+1][j+1],a[i+2][j+2],a[i+3][j+3],p);
         mp=p;
   }}}
-  printf("mp = %ld\n",mp);
+  printf("mp = %ld\n", mp);
   return(0);
 }
 

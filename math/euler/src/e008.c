@@ -1,15 +1,15 @@
-#include<stdio.h>
-#include<inttypes.h>
-#include<math.h>
+#include <stdio.h>
+#include <math.h>
 
 #define SIZE 13
-typedef uint64_t u64;
+typedef unsigned long long u64;
 
 int conv(const char c);
 u64 prod_of(const int a[]);
 
 int main(void)
-{ char N[]="73167176531330624919225119674426574742355349194934"
+{
+  char N[]="73167176531330624919225119674426574742355349194934"
            "96983520312774506326239578318016984801869478851843"
            "85861560789112949495459501737958331952853208805511"
            "12540698747158523863050715693290963295227443043557"
@@ -30,25 +30,32 @@ int main(void)
            "05886116467109405077541002256983155200055935729725"
            "71636269561882670428252483600823257530420752963450";
   u64 m=0;
-  int a[SIZE];
-  for(int n=0,c=0; N[n]!='\0'; ++n,++c){
-    if(c==SIZE)c=0;
+  int n, c, a[SIZE];
+  for (n=0,c=0; N[n]!='\0'; ++n,++c) {
+    if (c==SIZE)
+      c=0;
     a[c]=conv(N[n]);
-    if(n<SIZE-1)continue;
+    if (n<SIZE-1)
+      continue;
     u64 p=prod(a);
-    if(p>m)m=p;
+    if (p>m)
+      m=p;
   }
   printf("%d, %"PRId64"\n",SIZE,m);
   return(0);
 }
 
 int conv(const char c)
-{ return(c-'0');
+{
+  return(c-'0');
 }
 
 u64 prod(const int a[])
-{ u64 p=1.0;
-  for(int i=0; i<SIZE; ++i)p*=(u64)a[i];
+{
+  int i;
+  u64 p=1.0;
+  for (i=0; i<SIZE; ++i)
+    p*=(u64)a[i];
   return(p);
 }
 

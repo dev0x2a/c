@@ -2,6 +2,10 @@
 #include <stdlib.h>
 
 #define PGRM "chess.c"
+#define DEAD 0
+#define ALIVE 1
+#define WHITE 1
+#define BLACK 2
 
 const char str[8][8] = {
   {'R','N','B','K','Q','B','N','R'},
@@ -14,19 +18,23 @@ const char str[8][8] = {
   {'r','n','b','k','q','b','n','r'},
 };
 
-#if 0
 typedef struct piece {
   int x, y;
-  const int type;
+  int status;
+  int who, type;
 } psc_t;
-#endif
 
 typedef struct display {
   char board[8][8];
   int status;
 } disp_t;
 
-void init(disp_t *p)
+typedef struct user {
+  int who, status;
+  int color;
+} usr_t;
+
+void initboard(disp_t *p)
 {
   int i, j;
 
@@ -54,7 +62,7 @@ int main(void)
   disp_t disp;
 
 
-  init(&disp);
+  initboard(&disp);
   
   pboard(&disp);
   

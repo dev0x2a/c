@@ -1,12 +1,13 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-#define A 100
+#define SIZE 1000
 
 /* shellsort: sort v[0]...v[n-1] into increasing order */
-void shellsort(int v[],int n)
+void shellsort(int v[], int n)
 {
-  int i,j,k,gap,tmp;
+  int i, j, k, gap, tmp;
 
   for (gap=n/2; gap>0; gap/=2)
     for (i=gap; i<n; ++i)
@@ -16,18 +17,20 @@ void shellsort(int v[],int n)
         v[j+gap]=tmp;
       }
   for(k=0; k<n; ++k)
-    printf("%d ", v[k]);
+    printf("%d\t", v[k]);
   putchar('\n');
 }
 
 int main(void)
 {
-  int v[A],k;
+  int v[SIZE], k;
 
-  for(k=0; k<A; ++k)
-    v[k]=rand()%A;
+  srand(time(NULL));
 
-  shellsort(v,A);
+  for (k=0; k<SIZE; ++k)
+    v[k] = rand()%SIZE;
+
+  shellsort(v, SIZE);
   return(0);
 }
 

@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[])
+{
   int long num;
 
   if (argc != 2) {
-    printf("%s <num> to print collatz sequence\n",argv[0]);
+    printf("%s <num> to print collatz sequence\n", argv[0]);
     return(-1);
   }
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
       num /= 2;
   }
 
-  printf("1\n");
+  puts("1");
   return 0;
 }
 

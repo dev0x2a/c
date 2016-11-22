@@ -8,5 +8,3 @@ int puts(const char*s)
   return(err);
 }
 
-
-

@@ -10,14 +10,15 @@ main(int argc, char *argv[])
 
   int m[nrow][ncol];
   int row, col;
-
+#if 0
   for (row=0; row<nrow; ++row)
     for (col=0; col<ncol; ++col)
       m[row][col] = col+(row*ncol);
-
+#endif
   for (row=0; row<nrow; ++row) {
     for (col=0; col<ncol; ++col) {
-      printf("%4d ", m[row][col]);
+      printf(". ");
+      //printf("%4d ", m[row][col]);
     }
     putchar('\n');
   }

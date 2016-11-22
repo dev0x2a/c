@@ -8,14 +8,15 @@
 #define BLACK 2
 
 const char str[8][8] = {
-  {'R','N','B','K','Q','B','N','R'},
-  {'+','+','+','+','+','+','+','+'},
-  {'.','.','.','.','.','.','.','.'},
-  {'.','.','.','.','.','.','.','.'},
-  {'.','.','.','.','.','.','.','.'},
-  {'.','.','.','.','.','.','.','.'},
-  {'*','*','*','*','*','*','*','*'},
-  {'r','n','b','k','q','b','n','r'},
+/*a*/  {'R','N','B','K','Q','B','N','R'},
+/*b*/  {'+','+','+','+','+','+','+','+'},
+/*c*/  {'.','.','.','.','.','.','.','.'},
+/*d*/  {'.','.','.','.','.','.','.','.'},
+/*e*/  {'.','.','.','.','.','.','.','.'},
+/*f*/  {'.','.','.','.','.','.','.','.'},
+/*g*/  {'*','*','*','*','*','*','*','*'},
+/*h*/  {'r','n','b','k','q','b','n','r'},
+      /* 1   2   3   4   5   6   7   8 */
 };
 
 typedef struct piece {
@@ -26,12 +27,12 @@ typedef struct piece {
 
 typedef struct display {
   char board[8][8];
-  int status;
+  int status, turn;
 } disp_t;
 
 typedef struct user {
   int who, status;
-  int color;
+  int color, turn;
 } usr_t;
 
 void initboard(disp_t *p)
@@ -43,6 +44,23 @@ void initboard(disp_t *p)
       p->board[i][j] = str[i][j];
     }
   }
+}
+
+void initpieces(void)
+{
+  psc_t rook1_p1, rook2_p1;
+  psc_t knt1_p1, knt2_p1;
+  psc_t bisp1_p1, bisp2_p1;
+  psc_t queen_p1, king_p1;
+  psc_t p11, p12, p13, p14, p15, p16, p17, p18;
+
+  psc_t rook1_p2, rook2_p2;
+  psc_t knt1_p2, knt2_p2;
+  psc_t bisp1_p2, bisp2_p2;
+  psc_t queen_p2, king_p2;
+  psc_t p21, p22, p23, p24, p25, p26, p27, p28;
+
+
 }
 
 void pboard(disp_t *p)
@@ -63,6 +81,7 @@ int main(void)
 
 
   initboard(&disp);
+  initpieces();
   
   pboard(&disp);
   

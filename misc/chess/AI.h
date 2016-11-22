@@ -1,11 +1,11 @@
-/*Copyright 2012 Parigyan Chandra Goyal & Sharat Shankar*/
+/* Copyright 2012 Parigyan Chandra Goyal & Sharat Shankar */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h> 
-#include<time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h> 
+#include <time.h>
 
-#define  mark 1000
+#define mark 1000
 
 typedef struct {
     int i, j, k, l, eval;
@@ -17,7 +17,7 @@ typedef struct node {
     struct node *head;
     list_elm* elist;
     struct node* array[100];
-    int dcntr;/*to know how many times our king can be killed{ d = defeat}*/
+    int dcntr; /* to know how many times our king can be killed {d = defeat} */
     int vcntr;
     int max_val;
     int min_val;
@@ -36,144 +36,111 @@ void KingAI(char swap[2][8][8], char side, int i, int j, node* root);
 void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,char play_side);
 
 
-void assign_ent(char side, node* branch, char swap[2][8][8])
+void assign_ent(char side, node *branch, char swap[2][8][8])
 {
-    int i,j=0;
-
-/*    printf("\n\n\n\n");
-    printing(swap);*/
-
-    for(i;i<=7;i++)
-    {
-      j=0;
-      for(j;j<=7;j++)
-      {
-         if(swap[1][i][j] == side)
-         {
-            char ent = swap[0][i][j];
-            switch(ent)
-            {
-               case '1':
-                        PawnAI(swap,side,i,j,branch);
-			break;
-               case '2':
-                        KnightAI(swap,side,i,j,branch);
-			break;
-               case '4':
-                        BishopAI(swap,side,i,j,branch);
-			break;
-               case '5':
-                        RookAI(swap,side,i,j,branch);
-			break;
-               case '7':
-			QueenAI(swap,side,i,j,branch);
-			break;
-               case '9':
-                        KingAI(swap,side,i,j,branch);
-			break;
-
-               default: break;
-            };
-         }
-      };
-    };
+  int i,j=0;
+  /*  printf("\n\n\n\n");
+   *  printing(swap);*/
+  for (i; i<=7; ++i) {
+    j=0;
+    for (j; j<=7; ++j) {
+      if (swap[1][i][j] == side) {
+        char ent = swap[0][i][j];
+        switch(ent) {
+          case '1':
+            PawnAI(swap,side,i,j,branch);
+            break;
+          case '2':
+            KnightAI(swap,side,i,j,branch);
+            break;
+          case '4':
+            BishopAI(swap,side,i,j,branch);
+            break;
+          case '5':
+            RookAI(swap,side,i,j,branch);
+            break;
+          case '7':
+            QueenAI(swap,side,i,j,branch);
+            break;
+          case '9':
+            KingAI(swap,side,i,j,branch);
+            break;
+          default:break;
+        }
+      }
+    }
+  }
 }
 
-void PawnAI(char swap[2][8][8], char side, int i,int j, node* root)
+void PawnAI(char swap[2][8][8], char side, int i, int j, node *root)
 {
-    printf("pawn %d %d %c\n",i,j,side);
-    int outer;
-    int inner;
-    if(side== '1')
-    {
-       int moves[8]={i+1,j,i+2,j,i+1,j+1,i+1,j-1};
-       outer=0;
-       inner=1;
-       for(outer;outer<=6; outer+=2)
-       {
-          if(moves[outer]>7 || moves[outer]<0)
-          {
-             moves[outer] = mark;
-             moves[outer+1] = mark;
-          }
-          
-          if(moves[inner]>7 || moves[inner]<0)
-          {
-             moves[outer] = mark;
-             moves[inner] = mark;
-          }
-
-          if(moves[outer]!= mark)
-          {
-             int k,l;
-             k = moves[outer];
-             l = moves[inner];
-           /*  printf("human pawn common_init k=%d l=%d\n",k,l);*/
-             common_init(i,j,k,l,swap,root,side);
-          }
-
-          inner+=2;
-       };
-
-
+  printf("pawn %d %d %c\n", i,j,side);
+  int outer, inner;
+  if (side== '1') {
+    int moves[8] = {i+1,j,i+2,j,i+1,j+1,i+1,j-1};
+    outer=0;
+    inner=1;
+    for (outer; outer<=6; outer+=2) {
+      if (moves[outer]>7 || moves[outer]<0) {
+        moves[outer] = mark;
+        moves[outer+1] = mark;
+      }
+      if (moves[inner]>7 || moves[inner]<0) {
+        moves[outer] = mark;
+        moves[inner] = mark;
+      }
+      if (moves[outer]!= mark) {
+        int k, l;
+        k = moves[outer];
+        l = moves[inner];
+        /*  printf("human pawn common_init k=%d l=%d\n",k,l);*/
+        common_init(i,j,k,l,swap,root,side);
+      }
+      inner+=2;
     }
-
-    if(side == '2')
-    {
-       int moves[8] = {i-1,j,i-2,j,i-1,j+1,i-1,j-1};
-       outer =0;
-       inner =1;
-       for(outer;outer<=6; outer+=2)
-       {
-          if(moves[outer]>7 || moves[outer]<0)
-          {  
-             moves[outer] = mark;
-             moves[outer+1] = mark;
-          }
-
-          if(moves[inner]>7 || moves[inner]<0)
-          {  
-             moves[outer] = mark;
-             moves[inner] = mark;
-          }
-
-          if(moves[outer]!= mark)
-          {  
-             int k,l;
-             k = moves[outer];
-             l = moves[inner];
-/*             printf("computer pawn common_init k=%d l=%d\n",k,l);*/
-             common_init(i,j,k,l,swap,root,side);
-          }
-
-          inner+=2;
-       };
-
+  }
+  if (side == '2') {
+    int moves[8] = {i-1,j,i-2,j,i-1,j+1,i-1,j-1};
+    outer=0;
+    inner=1;
+    for (outer; outer<=6; outer+=2) {
+      if (moves[outer]>7 || moves[outer]<0) {
+        moves[outer] = mark;
+        moves[outer+1] = mark;
+      }
+      if (moves[inner]>7 || moves[inner]<0) {
+        moves[outer] = mark;
+        moves[inner] = mark;
+      }
+      if (moves[outer] != mark) {  
+        int k, l;
+        k = moves[outer];
+        l = moves[inner];
+        /*printf("computer pawn common_init k=%d l=%d\n",k,l);*/
+        common_init(i,j,k,l,swap,root,side);
+      }
+      inner+=2;
     }
+  }
 }
 
-void KnightAI(char swap[2][8][8], char side, int i, int j, node* root)
+void KnightAI(char swap[2][8][8], char side, int i, int j, node *root)
 {
-    printf("knight %d %d %c\n",i,j,side);
+    printf("knight %d %d %c\n", i,j,side);
     int moves[16] = {i+2,j-1,i+2,j+1,i-2,j-1,i-2,j+1,i+1,j+2,i+1,j-2,i-1,j+2,i-1,j-2};
-    int outer = 0;
-    int inner =1;
+    int outer=0, inner=1;
 
-    for(outer;outer<=14; outer+=2)
-    {
-      if(moves[outer]>7 || moves[outer]<0)
-      {  
+    for (outer; outer<=14; outer+=2) {
+      if (moves[outer]>7 || moves[outer]<0) {
          moves[outer] = mark;
          moves[outer+1] = mark;
       }
-
-      if(moves[inner]>7 || moves[inner]<0)
-      {  
+      if (moves[inner]>7 || moves[inner]<0) {
          moves[outer] = mark;
          moves[inner] = mark;
       }
 
-      if(moves[outer]!= mark)
+      if (moves[outer]!= mark)
       {  
          int k,l;
          k = moves[outer];
@@ -191,10 +158,10 @@ void BishopAI(char swap[2][8][8],char side, int i, int j, node* root)
     int moves[56];
     int i1=i;
     int j1=j;
-    int outer =0;
-    int inner =1;
+    int outer=0;
+    int inner=1;
 
-    for(outer; outer<=12; outer+=2)
+    for (outer; outer<=12; outer+=2)
     {
        moves[outer] = i1+1;
        moves[inner] = j1+1;
@@ -203,7 +170,7 @@ void BishopAI(char swap[2][8][8],char side, int i, int j, node* root)
        inner+=2;
     };
 
-    for(outer; outer<=26; outer+=2)
+    for (outer; outer<=26; outer+=2)
     {
        moves[outer] = i1+1;
        moves[inner] = j1-1;
@@ -212,7 +179,7 @@ void BishopAI(char swap[2][8][8],char side, int i, int j, node* root)
        inner+=2;
     };
 
-    for(outer;outer<=40; outer+=2)
+    for (outer;outer<=40; outer+=2)
     {
        moves[outer] = i1-1;
        moves[inner] = j1+1;
@@ -221,7 +188,7 @@ void BishopAI(char swap[2][8][8],char side, int i, int j, node* root)
        inner+=2;
     };
 
-    for(outer; outer<=54; outer+=2)
+    for (outer; outer<=54; outer+=2)
     {
        moves[outer] = i1-1;
        moves[inner] = j1-1;
@@ -232,21 +199,21 @@ void BishopAI(char swap[2][8][8],char side, int i, int j, node* root)
 
     outer=0;
     inner=1;
-    for(outer;outer<=54; outer+=2)
+    for (outer;outer<=54; outer+=2)
     {
-      if(moves[outer]>7 || moves[outer]<0)
+      if (moves[outer]>7 || moves[outer]<0)
       {
          moves[outer] = mark;
          moves[outer+1] = mark;
       }
 
-      if(moves[inner]>7 || moves[inner]<0)
+      if (moves[inner]>7 || moves[inner]<0)
       {
          moves[outer] = mark;
          moves[inner] = mark;
       }
 
-      if(moves[outer]!= mark)
+      if (moves[outer]!= mark)
       {
          int k,l;
          k = moves[outer];
@@ -269,7 +236,7 @@ void RookAI(char swap[2][8][8], char side, int i, int j, node* root)
     int outer = 0;
     int inner =1;
 
-    for(outer; outer<=54; outer+=8)
+    for (outer; outer<=54; outer+=8)
     {
        moves[outer] = i1+1;
        moves[inner] = j1+1;
@@ -296,21 +263,21 @@ void RookAI(char swap[2][8][8], char side, int i, int j, node* root)
    
     outer = 0;
     inner = 1;
-    for(outer;outer<=54; outer+=2)
+    for (outer;outer<=54; outer+=2)
     {
-      if(moves[outer]>7 || moves[outer]<0)
+      if (moves[outer]>7 || moves[outer]<0)
       {
          moves[outer] = mark;
          moves[outer+1] = mark;
       }
 
-      if(moves[inner]>7 || moves[inner]<0)
+      if (moves[inner]>7 || moves[inner]<0)
       {
          moves[outer] = mark;
          moves[inner] = mark;
       }
 
-      if(moves[outer]!= mark)
+      if (moves[outer]!= mark)
       {
          int k,l;
          k = moves[outer];
@@ -337,21 +304,21 @@ void KingAI(char swap[2][8][8],char side, int i, int j,node *root)
     int outer = 0;
     int inner =1;
 
-    for(outer;outer<=14; outer+=2)
+    for (outer;outer<=14; outer+=2)
     {   
-      if(moves[outer]>7 || moves[outer]<0)
+      if (moves[outer]>7 || moves[outer]<0)
       {
          moves[outer] = mark;
          moves[outer+1] = mark;
       }
 
-      if(moves[inner]>7 || moves[inner]<0)
+      if (moves[inner]>7 || moves[inner]<0)
       {
          moves[outer] = mark;
          moves[inner] = mark;
       }
 
-      if(moves[outer]!= mark)
+      if (moves[outer]!= mark)
       {
          int k,l;
          k = moves[outer];
@@ -374,7 +341,7 @@ void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,
     int error = compute(init_ent, i1, j1, k1, l1, 1, swap);
     printf("error %d    ",error);
 
-    if(error == 0)
+    if (error == 0)
     {
        list_elm* list = (list_elm*)malloc(sizeof(list_elm));
        list->i = i1;
@@ -390,10 +357,10 @@ void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,
        branch->max_val = 0;
        branch->min_val = 0;
        int z =0; int c= 0;
-       for(z; z<=99; z++)
+       for (z; z<=99; z++)
        {
           branch->array[z] =NULL;
-          if(root->array[z] == NULL && c==0)
+          if (root->array[z] == NULL && c==0)
           {
              root->array[z] = branch; /*this is because we want the first NULL entry */
              c =1;
@@ -406,10 +373,10 @@ void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,
        char ent = '\0';
        char side ='\0';
        z=0 ;c= 0;
-       for(c; c<=7; c++)
+       for (c; c<=7; c++)
        {
          z=0;
-         for(z;z<=7;z++)
+         for (z;z<=7;z++)
          {
             ent  = swap[0][c][z];
             side = swap[1][c][z];
@@ -418,53 +385,53 @@ void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,
             {
               case'1':
                     {
-                     if(side == '1')
+                     if (side == '1')
                         val = val-1;
-                     else if(side == '2')
+                     else if (side == '2')
                         val =val+1;
                      break;
                     }
 
               case'2':
                     {
-                     if(side == '1')
+                     if (side == '1')
                         val = val-2;
-                     else if(side == '2')
+                     else if (side == '2')
                         val =val+2;
                      break;
                     }
               case'4':
                     {
-                     if(side == '1')
+                     if (side == '1')
                         val = val-4;
-                     else if(side == '2')
+                     else if (side == '2')
                         val =val+4;
                      break;
                     }
               case'5':
                     {
-                     if(side == '1')
+                     if (side == '1')
                         val = val-5;
-                     else if(side == '2')
+                     else if (side == '2')
                         val =val+5;
                      break;
                     }
               case'7':
                     {
-                     if(side == '1')
+                     if (side == '1')
                         val = val-7;
-                     else if(side == '2')
+                     else if (side == '2')
                         val =val+7;
                      break;
                     }
               case'9':
                    {
-                     if(side == '1')
+                     if (side == '1')
                      {
                         val = val-9;
                         defeat = 1;
                      }
-                     else if(side == '2')
+                     else if (side == '2')
                      {
                         val =val+9;
                         victory=1;
@@ -478,12 +445,12 @@ void common_init(int i1, int j1, int k1, int l1, char swap[2][8][8], node *root,
          };/*End of FOR INNER LOOP*/
       };/*End of FOR OUTER LOOP*/
 
-      if(defeat==0 && victory==1)
+      if (defeat==0 && victory==1)
       {
          branch->vcntr+=1;
       }
 
-      else if(defeat==1 && victory==0)
+      else if (defeat==1 && victory==0)
       {
          branch->dcntr+=1;
       }
@@ -510,10 +477,10 @@ void AIfunc(char origin[2][8][8])
     char swap[2][8][8];
 
     int a,b =0;
-    for(a; a<=7; a++)
+    for (a; a<=7; a++)
     {
       b=0;
-      for(b; b<=7; b++)
+      for (b; b<=7; b++)
       {
           copy[0][a][b] = origin[0][a][b];
           copy[1][a][b] = origin[1][a][b];
@@ -534,7 +501,7 @@ void AIfunc(char origin[2][8][8])
     root->min_val = 0;
 
     int z =0;
-    for(z; z<=99; z++)
+    for (z; z<=99; z++)
     {
        root->array[z] = NULL;
     };
@@ -545,15 +512,15 @@ void AIfunc(char origin[2][8][8])
     z =0;
     int maxim_val = -100;
     node *shell = NULL;
-    for(z; z<=99; z++)
+    for (z; z<=99; z++)
     {
        shell =root->array[z];
-       if(shell!=NULL)
-          if(maxim_val < shell->elist->eval)
+       if (shell!=NULL)
+          if (maxim_val < shell->elist->eval)
              maxim_val = shell->elist->eval;
     };
 
-    if(maxim_val >= 0)
+    if (maxim_val >= 0)
        maxim_val = 0.3*maxim_val;
 
     else
@@ -562,10 +529,10 @@ void AIfunc(char origin[2][8][8])
     printf("maxim_val %d\n",maxim_val);
     z =0;
 
-    for(z;z<=99; z++)
+    for (z;z<=99; z++)
     {
        shell = root->array[z];
-       if(shell!=NULL && shell->elist->eval < maxim_val)
+       if (shell!=NULL && shell->elist->eval < maxim_val)
        {
           free(shell->elist);
           free(shell);
@@ -580,9 +547,9 @@ void AIfunc(char origin[2][8][8])
 
     z =0;
     int i1,j1,k1,l1;
-    for(z;z<=99; z++)
+    for (z;z<=99; z++)
     {
-       if(root->array[z]!=NULL)
+       if (root->array[z]!=NULL)
        {
          node* branch = root->array[z];
          i1 = branch->elist->i;
@@ -615,30 +582,30 @@ void AIfunc(char origin[2][8][8])
     int threat = 0; /*to know whether there is any imminent threat
                      *and this signifies a checkmate condition */
     z = 0;
-    for(z ; z<=99;z++)
+    for (z ; z<=99;z++)
     {
        shell = root->array[z];
-       if(shell!= NULL)
+       if (shell!= NULL)
        {
           int ma_val= -100;
           int mi_val = 100;
           int c =0;
-          for(c;c<=99; c++)
+          for (c;c<=99; c++)
           {
              subshell = shell->array[c];
-             if(subshell!=NULL)
+             if (subshell!=NULL)
              {
-                if(ma_val < subshell->elist->eval)
+                if (ma_val < subshell->elist->eval)
                 {
                    ma_val = subshell->elist->eval;
                 }
 
-                if(mi_val > subshell->elist->eval)
+                if (mi_val > subshell->elist->eval)
                 {
                    mi_val = subshell->elist->eval;
                 }
 
-                if(subshell->dcntr > 0)
+                if (subshell->dcntr > 0)
                 {
                    shell->dcntr+=1;/*this is to tell us how many times dcntrs are high in subshells */
                 }
@@ -649,10 +616,10 @@ void AIfunc(char origin[2][8][8])
           shell->max_val = ma_val;
           shell->min_val = mi_val;
        
-          if(min_dcntr > shell->dcntr)
+          if (min_dcntr > shell->dcntr)
              min_dcntr = shell->dcntr;
 
-          if(shell->dcntr > 0)
+          if (shell->dcntr > 0)
              threat =1;
        }
     };
@@ -660,7 +627,7 @@ void AIfunc(char origin[2][8][8])
     printf("min_dcntr = %d\n",min_dcntr);
     int ind_array[60];
     z =0;
-    for(z; z<=59; z++)
+    for (z; z<=59; z++)
        ind_array[z] = 200; /*this array is for storing the indices of root which have 
                             * lowest dcntr*/
 
@@ -673,17 +640,17 @@ void AIfunc(char origin[2][8][8])
                        *             the computer will kill the knight if 
                        *             possible.*/
 
-    for(z;z<=99;z++)
+    for (z;z<=99;z++)
     {  
        node* subshell = NULL;
        shell = root->array[z];
-       if(shell!=NULL && shell->dcntr > 0 && safe_mode==0)/*dcntr can be > 1*/
+       if (shell!=NULL && shell->dcntr > 0 && safe_mode==0)/*dcntr can be > 1*/
        {
            int r=0;
-           for(r;r<=99;r++)
+           for (r;r<=99;r++)
            {
               subshell = shell->array[r];
-              if(subshell!= NULL && subshell->dcntr > 0 && safe_mode==0)/*dcntr can be 0 or 1*/
+              if (subshell!= NULL && subshell->dcntr > 0 && safe_mode==0)/*dcntr can be 0 or 1*/
               {  
                   int i = subshell->elist->i;  /* this 'i' & 'j' represent the position of the       */
                   int j = subshell->elist->j;  /* player 1 entity which can kill the king of the     */ 
@@ -692,10 +659,10 @@ void AIfunc(char origin[2][8][8])
                                                /* where the computer is capable of killing the entity*/
                   node* inner_shell = NULL;
                   int c =0;
-                  for(c;c<=99;c++)
+                  for (c;c<=99;c++)
                   {
                      inner_shell = root->array[c];
-                     if(inner_shell!=NULL && i ==inner_shell->elist->k && j == inner_shell->elist->l && inner_shell->dcntr==0)
+                     if (inner_shell!=NULL && i ==inner_shell->elist->k && j == inner_shell->elist->l && inner_shell->dcntr==0)
                      {
                          ult_vic_shell = inner_shell;
                          safe_mode =1;
@@ -708,14 +675,14 @@ void AIfunc(char origin[2][8][8])
        }     
     };
 
-    if(safe_mode==0 && threat==1)/*we have been unsuccessful in eliminating the entity*/
+    if (safe_mode==0 && threat==1)/*we have been unsuccessful in eliminating the entity*/
     {                            /*which is a threat.*/
        node* shell=NULL;
        int c=0;
-       for(c;c<=99;c++)
+       for (c;c<=99;c++)
        {
           shell = root->array[c];
-          if(shell!=NULL && copy[0][shell->elist->i][shell->elist->j] == '9' && shell->dcntr==0)
+          if (shell!=NULL && copy[0][shell->elist->i][shell->elist->j] == '9' && shell->dcntr==0)
           {
              ult_vic_shell = shell;/*here we seek for a possible move by computer in which */
              threat=0;             /* the king can change its position leading to no checkmate*/
@@ -725,16 +692,16 @@ void AIfunc(char origin[2][8][8])
     }
 
     c=0;
-    for(z=0; z<=99; z++)
+    for (z=0; z<=99; z++)
     {
        shell = root->array[z];
-       if(shell!= NULL)
+       if (shell!= NULL)
        {
-         if(shell->vcntr!= 0)
+         if (shell->vcntr!= 0)
             ult_vic_shell = shell; /*this overwrites the value of ulti_vic_shell because*/
                                    /*we have finally got an instance where computer wins*/
 
-         if(min_dcntr == shell->dcntr)
+         if (min_dcntr == shell->dcntr)
          {
             ind_array[c] = z;
             c++;
@@ -744,9 +711,9 @@ void AIfunc(char origin[2][8][8])
 
     z =0;
     int ma_val = -100;
-    for(z;z<=c;z++)
+    for (z;z<=c;z++)
     {
-       if(ind_array[z]!= 200)
+       if (ind_array[z]!= 200)
        {
           shell = root->array[ind_array[z]];
           shell->max_val = ((shell->max_val + shell->min_val)*10)/2; /*10 is multiplied so that we have an integer   */
@@ -756,14 +723,14 @@ void AIfunc(char origin[2][8][8])
                                                                      /*shell->elist->eval is multiplied by 100 to give it 
                                                                       *a higher edge in the final calculation*/
 
-          if(ma_val < shell->max_val)
+          if (ma_val < shell->max_val)
              ma_val = shell->max_val;
        }
     };
 
     int ind_rand[100];/*for storing those moves which have highest value*/
     z=0;
-    for(z; z<100;z++)
+    for (z; z<100;z++)
     {
         ind_rand[z]=200;
     };
@@ -771,12 +738,12 @@ void AIfunc(char origin[2][8][8])
     int flag =0;
     int end_array=0;
     z =0;
-    for(z; z<=c; z++)
+    for (z; z<=c; z++)
     {
-       if(ind_array[z]!= 200)
+       if (ind_array[z]!= 200)
        {
           shell = root->array[ind_array[z]];
-          if(ma_val == shell->max_val)
+          if (ma_val == shell->max_val)
           {
              ind_rand[end_array] = ind_array[z];
              end_array++;
@@ -784,37 +751,37 @@ void AIfunc(char origin[2][8][8])
              int j1 =shell->elist->j;
              char ent = copy[0][i1][j1];
 
-             if(ent=='1' && flag==0)
+             if (ent=='1' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
              }
 
-             if(ent=='2' && flag==0)
+             if (ent=='2' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
              }
 
-             if(ent=='4' && flag==0)
+             if (ent=='4' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
              }
 
-             if(ent=='5' && flag==0)
+             if (ent=='5' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
              }
 
-             if(ent=='7' && flag==0)
+             if (ent=='7' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
              }
 
-             if(ent=='9' && flag==0)
+             if (ent=='9' && flag==0)
              {
                 vic_shell = shell;
                 flag=1;
@@ -831,7 +798,7 @@ void AIfunc(char origin[2][8][8])
     vic_shell=root->array[ind_rand[z]];
     printf("i am there\n");
 
-    if(ult_vic_shell!=NULL)
+    if (ult_vic_shell!=NULL)
     {
        shell = ult_vic_shell;
        i1 = shell->elist->i;
@@ -840,7 +807,7 @@ void AIfunc(char origin[2][8][8])
        l1 = shell->elist->l;
     }
 
-    else if(ult_vic_shell==NULL && vic_shell!=NULL)
+    else if (ult_vic_shell==NULL && vic_shell!=NULL)
     {
        shell = vic_shell;
        i1 = shell->elist->i; 
@@ -859,26 +826,26 @@ return ;
 
 void FreeAll(node* root)                                         /*Returning the memory back to the heap*/
 {                                                                /*so as to avoid an overhead*/
-  if(root!= NULL)
+  if (root!= NULL)
   {
     int z,c =0;
-    for(z; z<=99; z++)
+    for (z; z<=99; z++)
     {
-       if(root->array[z] != NULL)
+       if (root->array[z] != NULL)
         c++;
     };
 
-    if(c!= 0)
+    if (c!= 0)
     {
       z =0;
-      for(z;z<=99;z++)
+      for (z;z<=99;z++)
       {
          FreeAll(root->array[z]);
          root->array[z] = NULL;
       };  
     }
 
-    else if(c == 0)
+    else if (c == 0)
     {
        free(root->elist);
        free(root);

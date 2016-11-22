@@ -2,6 +2,12 @@
 #include <stdlib.h>
 
 #define MAXSTACK 100
+#define STACKSIZE 100
+struct stack {
+  int top;
+  int items[STACKSIZE];
+};
+
 
 void partition(int x[], int lb, int ub, int *pj)
 {
@@ -24,6 +30,31 @@ void partition(int x[], int lb, int ub, int *pj)
   x[up] = a;
   *pj = up;
 }
+#if 1
+int empty(struct stack *ps)
+{
+  return (ps->top == -1);
+}
+#endif
+int pop(struct stack *ps)
+{
+  if (empty(ps)) {
+    puts("stack underflow");
+    exit(1);
+  }
+  return (ps->items[ps->top--]);
+}
+#if 1
+void push(struct stack *ps, int x)
+{
+  if (ps->top == STACKSIZE-1) {
+    puts("stack overflow");
+    exit(1);
+  } else
+    ps->items[++(ps->top)] = x;
+  return;
+}
+#endif
 
 void quicksort(int x[], int n)
 {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int a[]={
+int a[] = {
   75,
   95,64,
   17,47,82,
@@ -24,7 +24,7 @@ int main(void)
   int k;
   for(k=0; k<241/2; ++k)
     printf("%d ",a[k]);
-  putchar(10);
+  putchar('\n');
 
 
   return(0);

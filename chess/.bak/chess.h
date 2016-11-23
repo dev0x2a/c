@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "typedef.h"
-
 #define PGRM "chess.c"
 
 const char str[8][8] = {
@@ -49,14 +47,12 @@ void pboard(disp_t *p);
 void printuser(usr_t user);
 usr_t inituser(char who);
 psc_t initpiece(char type, char stat, char who, int x, int y);
-void send(register short *to, register short *from, register int count);
-void emit(u8 ret, s8 *msg, __FILE__, __LINE__);
 
-
-
-void send(register short *to, register short *from, register int count)
+send(to, from, count)
+register short *to, *from;
+register count;
 {
-  register int n = (count+7)/8;
+  register n = (count+7)/8;
   switch(count%8) {
     case 0: do { *to = *from++;
     case 7:      *to = *from++;     

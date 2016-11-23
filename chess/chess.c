@@ -21,7 +21,6 @@ int main(void)
   printuser(white);
   printuser(black);
 
-  psc_t rw1, rw2;
 #if 0
   psc_t kw1, kw2;
   psc_t bw1, bw2;
@@ -33,19 +32,10 @@ int main(void)
   psc_t qub, kib;
   psc_t pb1, pb2, pb3, pb4, pb5, pb6, pb7, pb8;
 #endif
-  rw1 = initpiece(ROOK, 1, WH, H, 1);
-  rw2 = initpiece(ROOK, 1, WH, A, 1);
-#if 0
-  kw1 = initpiece(KNIGHT, 1, WH, G, 1);
-  kw2 = initpiece(KNIGHT, 1, WH, B, 1);
-  bw1 = initpiece(BISHOP, 1, WH, H, 1);
-  bw2 = initpiece(BISHOP, 1, WH, H, 1);
-  quw = initpiece(QUEEN, 1, WH, H, 1);
-  kiw = initpiece(KING, 1, WH, H, 1);
+  psc_t rw1 = initpiece(ROOK, ALIVE, WH, H, 1);
+  psc_t rw2 = initpiece(ROOK, ALIVE, WH, A, 1);
 
-  rb1 = initpiece(1, 1, BL, H, 1);
-  rb2 = initpiece(1, 1, BL, H, 1);
-#endif
+
   printinfo(rw1);
   printinfo(rw2);
 
@@ -53,6 +43,6 @@ int main(void)
   free(black);
   free(rw1);
   free(rw2);
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
 

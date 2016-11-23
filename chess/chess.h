@@ -24,29 +24,47 @@ enum {DEAD=0, ALIVE};
 enum {WH=1, BL};
 
 typedef struct position {
-  int dx, dy;
+  char dx, dy;
 } pos_t;
 
 typedef struct piece {  
-  int status, who, type;
+  short status, who, type;
   pos_t loc;
 } *psc_t;
 
 typedef struct display {
   char board[8][8];
-  int status, turn;
+  short status, turn;
 } disp_t;
 
 typedef struct user {
-  int who, status, turn;
+  char who, status, turn;
 } *usr_t;
 
 void initboard(disp_t *p);
 void printinfo(psc_t piece);
 void pboard(disp_t *p);
 void printuser(usr_t user);
-usr_t inituser(int who);
-psc_t initpiece(int type, int stat, int who, int x, int y);
+usr_t inituser(char who);
+psc_t initpiece(char type, char stat, char who, int x, int y);
+
+send(to, from, count)
+register short *to, *from;
+register count;
+{
+  register n = (count+7)/8;
+  switch(count%8) {
+    case 0: do { *to = *from++;
+    case 7:      *to = *from++;     
+    case 6:      *to = *from++;     
+    case 5:      *to = *from++;     
+    case 4:      *to = *from++;     
+    case 3:      *to = *from++;     
+    case 2:      *to = *from++;     
+    case 1:      *to = *from++;     
+            } while (--n > 0);
+  }
+}
 
 void initboard(disp_t *p)
 {
@@ -58,7 +76,7 @@ void initboard(disp_t *p)
   }
 }
 
-psc_t initpiece(int type, int stat, int who, int x, int y)
+psc_t initpiece(char type, char stat, char who, int x, int y)
 { 
   psc_t piece = malloc(sizeof(psc_t));
   if (!piece) {
@@ -106,7 +124,7 @@ void printinfo(psc_t piece)
   printf("who:  p%d, %s\n", piece->who,piece->who?"white":"black");
 }
 
-usr_t inituser(int who)
+usr_t inituser(char who)
 {
   usr_t user = malloc(sizeof(usr_t));
   if (!user) {
@@ -132,7 +150,7 @@ void printuser(usr_t user)
 
 void pboard(disp_t *p)
 {
-  int i, j;
+  char i, j;
   for (i=0; i<8; ++i) {
     for (j=0; j<8; ++j) {
       printf("%c ", p->board[i][j]);

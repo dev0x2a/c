@@ -76,7 +76,6 @@ psc_t initpiece(int type, int stat, int who, int x, int y)
 void printinfo(psc_t piece)
 {
   char *type;
-  
   switch(piece->type) {
     case 0:
       type = "pawn";

@@ -75,9 +75,24 @@ psc_t initpiece(int type, int stat, int who, int x, int y)
 
 void printinfo(psc_t piece)
 {
+  int i = piece->type;
+  char *type;
+  if (i==0)
+    type = "pawn";
+  if (i==1)
+    type = "rook";
+  if (i==2)
+    type = "knight";
+  if (i==3)
+    type = "bishop";
+  if (i==4)
+    type = "king";
+  if (i==5)
+    type = "queen";
+
   printf("\nx:    %d\n", piece->loc.dx);
   printf("y:    %d\n", piece->loc.dy);
-  printf("type: %d\n", piece->type);
+  printf("type: %s\n", type);
   printf("stat: %s\n", piece->status ? "alive" : "dead");
   printf("who:  p%d, %s\n", piece->who,piece->who?"white":"black");
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #define PGRM "chess.c"
 
@@ -18,7 +19,7 @@ const char str[8][8] = {
 enum {PAWN=0, ROOK, KNIGHT, BISHOP, KING, QUEEN};
 enum {A=1, B, C, D, E, F, G, H};
 enum {DEAD=0, ALIVE};
-enum {WHITE=1, BLACK};
+enum {WH=1, BL};
 
 typedef struct position {
   int dx, dy;
@@ -44,6 +45,7 @@ void initboard(disp_t *p);
 psc_t initpiece(int type, int stat, int who, int x, int y);
 void printinfo(psc_t piece);
 void pboard(disp_t *p);
+void freepiece(...);
 
 void initboard(disp_t *p)
 {
@@ -67,8 +69,15 @@ psc_t initpiece(int type, int stat, int who, int x, int y)
   piece->type = type;
   piece->status = stat;
   piece->who = who;
-  //printinfo(piece);
   return piece;
+}
+
+void freepiece(...)
+{
+  va_list va;
+  va_start(va);
+  free(va);
+  va_end(va);
 }
 
 void printinfo(psc_t piece)
@@ -83,7 +92,6 @@ void printinfo(psc_t piece)
 void pboard(disp_t *p)
 {
   int i, j;
-
   for (i=0; i<8; ++i) {
     for (j=0; j<8; ++j) {
       printf("%c ", p->board[i][j]);
@@ -99,20 +107,37 @@ int main(void)
   //pboard(&disp);
 
   psc_t rw1, rw2;
-  //psc_t kw1, kw2;
-  //psc_t bw1, bw2;
-  //psc_t quw, kiw;
-  //psc_t pw1, pw2, pw3, pw4, pw5, pw6, pw7, pw8;
-  //psc_t rb1, rb2;
-  //psc_t kb1, kb2;
-  //psc_t bb1, bb2;
-  //psc_t qub, kib;
-  //psc_t pb1, pb2, pb3, pb4, pb5, pb6, pb7, pb8;
+#if 0
+  psc_t kw1, kw2;
+  psc_t bw1, bw2;
+  psc_t quw, kiw;
+  psc_t pw1, pw2, pw3, pw4, pw5, pw6, pw7, pw8;
+  psc_t rb1, rb2;
+  psc_t kb1, kb2;
+  psc_t bb1, bb2;
+  psc_t qub, kib;
+  psc_t pb1, pb2, pb3, pb4, pb5, pb6, pb7, pb8;
+#endif
+  rw1 = initpiece(ROOK, 1, WH, H, 1);
+  rw2 = initpiece(ROOK, 1, WH, A, 1);
+#if 0
+  kw1 = initpiece(KNIGHT, 1, WH, G, 1);
+  kw2 = initpiece(KNIGHT, 1, WH, B, 1);
+  bw1 = initpiece(BISHOP, 1, WH, H, 1);
+  bw2 = initpiece(BISHOP, 1, WH, H, 1);
+  quw = initpiece(QUEEN, 1, WH, H, 1);
+  kiw = initpiece(KING, 1, WH, H, 1);
 
-  rw1 = initpiece(1, 1, 1, H, 1);
+  rb1 = initpiece(1, 1, BL, H, 1);
+  rb2 = initpiece(1, 1, BL, H, 1);
+#endif
   printinfo(rw1);
+  printinfo(rw2);
 
-  free(rw1);
+  //freepiece(rw1, rw2);
+
+  //free(rw1);
+  //free(rw2);
   exit(0);
 }
 

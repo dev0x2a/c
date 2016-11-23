@@ -6,6 +6,21 @@ int main(void)
   initboard(&disp);
   pboard(&disp);
 
+  usr_t white;
+  usr_t black;
+
+  white = inituser(WH);
+  black = inituser(BL);
+
+  white->turn = 1;
+  white->status = 1;
+
+  black->turn = 0;
+  black->status = 1;
+
+  printuser(white);
+  printuser(black);
+
   psc_t rw1, rw2;
 #if 0
   psc_t kw1, kw2;
@@ -34,6 +49,8 @@ int main(void)
   printinfo(rw1);
   printinfo(rw2);
 
+  free(white);
+  free(black);
   free(rw1);
   free(rw2);
   exit(0);

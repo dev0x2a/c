@@ -28,8 +28,7 @@ typedef struct position {
 } pos_t;
 
 typedef struct piece {  
-  int status;
-  int who, type;
+  int status, who, type;
   pos_t loc;
 } *psc_t;
 
@@ -39,13 +38,14 @@ typedef struct display {
 } disp_t;
 
 typedef struct user {
-  int who, status;
-  int color, turn;
-} usr_t;
+  int who, status, turn;
+} *usr_t;
 
 void initboard(disp_t *p);
 void printinfo(psc_t piece);
 void pboard(disp_t *p);
+void printuser(usr_t user);
+usr_t inituser(int who);
 psc_t initpiece(int type, int stat, int who, int x, int y);
 
 void initboard(disp_t *p)
@@ -104,6 +104,30 @@ void printinfo(psc_t piece)
   printf("type: %s\n", type);
   printf("stat: %s\n", piece->status ? "alive" : "dead");
   printf("who:  p%d, %s\n", piece->who,piece->who?"white":"black");
+}
+
+usr_t inituser(int who)
+{
+  usr_t user = malloc(sizeof(usr_t));
+  if (!user) {
+    fprintf(stderr, "%s: player allocation failure\n", PGRM);
+    exit(1);
+  }
+  user->who = who;
+  return user;
+}
+
+void printuser(usr_t user)
+{
+  char *who;
+  if (user->who == 1)
+    who = "white";
+  else
+    who = "black";
+
+  printf("\nwho: p%d, %s\n", user->who,who);
+  printf("turn: %s\n", user->turn ? "yes" : "no");
+  printf("stat: %s\n", user->status ? "alive" : "dead");
 }
 
 void pboard(disp_t *p)

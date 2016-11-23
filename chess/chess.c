@@ -16,6 +16,7 @@ const char str[8][8] = {
 };
 
 enum {PAWN=0, ROOK, KNIGHT, BISHOP, KING, QUEEN};
+enum {A=1, B, C, D, E, F, G, H};
 enum {DEAD=0, ALIVE};
 enum {WHITE=1, BLACK};
 
@@ -27,7 +28,7 @@ typedef struct piece {
   int status;
   int who, type;
   pos_t loc;
-} psc_t;
+} *psc_t;
 
 typedef struct display {
   char board[8][8];
@@ -40,8 +41,8 @@ typedef struct user {
 } usr_t;
 
 void initboard(disp_t *p);
-void initpieces(void);
-void printinfo(psc_t *piece);
+psc_t initpiece(int type, int stat, int who, int x, int y);
+void printinfo(psc_t piece);
 void pboard(disp_t *p);
 
 void initboard(disp_t *p)
@@ -54,40 +55,29 @@ void initboard(disp_t *p)
   }
 }
 
-void initpieces(void)
-{
-  psc_t *rook_1w;
-  //, rook_2w;
-  //psc_t knt_1w, knt_2w;
-  //psc_t bisp_1w, bisp_2w;
-  //psc_t queen_w, king_w;
-  //psc_t p1w, p2w, p3w, p4w, p5w, p6w, p7w, p8w;
-
-  //psc_t rook_1b, rook_2b;
-  //psc_t knt_1b, knt_2b;
-  //psc_t bisp_1b, bisp_2b;
-  //psc_t queen_b, king_b;
-  //psc_t p1b, p2b, p3b, p4b, p5b, p6b, p7b, p8b;
-  
-  rook_1w = malloc(sizeof(psc_t));
-
-  rook_1w->loc.dx = 0x8;
-  rook_1w->loc.dy = 0x1;
-  rook_1w->type = ROOK;
-  rook_1w->status = ALIVE;
-  rook_1w->who = WHITE;
-  printinfo(rook_1w);
-
-  free(rook_1w);
+psc_t initpiece(int type, int stat, int who, int x, int y)
+{ 
+  psc_t piece = malloc(sizeof(psc_t));
+  if (!piece) {
+    fprintf(stderr, "%s: piece allocation failure\n", PGRM);
+    exit(1);
+  }
+  piece->loc.dx = x;
+  piece->loc.dy = y;
+  piece->type = type;
+  piece->status = stat;
+  piece->who = who;
+  //printinfo(piece);
+  return piece;
 }
 
-void printinfo(psc_t *piece)
+void printinfo(psc_t piece)
 {
-  printf("\nx:   %d\n", piece->loc.dx);
-  printf("y:   %d\n", piece->loc.dy);
-  printf("type:%d\n", piece->type);
-  printf("stat:%s\n", piece->status ? "alive" : "dead");
-  printf("who: p%d, %s\n", piece->who,piece->who?"white":"black");
+  printf("\nx:    %d\n", piece->loc.dx);
+  printf("y:    %d\n", piece->loc.dy);
+  printf("type: %d\n", piece->type);
+  printf("stat: %s\n", piece->status ? "alive" : "dead");
+  printf("who:  p%d, %s\n", piece->who,piece->who?"white":"black");
 }
 
 void pboard(disp_t *p)
@@ -104,14 +94,25 @@ void pboard(disp_t *p)
 
 int main(void)
 {
-  disp_t disp;
+  //disp_t disp;
+  //initboard(&disp);
+  //pboard(&disp);
 
+  psc_t rw1, rw2;
+  //psc_t kw1, kw2;
+  //psc_t bw1, bw2;
+  //psc_t quw, kiw;
+  //psc_t pw1, pw2, pw3, pw4, pw5, pw6, pw7, pw8;
+  //psc_t rb1, rb2;
+  //psc_t kb1, kb2;
+  //psc_t bb1, bb2;
+  //psc_t qub, kib;
+  //psc_t pb1, pb2, pb3, pb4, pb5, pb6, pb7, pb8;
 
-  initboard(&disp);
-  
-  pboard(&disp);
-  initpieces();
-  
+  rw1 = initpiece(1, 1, 1, H, 1);
+  printinfo(rw1);
+
+  free(rw1);
   exit(0);
 }
 

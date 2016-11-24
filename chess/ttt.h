@@ -20,12 +20,13 @@ struct nodetype {
 };
 typedef struct nodetype *NODEPTR;
 
-//void pboard(char board[3][3]);
-//void expand(NODEPTR p, int plevel, int depth);
-//void nextmove(
-//    char board[][3], char newboard[][3], int looklevel, char player);
-//void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
-//NODEPTR buildtree(char board[][3], int looklevel);
+void pboard(char board[3][3]);
+void expand(NODEPTR p, int plevel, int depth);
+void nextmove(char board[][3], char nboard[][3], int looklvl, char player);
+void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
+NODEPTR buildtree(char board[][3], int looklvl);
+NODEPTR evaluate(NODEPTR p, char player);
+NODEPTR generate(NODEPTR p);
 
 void pboard(char board[3][3])
 {
@@ -38,23 +39,23 @@ void pboard(char board[3][3])
   }
   puts("a b c\n");
 }
-#if 0
+#if 1
 void nextmove(
-    char board[][3], char newboard[][3], int looklevel, char player)
+    char board[][3], char nboard[][3], int looklvl, char player)
 {
   NODEPTR ptree, best;
   int i, j, val;
-  ptree = buildtree(board, looklevel);
+  ptree = buildtree(board, looklvl);
   bestbranch(ptree, player, &best, &val);
   for (i=0; i<3; ++i)
     for (j=0; j<3; ++j)
-      newboard[i][j] = best->board[i][j];
+      nboard[i][j] = best->board[i][j];
 }
 
-NODEPTR buildtree(char board[][3], int looklevel)
+NODEPTR buildtree(char board[][3], int looklvl)
 {
   NODEPTR ptree;
-  int i, j;
+  short i, j;
 
   /* create root of tree and init */
   ptree = getnode();
@@ -66,7 +67,7 @@ NODEPTR buildtree(char board[][3], int looklevel)
   ptree->son = NULL;
   ptree->next = NULL;
   /* create rest of game tree */
-  expand(ptree, 0, looklevel);
+  expand(ptree, 0, looklvl);
   return(ptree);
 }
 
@@ -104,7 +105,7 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
     p = pnd->son;
     bestbranch(p, player, pbest, pvalue);
     *pbest = p;
-    if (pnd.turn == -1)
+    if (pnd->turn == -1)
       *pvalue = -*pvalue;
     p = p->next;
     while (p != NULL) {
@@ -121,6 +122,9 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
       *pvalue = -*pvalue;
   }
 }
+
+
+
 #endif
 char initb[3][3] = {{'.','.','.'},{'.','.','.'},{'.','.','.'}};
 

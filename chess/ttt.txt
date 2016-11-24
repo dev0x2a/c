@@ -1,17 +1,188 @@
-xox
-oxo
-oxo
+How many Tic-Tac-Toe (noughts and crosses) games?
 
-xox
-oxx
-oxo
 
-xox
-oox
-xxo
+A nice simple question which is perfectly possible to solve
+with a little bit of brute force.
 
-oox
-xxo
-oox
+The number is clearly bounded above, since there are 9
+possible ways of placing the first mark, 8 remaining ways of
+placing the second, 7 the third, ..., and 1 the ninth. This would
+be 9*8*7*6*5*4*3*2*1 = 9! = 362880.
 
+But 362880 is clearly too high. For example, a game that
+finishes after the seventh mark with three in a row would count
+twice in this figure, but should only count once. So we should
+expect a lower figure. But all games should continue until either
+all nine squares are filled or someone has three in a row (or
+both), so there must be at least five marks. So all we have to do
+is find how many games end with five marks, and similarly how
+many with six, seven, eight, or nine. For nine, there are two
+possibilities: either someone has won on their ninth move, or it
+is a draw with no three in a row.
+
+For simplicity, we can assume that the first player starts
+with an X and the second uses an O.
+
+
+
+/*****************************************/
+Number of games ending on the fifth move
+
+An easy calculation:
+there are 8 lines of three squares (three vertical, three
+horizontal, and two diagonal) and it doesn't matter in which
+order the three Xs were placed, and the two Os could have gone
+into two of the other six squares in any order. So we are looking
+at 8*3!*6*5 = 1440 possibilities for games ending in a
+win on the fifth move.
+
+/*****************************************/
+Number of games ending on the sixth move
+
+Slightly harder:
+there are again 8 lines of three squares, and it doesn't matter
+in which order the three Os were placed, and the three Xs could
+have gone into three of the other six squares in any order (providing
+that the Xs are not three in a row). Ignoring the bracketed
+phrase, this gives us 8*3!*6*5*4 = 5760 possibilities. To take
+account of the bracket, we need to exclude cases where there are
+three Os in a row and three Xs in a row: none of them can be a
+diagonal, and if a particular row is taken, there are only two
+other possible rows, so we need to exclude 6*3!*2*3! = 432 cases.
+So we are looking at 5760-432 = 5328 possibilities for
+games ending in a win on the sixth move.
+
+/*****************************************/
+Number of games ending on the seventh move
+
+Another little complexity:
+there are again 8 lines of three squares, but this time it does
+matter in which order the four Xs were placed, as the fourth must
+be on the line, while the three Os could have gone into three of
+the other five squares in any order (providing that the Os are
+not three in a row). Ignoring the bracketed phrase, this gives us
+8*3*6*3!*5*4*3 = 51840 possibilities. To take account of the
+bracket, we need to exclude cases where there are three Os in a
+row and three Xs in a row: none of them can be a diagonal, and if
+a particular row is taken with Xs, there are only two other
+possible rows of which one has an X, so we need to exclude 6*3*6*3!*3!
+= 3888 cases. So we are looking at 51840-3888 = 47952
+possibilities for games ending in a win on the seventh move.
+
+/*****************************************/
+Number of games ending on the eighth move
+
+More of the same:
+there are again 8 lines of three squares, but again it does
+matter in which order the four Os were placed, as the fourth must
+be on the line, while the four Xs could have gone into four of
+the other five squares in any order (providing that the Xs are
+not three in a row). Ignoring the bracketed phrase, this gives us
+8*3*6*3!*5*4*3*2 = 103680 possibilities. To take account of the
+bracket, we need to exclude cases where there are three Os in a
+row and three Xs in a row: none of them can be a diagonal, and if
+a particular row is taken with Os, there are only two other
+possible rows of which one has an O and two remaining places for
+an X, so we need to exclude 6*3*6*3!*2*4! = 31104 cases. So we
+are looking at 103680-31104 = 72576 possibilities for
+games ending in a win on the eighth move.
+
+/*****************************************/
+Number of games ending on the ninth move
+
+This could easily be calculated by substracting the
+possibilities already covered from 9!. But we will save that for
+a final check and move by brute force. The ninth game could end
+in a win or a draw, and we will calculate each. 
+
+For a win, there are a wide variety of possibilities:
+not only do we need to ensure that there are no three Os in a row
+before the fifth X is placed, but also that there is not already
+a distinct line of three Xs in a row. First we will consider a
+win involving a diagonal only: there are two, and the fifth X
+must be on the diagonal; this means that the other two Xs can
+only be in 8 of the remaining 15 possible pairs of squares off
+the diagonal; this leads to 2*3*8*4!*4! = 27648 possibilities.
+Second we will consider a win which only involves one vertical or
+horizontal three in a row: the other two Xs can be in 10 of the
+remaining 15 possible pairs of squares off the row to avoid
+another three in a row of X; only 4 of the 10 avoid three Os in a
+row; again the fifth X must be in the desired row; this leads to
+6*3*4*4!*4! = 41472 possibilities. Third, we need to consider the
+possibility that the fifth X completes two distinct threes in a
+row where they intersect: there are 22 possible intersecting
+pairs of three in a row; the fifth X must be the intersection;
+this leads to 22*1*4!*4! = 12672 possibilities. So we are looking
+at 27648+41472+12672 = 81792 possibilities for games
+ending in a win on the ninth move.
+
+/***************************************/
+For a draw, it is much easier:
+there is a total of 16 possible patterns for the five Xs and four
+Os which have no three in a row (there are three basic patterns
+increasing to 8+4+4 with reflections and rotations). So we are
+looking at 16*5!*4! = 46080 possibilities for games
+ending in a draw on the ninth move.
+
+So in total we are looking at 81792+46080 = 127872
+possibilities for games lasting as long as the ninth move.
+
+/***************************************/
+A check on our calculation so far:
+
+We could have caluclated the possibility for the ninth move as
+9! -4!*(fifth&nbsp;move&nbsp;wins) -3!*(sixth&nbsp;move&nbsp;wins)
+-2!*(seventh&nbsp;move&nbsp;wins) -1!*(eight&nbsp;move&nbsp;wins)
+= 362880-24*1440-6*5328-2*47952-1*72576 = 127872. This is the
+same result as before, so despite the possibility of offsetting
+errors, we can have some confidence in the result.
+
+How many Tic-Tac-Toe (noughts and crosses) games are
+possible?
+
+Adding all these figures together gives the desired result:
+1440+5328+47952+72576+81792+46080
+  = 255168 possible games in total.
+
+
+Despite this, my personal perception is that the game most
+usually ends in a draw (the result if both players are perfect),
+and that a win in 7 moves is the second most frequent real life
+result.
+
+The number of games could be reduced still further by taking
+account of symmetry (e.g. the first move could only be the
+centre, the middle of a side, or a corner, i.e. 3 possibilities
+rather than 9) but the calculations would be harder. 
+
+/*************************************************************/
+
+I first produced this page in February 2001 following a
+Scientific American article by Ian Stewart. In 2002 Steve
+Schaefer contacted me to tell be he had calculated the number of
+solutions taking symmetry into account, together with 
+http://www.mathrec.org/old/2002jan/solutions.html many
+other calculations on a similar theme, such as the fact that
+(modulo symmetries) there are only 765 possible achievable
+positions if X goes first, and even fewer if the players are even
+moderately sensible.
+
+Since a square has 8 symmetries, it is counter-intuitive that
+that each of the numbers in this table is less than an eighth of
+the equivalent number in the earlier table. This does depend on
+the precise definition of what counts as equivalent games under
+symmetries. See if you agree with the following:
+
+    the first diagram below is equivalent to the second using
+        a reflection in the line between the top right and bottom
+        left, so they can both be considered as being the third;
+    therefore the fourth must be equivalent to the fifth,
+        since they are both essentially the sixth, which is
+        simply the third with two extra moves.
+
+An alternative approach would be to decide that the fourth and
+fifth are in fact different (since O2 is next to X1 in the fourth
+and next to X2 in the fifth). This would lead to higher number of
+possible games - an eighth of the numbers in the first table for
+a total of 31896.
 

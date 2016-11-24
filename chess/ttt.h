@@ -3,6 +3,12 @@
 
 #include "typedef.h"
 
+char initb[3][3] = {
+  {'.','.','.'},
+  {'.','.','.'},
+  {'.','.','.'}
+};
+
 enum { X=0, O };
 enum { OFF=0, ON };
 
@@ -123,9 +129,6 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
   }
 }
 
-
-
 #endif
-char initb[3][3] = {{'.','.','.'},{'.','.','.'},{'.','.','.'}};
 
 #endif /* TTT_H */

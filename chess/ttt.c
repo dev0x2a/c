@@ -4,11 +4,12 @@
 enum { X=0, O };
 enum { OFF=0, ON };
 
-typedef struct user {
+struct user {
   unsigned char stat:1;
   unsigned char turn:1;
   unsigned char who:1;
-} usr_t;
+};
+typedef struct user *usr_t;
 
 struct nodetype {
   char board[3][3];
@@ -17,17 +18,16 @@ struct nodetype {
 };
 typedef struct nodetype *NODEPTR;
 
-void pboard(char board[3][3]);
-void expand(NODEPTR p, int plevel, int depth);
-void nextmove(
-    char board[][3], char newboard[][3], int looklevel, char player);
-void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
-NODEPTR buildtree(char board[][3], int looklevel);
+//void pboard(char board[3][3]);
+//void expand(NODEPTR p, int plevel, int depth);
+//void nextmove(
+//    char board[][3], char newboard[][3], int looklevel, char player);
+//void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
+//NODEPTR buildtree(char board[][3], int looklevel);
 
 void pboard(char board[3][3])
 {
-  char i, j;
-  putchar('\n');
+  short i, j;
   for (i=0; i<3; ++i) {
     for (j=0; j<3; ++j) {
       printf("%c ", board[i][j]);
@@ -36,7 +36,7 @@ void pboard(char board[3][3])
   }
   puts("a b c\n");
 }
-
+#if 0
 void nextmove(
     char board[][3], char newboard[][3], int looklevel, char player)
 {
@@ -119,30 +119,39 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
       *pvalue = -*pvalue;
   }
 }
-
+#endif
 
 int main(void)
 {
-  char board[3][3] = {'.','.','.','.','.','.','.','.','.'};
-  short n;
+  char initb[3][3] = {{'.','.','.'},{'.','.','.'},{'.','.','.'}};
+  int n;
 
 
   puts("x(0) or o(1)?");
   scanf("%d", &n);
-  usr_t p1, p2;
+  usr_t p1 = malloc(sizeof(usr_t));
+  usr_t p2 = malloc(sizeof(usr_t));
+
+  if (!p1 || !p2) {
+    fprintf(stderr, "%s: line=%d: could not allocate memory\n", __FILE__,__LINE__);
+    exit(1);
+  }
 
   if (n == 0) {
-    p1.who = X;
-    p2.who = O;
+    p1->who = X;
+    p2->who = O;
   } else {
-    p1.who = O;
-    p2.who = X;
+    p1->who = O;
+    p2->who = X;
   }
   
-  printf("\n%c goes first\n\n", p1.who ? 'o' : 'x');
-  p1.turn = ON;
-  p2.turn = OFF;
-  pboard(board);
+  printf("\n%c goes first\n\n", p1->who ? 'o' : 'x');
+  //p1.turn = ON;
+  //p2.turn = OFF;
+  pboard(initb);
+
+  free(p1);
+  free(p2);
 
   return 0;
 }

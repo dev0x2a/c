@@ -623,98 +623,77 @@ void AIfunc(char origin[2][8][8])
              threat =1;
        }
     };
-
     printf("min_dcntr = %d\n",min_dcntr);
     int ind_array[60];
     z =0;
     for (z; z<=59; z++)
        ind_array[z] = 200; /*this array is for storing the indices of root which have 
                             * lowest dcntr*/
-
     int c =0;
     z = 0;
-
     int safe_mode = 0;/*this is used so that we know that ult_vic_shell is
                        *stored with values which destroy the imminent threat
                        *FOR EXAMPLE: if a knight is going to kill our king,
                        *             the computer will kill the knight if 
                        *             possible.*/
 
-    for (z;z<=99;z++)
-    {  
+    for (z;z<=99;z++) {  
        node* subshell = NULL;
        shell = root->array[z];
-       if (shell!=NULL && shell->dcntr > 0 && safe_mode==0)/*dcntr can be > 1*/
-       {
+       if (shell!=NULL && shell->dcntr > 0 && safe_mode==0)/*dcntr can be > 1*/ {
            int r=0;
-           for (r;r<=99;r++)
-           {
+           for (r;r<=99;r++) {
               subshell = shell->array[r];
-              if (subshell!= NULL && subshell->dcntr > 0 && safe_mode==0)/*dcntr can be 0 or 1*/
-              {  
+              if (subshell!= NULL && subshell->dcntr > 0 && safe_mode==0)/*dcntr can be 0 or 1*/ {  
                   int i = subshell->elist->i;  /* this 'i' & 'j' represent the position of the       */
                   int j = subshell->elist->j;  /* player 1 entity which can kill the king of the     */ 
                                                /* so we try to match its position with the           */ 
                                                /* position of a possible case back in the past       */ 
                                                /* where the computer is capable of killing the entity*/
-                  node* inner_shell = NULL;
-                  int c =0;
-                  for (c;c<=99;c++)
-                  {
+                  node *inner_shell = NULL;
+                  int c=0;
+                  for (c;c<=99;c++) {
                      inner_shell = root->array[c];
-                     if (inner_shell!=NULL && i ==inner_shell->elist->k && j == inner_shell->elist->l && inner_shell->dcntr==0)
-                     {
+                     if (inner_shell!=NULL && i ==inner_shell->elist->k && j == inner_shell->elist->l && inner_shell->dcntr==0) {
                          ult_vic_shell = inner_shell;
                          safe_mode =1;
                      }
-                     
-                  };
+                  }
               }
 
-           };
-       }     
-    };
-
+           }
+       }
+    }
     if (safe_mode==0 && threat==1)/*we have been unsuccessful in eliminating the entity*/
     {                            /*which is a threat.*/
        node* shell=NULL;
        int c=0;
-       for (c;c<=99;c++)
-       {
+       for (c;c<=99;c++) {
           shell = root->array[c];
-          if (shell!=NULL && copy[0][shell->elist->i][shell->elist->j] == '9' && shell->dcntr==0)
-          {
+          if (shell!=NULL && copy[0][shell->elist->i][shell->elist->j] == '9' && shell->dcntr==0) {
              ult_vic_shell = shell;/*here we seek for a possible move by computer in which */
              threat=0;             /* the king can change its position leading to no checkmate*/
           }   
-       };
-
+       }
     }
-
     c=0;
-    for (z=0; z<=99; z++)
-    {
+    for (z=0; z<=99; z++) {
        shell = root->array[z];
-       if (shell!= NULL)
-       {
+       if (shell!= NULL) {
          if (shell->vcntr!= 0)
             ult_vic_shell = shell; /*this overwrites the value of ulti_vic_shell because*/
                                    /*we have finally got an instance where computer wins*/
 
-         if (min_dcntr == shell->dcntr)
-         {
+         if (min_dcntr == shell->dcntr) {
             ind_array[c] = z;
             c++;
          } 
        }
-    };
-
+    }
     z =0;
     int ma_val = -100;
-    for (z;z<=c;z++)
-    {
-       if (ind_array[z]!= 200)
-       {
+    for (z;z<=c;z++) {
+       if (ind_array[z]!= 200) {
           shell = root->array[ind_array[z]];
           shell->max_val = ((shell->max_val + shell->min_val)*10)/2; /*10 is multiplied so that we have an integer   */
           shell->max_val = shell->max_val + shell->elist->eval*100;  /*shell->elist->eval gives the value of grid of  */
@@ -722,131 +701,95 @@ void AIfunc(char origin[2][8][8])
                                                                      /*the avg of the possible moves by the human player */
                                                                      /*shell->elist->eval is multiplied by 100 to give it 
                                                                       *a higher edge in the final calculation*/
-
           if (ma_val < shell->max_val)
-             ma_val = shell->max_val;
+             ma_val=shell->max_val;
        }
-    };
-
+    }
     int ind_rand[100];/*for storing those moves which have highest value*/
     z=0;
-    for (z; z<100;z++)
-    {
+    for (z; z<100; ++z) {
         ind_rand[z]=200;
-    };
-
-    int flag =0;
+    }
+    int flag=0;
     int end_array=0;
-    z =0;
-    for (z; z<=c; z++)
-    {
-       if (ind_array[z]!= 200)
-       {
-          shell = root->array[ind_array[z]];
-          if (ma_val == shell->max_val)
-          {
-             ind_rand[end_array] = ind_array[z];
+    z=0;
+    for (z; z<=c; ++z) {
+       if (ind_array[z] != 200) {
+          shell=root->array[ind_array[z]];
+          if (ma_val == shell->max_val) {
+             ind_rand[end_array]=ind_array[z];
              end_array++;
-      /*       int i1 =shell->elist->i;
-             int j1 =shell->elist->j;
-             char ent = copy[0][i1][j1];
-
-             if (ent=='1' && flag==0)
-             {
-                vic_shell = shell;
+           /*int i1=shell->elist->i;
+             int j1=shell->elist->j;
+             char ent=copy[0][i1][j1];
+             if (ent=='1' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }
-
-             if (ent=='2' && flag==0)
-             {
-                vic_shell = shell;
+             if (ent=='2' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }
-
-             if (ent=='4' && flag==0)
-             {
-                vic_shell = shell;
+             if (ent=='4' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }
-
-             if (ent=='5' && flag==0)
-             {
-                vic_shell = shell;
+             if (ent=='5' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }
-
-             if (ent=='7' && flag==0)
-             {
-                vic_shell = shell;
+             if (ent=='7' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }
-
-             if (ent=='9' && flag==0)
-             {
-                vic_shell = shell;
+             if (ent=='9' && flag==0) {
+                vic_shell=shell;
                 flag=1;
              }*/
           }
        }
-    };
-
-    printf("i am here\n");                 /*produces a random number for selecting*/ 
-    end_array--;                           /*a move amongst equiprobable choices*/
+    }
+    printf("i am here\n"); /*produces a random number for selecting*/ 
+    end_array--;           /*a move amongst equiprobable choices*/
     srand(time(NULL));
     z=0;
     z = rand()%(end_array+1);
     vic_shell=root->array[ind_rand[z]];
     printf("i am there\n");
-
-    if (ult_vic_shell!=NULL)
-    {
+    if (ult_vic_shell != NULL) {
        shell = ult_vic_shell;
        i1 = shell->elist->i;
        j1 = shell->elist->j;
        k1 = shell->elist->k;
        l1 = shell->elist->l;
-    }
-
-    else if (ult_vic_shell==NULL && vic_shell!=NULL)
-    {
+    } else if (ult_vic_shell==NULL && vic_shell!=NULL) {
        shell = vic_shell;
        i1 = shell->elist->i; 
        j1 = shell->elist->j;
        k1 = shell->elist->k;
        l1 = shell->elist->l;
     }
-
     init_ent = origin[0][i1][j1];
     printf("i1%d j1%d k1%d l1%d\n",i1,j1,k1,l1);
     z = compute(init_ent, i1, j1 ,k1, l1, 0, origin);
-
-    FreeAll(root);    
-return ;
+    FreeAll(root);
+    return;
 }
 
-void FreeAll(node* root)                                         /*Returning the memory back to the heap*/
-{                                                                /*so as to avoid an overhead*/
-  if (root!= NULL)
-  {
-    int z,c =0;
-    for (z; z<=99; z++)
-    {
-       if (root->array[z] != NULL)
+void FreeAll(node *root)      /*Returning the memory back to the heap*/
+{                             /*so as to avoid an overhead*/
+  if (root != NULL) {
+    int z,c=0;
+    for (z; z<=99; ++z) {
+      if (root->array[z] != NULL)
         c++;
-    };
-
-    if (c!= 0)
-    {
-      z =0;
-      for (z;z<=99;z++)
-      {
+    } if (c != 0) {
+      z=0;
+      for (z; z<=99; ++z) {
          FreeAll(root->array[z]);
          root->array[z] = NULL;
-      };  
-    }
-
-    else if (c == 0)
-    {
+      }
+    } else if (c == 0) {
        free(root->elist);
        free(root);
     }

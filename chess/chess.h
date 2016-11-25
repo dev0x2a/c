@@ -53,7 +53,7 @@ psc_t initpiece(char type, char stat, char who, int x, int y);
 
 void emit(short ret, u8 *msg, u8 *file, short line)
 {
-  fprintf(stderr, "\nfile=%s, line=%d\nerror: %s\n", file,line,msg);
+  fprintf(stderr, "\nfile=%s, line=%d\n\t-> error: %s\n", file,line,msg);
   exit(ret);
 }
 

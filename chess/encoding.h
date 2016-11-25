@@ -6,11 +6,11 @@
 #define EQUEEN 0x1c1110 //queen
 #define EKING 0x1d1111 //king
 
-#define EBEMPTY 32 //empty board 32*1 bit
-#define EBEPAWN 48 //pawns 16*3 bits
-#define EBELSE 60 //rooks/knights/bishops 12*5 bits
-#define EBSPEC 24 //queens/kings 4*6 bits
-#define EBINIT 164 //total initial state
+#define EBEMPTY 0x20 //32 :empty board 32*1 bit
+#define EBEPAWN 0x30 //48 :pawns 16*3 bits
+#define EBELSE 0x3c //60: rooks/knights/bishops 12*5 bits
+#define EBSPEC 0x18 //24 :queens/kings 4*6 bits
+#define EBINIT 0xa4 //164 :total initial state
 
 typedef unsigned int uint;
 uint move;

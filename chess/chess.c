@@ -40,10 +40,8 @@ emit(EF, "line38?", FILENM,LINENO);
   printinfo(rw1);
   printinfo(rw2);
 
-  free(white);
-  free(black);
-  free(rw1);
-  free(rw2);
+  FREE(white, black);
+  FREE(rw1, rw2);
   exit(ES);
 }
 

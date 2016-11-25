@@ -3,19 +3,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "typedef.h"
+#define FREE(p,q) ((free(p)),(free(q)))
 
 const char str[8][8] = {
-/*8*/  {'R','N','B','K','Q','B','N','R'},
-/*7*/  {'+','+','+','+','+','+','+','+'},
-/*6*/  {'.','.','.','.','.','.','.','.'},
-/*5*/  {'.','.','.','.','.','.','.','.'},
-/*4*/  {'.','.','.','.','.','.','.','.'},
-/*3*/  {'.','.','.','.','.','.','.','.'},
-/*2*/  {'*','*','*','*','*','*','*','*'},
-/*1*/  {'r','n','b','k','q','b','n','r'},
-      /* a   b   c   d   e   f   g   h */
+/*8*/ {'R','N','B','K','Q','B','N','R'},
+/*7*/ {'+','+','+','+','+','+','+','+'},
+/*6*/ {'.','.','.','.','.','.','.','.'},
+/*5*/ {'.','.','.','.','.','.','.','.'},
+/*4*/ {'.','.','.','.','.','.','.','.'},
+/*3*/ {'.','.','.','.','.','.','.','.'},
+/*2*/ {'*','*','*','*','*','*','*','*'},
+/*1*/ {'r','n','b','k','q','b','n','r'},
+      /*a   b   c   d   e   f   g   h*/
 };
 
 enum {PAWN=0, ROOK, KNIGHT, BISHOP, KING, QUEEN};
@@ -32,23 +32,24 @@ typedef struct piece {
   pos_t loc;
 } *psc_t;
 
+typedef struct user {
+  char who, status, turn;
+} *usr_t;
+
 typedef struct display {
   char board[8][8];
   short status, turn;
 } disp_t;
 
-typedef struct user {
-  char who, status, turn;
-} *usr_t;
-
-void initboard(disp_t *p);
-void printinfo(psc_t piece);
 void pboard(disp_t *p);
+void initboard(disp_t *p);
 void printuser(usr_t user);
+void printinfo(psc_t piece);
+void emit(short ret, u8 *msg, u8 *file, short line);
+void send(register short *to, register short *from, register int count);
+
 usr_t inituser(char who);
 psc_t initpiece(char type, char stat, char who, int x, int y);
-void send(register short *to, register short *from, register int count);
-void emit(short ret, u8 *msg, u8 *file, short line);
 
 void emit(short ret, u8 *msg, u8 *file, short line)
 {
@@ -74,69 +75,52 @@ void send(register short *to, register short *from, register int count)
 
 void initboard(disp_t *p)
 {
-  int i, j;
-  for (i=0; i<8; ++i) {
-    for (j=0; j<8; ++j) {
+  for (int i=0; i<8; ++i)
+    for (int j=0; j<8; ++j)
       p->board[i][j] = str[i][j];
-    }
-  }
 }
 
 psc_t initpiece(char type, char stat, char who, int x, int y)
 { 
   psc_t piece = malloc(sizeof(psc_t));
   if (!piece) {
-    emit(1, "piece struct allocation failure", FILENM,LINENO);
+    emit(EF, "piece struct allocation failure", FILENM,LINENO);
   }
   piece->loc.dx = x;
   piece->loc.dy = y;
   piece->type = type;
   piece->status = stat;
   piece->who = who;
-  return piece;
+  return(piece);
 }
 
 void printinfo(psc_t piece)
 {
   char *type;
   switch(piece->type) {
-    case 0:
-      type = "pawn";
-      break;
-    case 1:
-      type = "rook";
-      break;
-    case 2:
-      type = "knight";
-      break;
-    case 3:
-      type = "bishop";
-      break;
-    case 4:
-      type = "king";
-      break;
-    case 5:
-      type = "queen";
-      break;
-    default:
-      break;
+    case 0: type="pawn";  break;
+    case 1: type="rook";  break;
+    case 2: type="knight";break;
+    case 3: type="bishop";break;
+    case 4: type="king";  break;
+    case 5: type="queen"; break;
+    default:break;
   }
-
   printf("\nx:    %d\n", piece->loc.dx);
   printf("y:    %d\n", piece->loc.dy);
   printf("type: %s\n", type);
   printf("stat: %s\n", piece->status ? "alive" : "dead");
-  printf("who:  p%d, %s\n", piece->who,piece->who?"white":"black");
+  printf("who:  p%d, %s\n", piece->who,piece->who ? "white" : "black");
 }
 
 usr_t inituser(char who)
 {
   usr_t user = malloc(sizeof(usr_t));
   if (!user) {
-    emit(1, "player struct allocation failure", FILENM,LINENO);
+    emit(EF, "player struct allocation failure", FILENM,LINENO);
   }
   user->who = who;
-  return user;
+  return(user);
 }
 
 void printuser(usr_t user)
@@ -154,9 +138,8 @@ void printuser(usr_t user)
 
 void pboard(disp_t *p)
 {
-  char i, j;
-  for (i=0; i<8; ++i) {
-    for (j=0; j<8; ++j) {
+  for (char i=0; i<8; ++i) {
+    for (char j=0; j<8; ++j) {
       printf("%c ", p->board[i][j]);
     }
     putchar('\n');

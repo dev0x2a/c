@@ -1,5 +1,210 @@
-┌───────────────────┬───────────────┬─────────┐
-│                   │               │         │
-├───────────────────┼───────────────┼─────────┤
-│                   │               │         │
-└───────────────────┴───────────────┴─────────┘
+ ┌─────────────────┐
+ │ R N B K Q B N R │
+ │ + + + + + + + + │
+ │ . . . . . . . . │
+ │ . . . . . . . . │
+ │ . . . . . . . . │
+ │ . . . . . . . . │
+ │ * * * * * * * * │
+ │ r n b k q b n r │
+ └─────────────────┘
+
+who: p1, white
+turn: yes
+stat: alive
+
+who: p2, black
+turn: no
+stat: alive
+
+x:    8
+y:    1
+type: rook
+stat: alive
+who:  p1, white
+
+x:    1
+y:    1
+type: rook
+stat: alive
+who:  p1, white
+
+x:    7
+y:    1
+type: knight
+stat: alive
+who:  p1, white
+
+x:    2
+y:    1
+type: knight
+stat: alive
+who:  p1, white
+
+x:    6
+y:    1
+type: bishop
+stat: alive
+who:  p1, white
+
+x:    3
+y:    1
+type: bishop
+stat: alive
+who:  p1, white
+
+x:    4
+y:    1
+type: queen
+stat: alive
+who:  p1, white
+
+x:    5
+y:    1
+type: king
+stat: alive
+who:  p1, white
+
+x:    8
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    7
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    6
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    5
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    4
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    3
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    2
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    1
+y:    2
+type: pawn
+stat: alive
+who:  p1, white
+
+x:    1
+y:    8
+type: rook
+stat: alive
+who:  p2, white
+
+x:    8
+y:    8
+type: rook
+stat: alive
+who:  p2, white
+
+x:    2
+y:    8
+type: knight
+stat: alive
+who:  p2, white
+
+x:    7
+y:    8
+type: knight
+stat: alive
+who:  p2, white
+
+x:    3
+y:    8
+type: bishop
+stat: alive
+who:  p2, white
+
+x:    6
+y:    8
+type: bishop
+stat: alive
+who:  p2, white
+
+x:    5
+y:    8
+type: queen
+stat: alive
+who:  p2, white
+
+x:    4
+y:    8
+type: king
+stat: alive
+who:  p2, white
+
+x:    1
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    2
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    3
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    4
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    5
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    6
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    7
+y:    7
+type: pawn
+stat: alive
+who:  p2, white
+
+x:    8
+y:    7
+type: pawn
+stat: alive
+who:  p2, white

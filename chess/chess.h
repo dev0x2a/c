@@ -4,7 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "typedef.h"
-#define FREE(p,q) ((free(p)),(free(q)))
+
+#define FREE(p,q) (free(p),free(q))
+
+#define PRINTINFOMACRO(a,b,c,d,e,f,g,h)\
+  (printinfo(a),printinfo(b),printinfo(c),printinfo(d),\
+   printinfo(e),printinfo(f),printinfo(g),printinfo(h))
+
 
 const char initstr[8][8] = {
 /*8*/ {'R','N','B','K','Q','B','N','R'},

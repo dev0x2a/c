@@ -1,13 +1,9 @@
 #include "chess.h"
 
-
+#define DEBUG 0
 
 int main(void)
 {
-  disp_t disp;
-  initboard(&disp);
-  pboard(&disp);
-
   usr_t white = inituser(WH);
   usr_t black = inituser(BL);
 
@@ -53,14 +49,22 @@ int main(void)
   psc_t pb8 = initpiece(PAWN, ALIVE, BL, H, 7);
 
 
+#if DEBUG
   printuser(white);
   printuser(black);
 
-PRINTINFOMACRO(rw1,rw2,nw1,nw2,bw1,bw2,qww,kww);
-PRINTINFOMACRO(pw1,pw2,pw3,pw4,pw5,pw6,pw7,pw8);
+  PRINTINFOMACRO(rw1,rw2,nw1,nw2,bw1,bw2,qww,kww);
+  PRINTINFOMACRO(pw1,pw2,pw3,pw4,pw5,pw6,pw7,pw8);
+  
+  PRINTINFOMACRO(rb1,rb2,nb1,nb2,bb1,bb2,qbb,kbb);
+  PRINTINFOMACRO(pb1,pb2,pb3,pb4,pb5,pb6,pb7,pb8);
+#endif
 
-PRINTINFOMACRO(rb1,rb2,nb1,nb2,bb1,bb2,qbb,kbb);
-PRINTINFOMACRO(pb1,pb2,pb3,pb4,pb5,pb6,pb7,pb8);
+  disp_t disp;
+  initboard(&disp);
+  pboard(&disp);
+
+
 
   FREE(white, black);
   FREE(rw1, rw2);
@@ -81,7 +85,6 @@ PRINTINFOMACRO(pb1,pb2,pb3,pb4,pb5,pb6,pb7,pb8);
   FREE(pb5, pb6);
   FREE(pb7, pb8);
 
-  emit(EF, "test error message", FILENM,LINENO);
   exit(ES);
 }
 

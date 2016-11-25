@@ -31,8 +31,18 @@ void expand(NODEPTR p, int plevel, int depth);
 void nextmove(char board[][3], char nboard[][3], int looklvl, char player);
 void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
 NODEPTR buildtree(char board[][3], int looklvl);
-NODEPTR evaluate(NODEPTR p, char player);
+int evaluate(NODEPTR p, char player);
 NODEPTR generate(NODEPTR p);
+NODEPTR getnode(void);
+
+int evaluate(NODEPTR p, char player)
+{
+  int val;
+
+  p->board;
+
+  return(val);
+}
 
 void pboard(char board[3][3])
 {
@@ -45,7 +55,18 @@ void pboard(char board[3][3])
   }
   puts("a b c\n");
 }
-#if 1
+
+NODEPTR getnode(void)
+{
+  NODEPTR p;
+  p = (NODEPTR) malloc(sizeof(struct nodetype));
+  if (!p) {
+    fprintf(stderr,"%s: line=%d: allocation error\n",__FILE__,__LINE__);
+    exit(EXIT_FAILURE);
+  }
+  return(p);
+}
+
 void nextmove(
     char board[][3], char nboard[][3], int looklvl, char player)
 {
@@ -128,7 +149,5 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
       *pvalue = -*pvalue;
   }
 }
-
-#endif
 
 #endif /* TTT_H */

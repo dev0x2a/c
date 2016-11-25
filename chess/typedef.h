@@ -1,36 +1,35 @@
 #ifndef TYPEDEF_H
 #define TYPEDEF_H
 
-typedef unsigned char       u8;
 typedef signed char         s8;
-typedef unsigned short      u16;
+typedef unsigned char       u8;
 typedef signed short        s16;
-typedef unsigned long       u32;
+typedef unsigned short      u16;
 typedef signed long         s32;
+typedef unsigned long       u32;
 typedef signed long long    s64;
 typedef unsigned long long  u64;
 typedef unsigned int        uint;
 
 
-typedef struct decprime {
-  int p, e, pe;
-} decprime_t;
+#ifndef MIN
+#define MIN(a,b) ((a<b)?a:b)
+#endif /* MIN */
 
-#ifndef cmin
-#define cmin(a,b) ((a<b)?a:b)
-#endif /* cmin */
+#ifndef MAX
+#define MAX(a,b) ((a>b)?a:b)
+#endif /* MAX */
 
-#ifndef cmax
-#define cmax(a,b) ((a>b)?a:b)
-#endif /* cmax */
-
-
-/* sieve byte table, ( > 3*5*7*11 ) */
+/* ( > 3*5*7*11 ) */
 #define LNUM 0xffffffffU
 #define TSIZE 256*1024
 #define CRAND_MAX 2147483647
 
-static u32 anext = 1;
+#define FILENM __FILE__
+#define LINENO __LINE__
+#define EF EXIT_FAILURE
+#define ES EXIT_SUCCESS
+
 u8 bittab[8] = {
   1,2,4,8,16,32,64,128
 };

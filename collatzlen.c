@@ -3,7 +3,7 @@
 #define LIM 500000
 typedef unsigned int uint;
 
-uint step (uint x)
+uint step(uint x)
 {
   if (x&1)
     return (3*x+1);
@@ -11,7 +11,7 @@ uint step (uint x)
     return (x/2);
 }
 
-uint nseq (uint x0)
+uint nseq(uint x0)
 {
   uint i=1, x;
   
@@ -20,7 +20,7 @@ uint nseq (uint x0)
 
   x = step(x0);
 
-  while (x!=1 && x!=0) {\
+  while (x!=1 && x!=0) {
     x = step(x);
     i++;
   }

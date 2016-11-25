@@ -35,6 +35,7 @@ int main(void)
   psc_t rw1 = initpiece(ROOK, ALIVE, WH, H, 1);
   psc_t rw2 = initpiece(ROOK, ALIVE, WH, A, 1);
 
+emit(EF, "line38?", FILENM,LINENO);
 
   printinfo(rw1);
   printinfo(rw2);
@@ -43,6 +44,6 @@ int main(void)
   free(black);
   free(rw1);
   free(rw2);
-  exit(EXIT_SUCCESS);
+  exit(ES);
 }
 

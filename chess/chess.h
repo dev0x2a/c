@@ -6,10 +6,6 @@
 
 #include "typedef.h"
 
-#define PGRM "chess.c"
-#define FILENM __FILE__
-#define LINENO __LINE__
-
 const char str[8][8] = {
 /*8*/  {'R','N','B','K','Q','B','N','R'},
 /*7*/  {'+','+','+','+','+','+','+','+'},
@@ -56,7 +52,7 @@ void emit(short ret, u8 *msg, u8 *file, short line);
 
 void emit(short ret, u8 *msg, u8 *file, short line)
 {
-  fprintf(stderr, "file=%s, line=%d\nerror: %s\n", file,line,msg);
+  fprintf(stderr, "\nfile=%s, line=%d\nerror: %s\n", file,line,msg);
   exit(ret);
 }
 

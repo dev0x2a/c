@@ -12,6 +12,8 @@
 #define EBSPEC 0x18 //24 :queens/kings 4*6 bits
 #define EBINIT 0xa4 //164 :total initial state
 
+#define CAPTURE 0xfff
+
 typedef unsigned int uint;
 uint move;
 
@@ -36,3 +38,4 @@ void setfrom(uint from) {
 int capture() {
   return (move & CAPTURE) != 0;
 }
+

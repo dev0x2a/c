@@ -135,12 +135,24 @@ void printuser(usr_t user)
 }
 
 void pboard(disp_t *p)
-{
+{/*
+┌───────────────────┐
+│                   │
+│                   │
+│                   │
+│                   │
+│                   │
+│                   │
+│                   │
+└───────────────────┘
+*/
+  //puts(" ┌───────────────────┐");
   for (int i=0; i<8; ++i) {
     for (int j=0; j<8; ++j) {
       printf("%c ", p->board[i][j]);
     }
-    putchar('\n');
+  //  printf("│");
   }
+//  puts(" └───────────────────┘");
 }
 #endif /* CHESS_H */

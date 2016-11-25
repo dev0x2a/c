@@ -1,3 +1,6 @@
+#ifndef NRUTIL_H
+#define NRUTIL_H
+
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,6 +11,7 @@ void nrerror(char error_text[])
   void exit();
 
   fprintf(stderr, "Numerical Recipes run-time error...\n");
+  fprintf(stderr, "file=%s, line=%d\n", __FILE__,__LINE__);
   fprintf(stderr, "%s\n", error_text);
   fprintf(stderr, "...now exiting to system...\n");
   exit(1);
@@ -228,3 +232,4 @@ void free_convert_matrix(float **b, int nrl, int nrh, int ncl, int nch)
   free((char *) (b+nrl));
 }
 
+#endif /* NRUTIL_H */

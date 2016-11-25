@@ -11,6 +11,7 @@
   (printinfo(a),printinfo(b),printinfo(c),printinfo(d),\
    printinfo(e),printinfo(f),printinfo(g),printinfo(h))
 
+const char *charset = ".?+*rRnNbBkKqQ";
 
 const char initstr[8][8] = {
 /*8*/ {'R','N','B','K','Q','B','N','R'},

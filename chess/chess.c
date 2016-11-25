@@ -6,11 +6,8 @@ int main(void)
   initboard(&disp);
   pboard(&disp);
 
-  usr_t white;
-  usr_t black;
-
-  white = inituser(WH);
-  black = inituser(BL);
+  usr_t white = inituser(WH);
+  usr_t black = inituser(BL);
 
   white->turn = 1;
   white->status = 1;
@@ -34,14 +31,14 @@ int main(void)
 #endif
   psc_t rw1 = initpiece(ROOK, ALIVE, WH, H, 1);
   psc_t rw2 = initpiece(ROOK, ALIVE, WH, A, 1);
-
-emit(EF, "line38?", FILENM,LINENO);
+  
 
   printinfo(rw1);
   printinfo(rw2);
-
   FREE(white, black);
   FREE(rw1, rw2);
+
+  emit(EF, "test error message", FILENM,LINENO);
   exit(ES);
 }
 

@@ -6,7 +6,7 @@
 #include "typedef.h"
 #define FREE(p,q) ((free(p)),(free(q)))
 
-const char str[8][8] = {
+const char initstr[8][8] = {
 /*8*/ {'R','N','B','K','Q','B','N','R'},
 /*7*/ {'+','+','+','+','+','+','+','+'},
 /*6*/ {'.','.','.','.','.','.','.','.'},
@@ -24,34 +24,34 @@ enum {DEAD=0, ALIVE};
 enum {WH=1, BL};
 
 typedef struct position {
-  char dx, dy;
+  u8 dx:8, dy:8;
 } pos_t;
 
-typedef struct piece {  
-  short status, who, type;
+typedef struct piece {
+  u16 status:1, who:2, type:6;
   pos_t loc;
 } *psc_t;
 
 typedef struct user {
-  char who, status, turn;
+  u8 status:1, who:2, turn:1;
 } *usr_t;
 
 typedef struct display {
-  char board[8][8];
-  short status, turn;
+  u8 board[8][8];
+  u16 status:1, turn:1;
 } disp_t;
 
 void pboard(disp_t *p);
 void initboard(disp_t *p);
 void printuser(usr_t user);
 void printinfo(psc_t piece);
-void emit(short ret, u8 *msg, u8 *file, short line);
+void emit(short ret, char *msg, char *file, short line);
 void send(register short *to, register short *from, register int count);
 
 usr_t inituser(char who);
 psc_t initpiece(char type, char stat, char who, int x, int y);
 
-void emit(short ret, u8 *msg, u8 *file, short line)
+void emit(short ret, char *msg, char *file, short line)
 {
   fprintf(stderr, "\nfile=%s, line=%d\n\t-> error: %s\n", file,line,msg);
   exit(ret);
@@ -77,15 +77,14 @@ void initboard(disp_t *p)
 {
   for (int i=0; i<8; ++i)
     for (int j=0; j<8; ++j)
-      p->board[i][j] = str[i][j];
+      p->board[i][j] = initstr[i][j];
 }
 
 psc_t initpiece(char type, char stat, char who, int x, int y)
 { 
   psc_t piece = malloc(sizeof(psc_t));
-  if (!piece) {
+  if (!piece)
     emit(EF, "piece struct allocation failure", FILENM,LINENO);
-  }
   piece->loc.dx = x;
   piece->loc.dy = y;
   piece->type = type;
@@ -104,7 +103,7 @@ void printinfo(psc_t piece)
     case 3: type="bishop";break;
     case 4: type="king";  break;
     case 5: type="queen"; break;
-    default:break;
+    default:type="unknown:error";break;
   }
   printf("\nx:    %d\n", piece->loc.dx);
   printf("y:    %d\n", piece->loc.dy);
@@ -116,9 +115,8 @@ void printinfo(psc_t piece)
 usr_t inituser(char who)
 {
   usr_t user = malloc(sizeof(usr_t));
-  if (!user) {
+  if (!user)
     emit(EF, "player struct allocation failure", FILENM,LINENO);
-  }
   user->who = who;
   return(user);
 }
@@ -138,8 +136,8 @@ void printuser(usr_t user)
 
 void pboard(disp_t *p)
 {
-  for (char i=0; i<8; ++i) {
-    for (char j=0; j<8; ++j) {
+  for (int i=0; i<8; ++i) {
+    for (int j=0; j<8; ++j) {
       printf("%c ", p->board[i][j]);
     }
     putchar('\n');

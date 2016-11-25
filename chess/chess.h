@@ -7,6 +7,8 @@
 #include "typedef.h"
 
 #define PGRM "chess.c"
+#define FILENM __FILE__
+#define LINENO __LINE__
 
 const char str[8][8] = {
 /*8*/  {'R','N','B','K','Q','B','N','R'},
@@ -50,9 +52,13 @@ void printuser(usr_t user);
 usr_t inituser(char who);
 psc_t initpiece(char type, char stat, char who, int x, int y);
 void send(register short *to, register short *from, register int count);
-void emit(u8 ret, s8 *msg, __FILE__, __LINE__);
+void emit(short ret, u8 *msg, u8 *file, short line);
 
-
+void emit(short ret, u8 *msg, u8 *file, short line)
+{
+  fprintf(stderr, "file=%s, line=%d\nerror: %s\n", file,line,msg);
+  exit(ret);
+}
 
 void send(register short *to, register short *from, register int count)
 {
@@ -84,8 +90,7 @@ psc_t initpiece(char type, char stat, char who, int x, int y)
 { 
   psc_t piece = malloc(sizeof(psc_t));
   if (!piece) {
-    fprintf(stderr, "%s: piece allocation failure\n", PGRM);
-    exit(1);
+    emit(1, "piece struct allocation failure", FILENM,LINENO);
   }
   piece->loc.dx = x;
   piece->loc.dy = y;
@@ -132,8 +137,7 @@ usr_t inituser(char who)
 {
   usr_t user = malloc(sizeof(usr_t));
   if (!user) {
-    fprintf(stderr, "%s: player allocation failure\n", PGRM);
-    exit(1);
+    emit(1, "player struct allocation failure", FILENM,LINENO);
   }
   user->who = who;
   return user;

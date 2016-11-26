@@ -59,12 +59,9 @@ int main(void)
   PRINTINFOMACRO(rb1,rb2,nb1,nb2,bb1,bb2,qbb,kbb);
   PRINTINFOMACRO(pb1,pb2,pb3,pb4,pb5,pb6,pb7,pb8);
 #endif
-
   disp_t disp;
   initboard(&disp);
   pboard(&disp);
-
-
 
   FREE(white, black);
   FREE(rw1, rw2);

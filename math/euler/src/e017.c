@@ -1,51 +1,33 @@
 #include <stdio.h>
-#define S 40
 
-int dec_whl[S] = {
-  3,3,5,4,4,3,5,5,4,3
+int deci_whl[11] = {
+  0,3,3,5,4,4,3,5,5,4,3
 };
-int spec_whl[S] = {
-  6,6,8,8,7,7,9,9,8,6
+int spec_whl[9] = {
+  6,6,8,8,7,7,9,8,8
 };
-int tens_whl[S] = {
-  6,6,6,5,5,7,6,6
+int tens_whl[8] = {
+  6,6,5,5,5,7,6,6
 };
-int hund_whl[S] = {0,7};
 
-int
-main(void)
+int main(void)
 {
-  int i, n, h;
-  unsigned long long s;
+  int i;
+  unsigned long long s=0;
 
-  while (i<1001) {
-    i=h=s=0;
-A:  for (n=0; n<10; ++n,++i) {
-      s+=dec_whl[n]+hund_whl[h];
-    }
-    for (n=0; n<10; ++n,++i) {
-      s+=spec_whl[n];
-    }
-    for (n=0,k=0; n<8; ++k,++i) {
-      if (k>9) { 
-        k=0;
-        ++n;
-      }
-      s+=tens_whl[n]+dec_whl[k];
-    }
-    if (i>=1000) {
-      s+=8+dec_whl[0];
-      break;
-    }
-    if (i%100) {
-      s+=3*99;
-      h=1;
-      goto A;
-    }  
-    for (n=0; n<9; ++n) {
-      s+=dec_whl[n]+7;
-    }
+  for (i=0; i<11; ++i) {
+    s+=deci_whl[i];
   }
+  for (i=0; i<9; ++i) {
+    s+=spec_whl[i];
+  }
+  for (i=0; i<8; ++i) {
+    s+=10*tens_whl[i];
+  }
+  s+=8*36;
+  s*=10;
+  s+=3600+(90*99)+74;
+
   printf("sum = %llu\n", s);
   return(0);
 }

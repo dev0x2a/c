@@ -1,18 +1,5 @@
 /* cat -- concatenate files and print on the standard output.
-   Copyright (C) 1988-2016 Free Software Foundation, Inc.
-
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   Copyright (C) 1988-2016 Free Software Foundation, Inc. */
 
 /* Differences from the Unix cat:
    * Always unbuffered, -u is ignored.
@@ -47,7 +34,7 @@
   proper_name_utf8 ("Torbjorn Granlund", "Torbj\303\266rn Granlund"), \
   proper_name ("Richard M. Stallman")
 
-/* Name of input file.  May be "-".  */
+/* Name of input file.  May be "-". */
 static char const *infile;
 
 /* Descriptor on which input file is open.  */
@@ -57,44 +44,41 @@ static int input_desc;
    An 11 digit counter may overflow within an hour on a P2/466,
    an 18 digit counter needs about 1000y */
 #define LINE_COUNTER_BUF_LEN 20
-static char line_buf[LINE_COUNTER_BUF_LEN] =
-  {
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0',
-    '\t', '\0'
-  };
+static char line_buf[LINE_COUNTER_BUF_LEN] = {
+  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0',
+  '\t', '\0'
+};
 
 /* Position in 'line_buf' where printing starts.  This will not change
    unless the number of lines is larger than 999999.  */
-static char *line_num_print = line_buf + LINE_COUNTER_BUF_LEN - 8;
+static char *line_num_print = line_buf+LINE_COUNTER_BUF_LEN-8;
 
 /* Position of the first digit in 'line_buf'.  */
-static char *line_num_start = line_buf + LINE_COUNTER_BUF_LEN - 3;
+static char *line_num_start = line_buf+LINE_COUNTER_BUF_LEN-3;
 
 /* Position of the last digit in 'line_buf'.  */
-static char *line_num_end = line_buf + LINE_COUNTER_BUF_LEN - 3;
+static char *line_num_end = line_buf+LINE_COUNTER_BUF_LEN-3;
 
 /* Preserves the 'cat' function's local 'newlines' between invocations.  */
 static int newlines2 = 0;
 
 void
-usage (int status)
+usage(int status)
 {
   if (status != EXIT_SUCCESS)
-    emit_try_help ();
-  else
-    {
-      printf (_("\
+    emit_try_help();
+  else {
+    printf(_("\
 Usage: %s [OPTION]... [FILE]...\n\
-"),
-              program_name);
-      fputs (_("\
+"), program_name);
+    fputs(_("\
 Concatenate FILE(s) to standard output.\n\
 "), stdout);
-
-      emit_stdin_note ();
-
-      fputs (_("\
+    
+    emit_stdin_note();
+    
+    fputs(_("\
 \n\
   -A, --show-all           equivalent to -vET\n\
   -b, --number-nonblank    number nonempty output lines, overrides -n\n\
@@ -103,39 +87,36 @@ Concatenate FILE(s) to standard output.\n\
   -n, --number             number all output lines\n\
   -s, --squeeze-blank      suppress repeated empty output lines\n\
 "), stdout);
-      fputs (_("\
+    fputs(_("\
   -t                       equivalent to -vT\n\
   -T, --show-tabs          display TAB characters as ^I\n\
   -u                       (ignored)\n\
   -v, --show-nonprinting   use ^ and M- notation, except for LFD and TAB\n\
 "), stdout);
-      fputs (HELP_OPTION_DESCRIPTION, stdout);
-      fputs (VERSION_OPTION_DESCRIPTION, stdout);
-      printf (_("\
+    fputs(HELP_OPTION_DESCRIPTION, stdout);
+    fputs(VERSION_OPTION_DESCRIPTION, stdout);
+    printf(_("\
 \n\
 Examples:\n\
   %s f - g  Output f's contents, then standard input, then g's contents.\n\
   %s        Copy standard input to standard output.\n\
-"),
-              program_name, program_name);
-      emit_ancillary_info (PROGRAM_NAME);
-    }
-  exit (status);
+"), program_name, program_name);
+    emit_ancillary_info(PROGRAM_NAME);
+  }
+  exit(status);
 }
 
-/* Compute the next line number.  */
-
+/* Compute the next line number */
 static void
-next_line_num (void)
+next_line_num(void)
 {
   char *endp = line_num_end;
-  do
-    {
-      if ((*endp)++ < '9')
-        return;
-      *endp-- = '0';
-    }
-  while (endp >= line_num_start);
+  do {
+    if ((*endp)++<'9')
+      return;
+    *endp-- = '0';
+  } while (endp >= line_num_start);
+  
   if (line_num_start > line_buf)
     *--line_num_start = '1';
   else
@@ -146,62 +127,50 @@ next_line_num (void)
 
 /* Plain cat.  Copies the file behind 'input_desc' to STDOUT_FILENO.
    Return true if successful.  */
-
 static bool
-simple_cat (
-     /* Pointer to the buffer, used by reads and writes.  */
-     char *buf,
-
-     /* Number of characters preferably read or written by each read and write
-        call.  */
-     size_t bufsize)
+simple_cat(
+    /* Pointer to the buffer, used by reads and writes.  */
+    char *buf,
+    /* Number of characters preferably read or
+     * written by each read and write call */
+    size_t bufsize)
 {
   /* Actual number of characters read, and therefore written.  */
   size_t n_read;
-
   /* Loop until the end of the file.  */
-
-  while (true)
-    {
-      /* Read a block of input.  */
-
-      n_read = safe_read (input_desc, buf, bufsize);
-      if (n_read == SAFE_READ_ERROR)
-        {
-          error (0, errno, "%s", quotef (infile));
-          return false;
-        }
-
-      /* End of this file?  */
-
-      if (n_read == 0)
-        return true;
-
-      /* Write this block out.  */
-
-      {
-        /* The following is ok, since we know that 0 < n_read.  */
-        size_t n = n_read;
-        if (full_write (STDOUT_FILENO, buf, n) != n)
-          error (EXIT_FAILURE, errno, _("write error"));
-      }
+  while (true) {
+    /* Read a block of input.  */
+    n_read = safe_read(input_desc, buf, bufsize);
+    if (n_read == SAFE_READ_ERROR) {
+      error(0, errno, "%s", quotef (infile));
+      return(false);
     }
+    /* End of this file?  */
+    if (n_read == 0)
+      return(true);
+
+    /* Write this block out.  */
+    {
+      /* The following is ok, since we know that 0 < n_read */
+      size_t n = n_read;
+      if (full_write(STDOUT_FILENO, buf, n) != n)
+        error(EXIT_FAILURE, errno, _("write error"));
+    }
+  }
 }
 
 /* Write any pending output to STDOUT_FILENO.
    Pending is defined to be the *BPOUT - OUTBUF bytes starting at OUTBUF.
    Then set *BPOUT to OUTPUT if it's not already that value.  */
-
 static inline void
-write_pending (char *outbuf, char **bpout)
+write_pending(char *outbuf, char **bpout)
 {
-  size_t n_write = *bpout - outbuf;
-  if (0 < n_write)
-    {
-      if (full_write (STDOUT_FILENO, outbuf, n_write) != n_write)
-        error (EXIT_FAILURE, errno, _("write error"));
-      *bpout = outbuf;
-    }
+  size_t n_write = *bpout-outbuf;
+  if (0 < n_write) {
+    if (full_write(STDOUT_FILENO, outbuf, n_write) != n_write)
+      error(EXIT_FAILURE, errno, _("write error"));
+    *bpout = outbuf;
+  }
 }
 
 /* Cat the file behind INPUT_DESC to the file behind OUTPUT_DESC.
@@ -210,45 +179,35 @@ write_pending (char *outbuf, char **bpout)
 
    A newline character is always put at the end of the buffer, to make
    an explicit test for buffer end unnecessary.  */
-
 static bool
-cat (
-     /* Pointer to the beginning of the input buffer.  */
-     char *inbuf,
-
-     /* Number of characters read in each read call.  */
-     size_t insize,
-
-     /* Pointer to the beginning of the output buffer.  */
-     char *outbuf,
-
-     /* Number of characters written by each write call.  */
-     size_t outsize,
-
-     /* Variables that have values according to the specified options.  */
-     bool show_nonprinting,
-     bool show_tabs,
-     bool number,
-     bool number_nonblank,
-     bool show_ends,
-     bool squeeze_blank)
+cat(
+    /* Pointer to the beginning of the input buffer */
+    char *inbuf,
+    /* Number of characters read in each read call  */
+    size_t insize,
+    /* Pointer to the beginning of the output buffer */
+    char *outbuf,
+    /* Number of characters written by each write call */
+    size_t outsize,
+    /* Variables that have values according to the specified options */
+    bool show_nonprinting,
+    bool show_tabs,
+    bool number,
+    bool number_nonblank,
+    bool show_ends,
+    bool squeeze_blank)
 {
-  /* Last character read from the input buffer.  */
+  /* Last character read from the input buffer */
   unsigned char ch;
-
-  /* Pointer to the next character in the input buffer.  */
+  /* Pointer to the next character in the input buffer */
   char *bpin;
-
   /* Pointer to the first non-valid byte in the input buffer, i.e., the
-     current end of the buffer.  */
+     current end of the buffer */
   char *eob;
-
-  /* Pointer to the position where the next character shall be written.  */
+  /* Pointer to the position where the next character shall be written */
   char *bpout;
-
-  /* Number of characters read by the last read call.  */
+  /* Number of characters read by the last read call */
   size_t n_read;
-
   /* Determines how many consecutive newlines there have been in the
      input.  0 newlines makes NEWLINES -1, 1 newline makes NEWLINES 1,
      etc.  Initially 0 to indicate that we are at the beginning of a
@@ -266,80 +225,66 @@ cat (
      is read immediately.  */
 
   eob = inbuf;
-  bpin = eob + 1;
+  bpin = eob+1;
 
   bpout = outbuf;
 
-  while (true)
-    {
-      do
-        {
-          /* Write if there are at least OUTSIZE bytes in OUTBUF.  */
+  while (true) {
+    do {
+      /* Write if there are at least OUTSIZE bytes in OUTBUF */
+      if (outbuf+outsize <= bpout) {
+        char *wp = outbuf;
+        size_t remaining_bytes;
+        do {
+          if (full_write(STDOUT_FILENO, wp, outsize) != outsize)
+            error(EXIT_FAILURE, errno, _("write error"));
+          wp += outsize;
+          remaining_bytes = bpout-wp;
+        } while (outsize <= remaining_bytes);
 
-          if (outbuf + outsize <= bpout)
-            {
-              char *wp = outbuf;
-              size_t remaining_bytes;
-              do
-                {
-                  if (full_write (STDOUT_FILENO, wp, outsize) != outsize)
-                    error (EXIT_FAILURE, errno, _("write error"));
-                  wp += outsize;
-                  remaining_bytes = bpout - wp;
-                }
-              while (outsize <= remaining_bytes);
-
-              /* Move the remaining bytes to the beginning of the
-                 buffer.  */
-
-              memmove (outbuf, wp, remaining_bytes);
-              bpout = outbuf + remaining_bytes;
-            }
-
-          /* Is INBUF empty?  */
-
-          if (bpin > eob)
-            {
-              bool input_pending = false;
+        /* Move the remaining bytes to the beginning of the
+           buffer.  */
+        
+        memmove(outbuf, wp, remaining_bytes);
+        bpout = outbuf+remaining_bytes;
+      }
+      
+      /* Is INBUF empty?  */
+      if (bpin > eob) {
+        bool input_pending = false;
 #ifdef FIONREAD
-              int n_to_read = 0;
-
-              /* Is there any input to read immediately?
-                 If not, we are about to wait,
-                 so write all buffered output before waiting.  */
-
-              if (use_fionread
-                  && ioctl (input_desc, FIONREAD, &n_to_read) < 0)
-                {
-                  /* Ultrix returns EOPNOTSUPP on NFS;
-                     HP-UX returns ENOTTY on pipes.
-                     SunOS returns EINVAL and
-                     More/BSD returns ENODEV on special files
-                     like /dev/null.
-                     Irix-5 returns ENOSYS on pipes.  */
-                  if (errno == EOPNOTSUPP || errno == ENOTTY
-                      || errno == EINVAL || errno == ENODEV
-                      || errno == ENOSYS)
-                    use_fionread = false;
-                  else
-                    {
-                      error (0, errno, _("cannot do ioctl on %s"),
-                             quoteaf (infile));
-                      newlines2 = newlines;
-                      return false;
-                    }
-                }
-              if (n_to_read != 0)
-                input_pending = true;
+        int n_to_read = 0;
+        
+        /* Is there any input to read immediately?
+           If not, we are about to wait,
+           so write all buffered output before waiting.  */
+        
+        if (use_fionread && ioctl(input_desc, FIONREAD, &n_to_read)<0) {
+          /* Ultrix returns EOPNOTSUPP on NFS;
+             HP-UX returns ENOTTY on pipes.
+             SunOS returns EINVAL and
+             More/BSD returns ENODEV on special files
+             like /dev/null.
+             Irix-5 returns ENOSYS on pipes.  */
+           if (errno==EOPNOTSUPP || errno==ENOTTY
+               || errno==EINVAL || errno==ENODEV || errno==ENOSYS)
+             use_fionread = false;
+           else {
+             error(0, errno, _("cannot do ioctl on %s"), quoteaf(infile));
+             newlines2 = newlines;
+             return(false);
+           }
+        }
+        if (n_to_read != 0)
+          input_pending = true;
 #endif
+        if (!input_pending)
+          write_pending(outbuf, &bpout);
+        
+        /* Read more input into INBUF.  */
 
-              if (!input_pending)
-                write_pending (outbuf, &bpout);
-
-              /* Read more input into INBUF.  */
-
-              n_read = safe_read (input_desc, inbuf, insize);
-              if (n_read == SAFE_READ_ERROR)
+        n_read = safe_read(input_desc, inbuf, insize);
+        if (n_read == SAFE_READ_ERROR)
                 {
                   error (0, errno, "%s", quotef (infile));
                   write_pending (outbuf, &bpout);

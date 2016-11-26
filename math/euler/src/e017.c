@@ -28,7 +28,7 @@ int main(void)
   s*=10;
   s+=3600+(90*99)+74;
 
-  printf("sum = %llu\n", s);
+  printf("-> %llu\n", s);
   return(0);
 }
 

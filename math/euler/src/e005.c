@@ -18,11 +18,11 @@ int lcm(int a, int b)
 
 int main(void) 
 {
-  int i, n=1;
+  int n=1;
   
-  for(i=1; i<21; ++i)
+  for(int i=1; i<21; ++i)
     n = lcm(n, i+1);
-  printf("%d\n", n);
+  printf("-> %d\n", n);
 
   return(0);
 }

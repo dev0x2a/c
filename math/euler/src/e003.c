@@ -8,10 +8,10 @@ int main(int argc, char *argv[])
     printf("%s <num> to print prime factors\n", argv[0]);
     return(-1);
   }
-  unsigned long n = atol(argv[1]);
+  unsigned long long n = atol(argv[1]);
   
   while (n%2 == 0) {
-    printf("%d\n",2);
+    printf("2\n");
     n /= 2;
   }
   for (int i=3; i<=sqrt(n); i+=2) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     }
   }
   if (n > 2)
-    printf("%lu\n", n);
+    printf("%llu\n", n);
   return(0);
 }
 

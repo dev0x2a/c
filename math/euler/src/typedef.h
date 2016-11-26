@@ -14,13 +14,13 @@ typedef unsigned int        uint;
 typedef u_int32_t ubig;
 #define LNUM 0xffffffffU
 
-#ifndef emin
-#define emin(a,b) ((a<b)?a:b)
-#endif /* pmin */
+#ifndef EMIN
+#define EMIN(a,b) ((a<b)?a:b)
+#endif /* EMIN */
 
-#ifndef emax
-#define emax(a,b) ((a>b)?a:b)
-#endif /* pmax */
+#ifndef EMAX
+#define EMAX(a,b) ((a>b)?a:b)
+#endif /* EMAX */
 
 
 /* sieve byte table, ( > 3*5*7*11 ) */
@@ -34,7 +34,7 @@ u8 bittab[8] = {
   1,2,4,8,16,32,64,128
 };
 
-int ptab[9] = {
+u8 ptab[9] = {
   2,3,5,7,11,13,17,19,23
 };
 

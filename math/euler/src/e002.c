@@ -4,10 +4,10 @@
 int main(int argc, char *argv[])
 {
   if (argc != 2) {
-    printf("%s <num> (sum of evens,odd of Fn [0..num])\n", argv[0]);
+    printf("%s <n> (sum evens,odd of Fn [0..n])\n", argv[0]);
     return(-1);
   }
-  long i, j, f1, f2, up, s, all;
+  unsigned long long i, j, f1, f2, up, s, all;
   
   f1 = 0;
   f2 = 1;
@@ -22,12 +22,12 @@ int main(int argc, char *argv[])
       f1 = f2;
       f2 = up;
     }
-    printf("%2ld ",up);
+    printf("%llu ", up);
     if (up%2 == 0)
       s += up;
     all += up;
   }
-  printf("\nsum = (evens) %ld, (all) %ld\n", s,all);
+  printf("\n(evens) -> %llu\n(all) -> %llu\n", s,all);
   return(0);
 }
 

@@ -6,7 +6,7 @@
    Arbitrary-precision code adapted by James Youngman from Torbjörn
    Granlund's factorize.c, from GNU MP version 4.2.2.
    In 2012, the core was rewritten by Torbjörn Granlund and Niels Möller.
-   Contains code from GNU MP.  */
+   Contains code from GNU MP  */
 
 /* Efficiently factor numbers that fit in one or two words(word = uintmax_t),
    or, with GMP, numbers of any size.
@@ -71,22 +71,22 @@
 */
 
 /* Whether to recursively factor to prove primality,
-   or run faster probabilistic tests.  */
+   or run faster probabilistic tests */
 #ifndef PROVE_PRIMALITY
 #define PROVE_PRIMALITY 1
 #endif
 
-/* Faster for certain ranges but less general.  */
+/* Faster for certain ranges but less general */
 #ifndef USE_SQUFOF
 #define USE_SQUFOF 0
 #endif
 
-/* Output SQUFOF statistics.  */
+/* Output SQUFOF statistics */
 #ifndef STAT_SQUFOF
 #define STAT_SQUFOF 0
 #endif
 
-#include <config.h>
+//#include <config.h>
 #include <getopt.h>
 #include <stdio.h>
 #if HAVE_GMP
@@ -104,18 +104,18 @@
 #include "system.h"
 #include "xstrtol.h"
 
-/* The official name of this program(e.g., no 'g' prefix).  */
+/* The official name of this program (eg, no 'g' prefix) */
 #define PROGRAM_NAME "factor"
 
-/* Token delimiters when reading from a file.  */
+/* Token delimiters when reading from a file  */
 #define DELIM "\n\t "
 #ifndef USE_LONGLONG_H
 /* With the way we use longlong.h, it's only safe to use
    when UWtype = UHWtype, as there were various cases
   (as can be seen in the history for longlong.h) where
    for example, _LP64 was required to enable W_TYPE_SIZE==64 code,
-   to avoid compile time or run time issues.  */
-#if LONG_MAX == INTMAX_MAX
+   to avoid compile time or run time issues */
+#if LONG_MAX==INTMAX_MAX
 #define USE_LONGLONG_H 1
 #endif
 #endif
@@ -123,16 +123,16 @@
 #if USE_LONGLONG_H
 /* Make definitions for longlong.h to make it do what it can do for us */
 /* bitcount for uintmax_t */
-#if UINTMAX_MAX == UINT32_MAX
+#if UINTMAX_MAX==UINT32_MAX
 #define W_TYPE_SIZE 32
-#elif UINTMAX_MAX == UINT64_MAX
+#elif UINTMAX_MAX==UINT64_MAX
 #define W_TYPE_SIZE 64
-#elif UINTMAX_MAX == UINT128_MAX
+#elif UINTMAX_MAX==UINT128_MAX
 #define W_TYPE_SIZE 128
 #endif
 
 #define UWtype uintmax_t
-#define UHWtype uint
+#define UHWtype unsigned long int
 #undef UDWtype
 #if HAVE_ATTRIBUTE_MODE
 typedef unsigned int UQItype __attribute__((mode(QI)));
@@ -143,13 +143,13 @@ typedef unsigned int UDItype __attribute__((mode(DI)));
 #else
 typedef unsigned char UQItype;
 typedef long SItype;
-typedef uint USItype;
+typedef unsigned long int USItype;
 #if HAVE_LONG_LONG_INT
 typedef long long int DItype;
 typedef unsigned long long int UDItype;
 #else /* Assume `long' gives us a wide enough type.  Needed for hppa2.0w.  */
 typedef long int DItype;
-typedef uint UDItype;
+typedef unsigned long int UDItype;
 #endif
 #endif
 #define LONGLONG_STANDALONE      /* Don't require GMP's longlong.h mdep files */
@@ -168,7 +168,9 @@ __GMP_DECLSPEC
 #endif
 /*************************/
 typedef unsigned char u8;
-typedef uint uint;
+typedef unsigned long int uint;
+typedef unsigned int UINT;
+
 
 /*************************/
 
@@ -262,7 +264,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
     __r1 = (n1);                                                               \
     __r0 = (n0);                                                               \
     __q = 0;                                                                   \
-    for (unsigned int __i = W_TYPE_SIZE; __i > 0; __i--) {                     \
+    for (UINT __i = W_TYPE_SIZE; __i > 0; __i--) {                     \
       rsh2(__d1, __d0, __d1, __d0, 1);                                         \
       __q <<= 1;                                                               \
       if (ge2(__r1, __r0, __d1, __d0)) {                                       \
@@ -315,7 +317,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 #define count_leading_zeros(count, x)                                          \
   do {                                                                         \
     uintmax_t __clz_x = (x);                                                   \
-    unsigned int __clz_c;                                                      \
+    UINT __clz_c;                                                      \
     for (__clz_c = 0; (__clz_x & ((uintmax_t)0xff << (W_TYPE_SIZE - 8))) == 0; \
          __clz_c += 8)                                                         \
       __clz_x <<= 8;                                                           \
@@ -329,7 +331,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 #define count_trailing_zeros(count, x)                                         \
   do {                                                                         \
     uintmax_t __ctz_x = (x);                                                   \
-    unsigned int __ctz_c = 0;                                                  \
+    UINT __ctz_c = 0;                                                  \
     while ((__ctz_x & 1) == 0) {                                               \
       __ctz_x >>= 1;                                                           \
       __ctz_c++;                                                               \
@@ -459,9 +461,9 @@ static uintmax_t gcd2_odd(uintmax_t *r1, uintmax_t a1, uintmax_t a0,
 }
 
 static void factor_insert_multiplicity(struct factors *factors, uintmax_t prime,
-    unsigned int m)
+    UINT m)
 {
-  unsigned int nfactors = factors->nfactors;
+  UINT nfactors = factors->nfactors;
   uintmax_t *p = factors->p;
   u8 *e = factors->e;
 
@@ -520,7 +522,7 @@ static void mp_factor_init(struct mp_factors *factors) {
 }
 
 static void mp_factor_clear(struct mp_factors *factors) {
-  for (unsigned int i=0; i<factors->nfactors; ++i)
+  for (UINT i=0; i<factors->nfactors; ++i)
     mpz_clear(factors->p[i]);
   free(factors->p);
   free(factors->e);
@@ -617,8 +619,8 @@ static bool flag_prove_primality = PROVE_PRIMALITY;
 #define MR_REPS 25
 
 static void factor_insert_refind(struct factors *factors, uintmax_t p,
-                                 unsigned int i, unsigned int off) {
-  for (unsigned int j = 0; j < off; j++)
+                                 UINT i, UINT off) {
+  for (UINT j = 0; j < off; j++)
     p += primes_diff[i + j];
   factor_insert(factors, p);
 }
@@ -659,7 +661,7 @@ static void factor_insert_refind(struct factors *factors, uintmax_t p,
 static uintmax_t factor_using_division(uintmax_t *t1p, uintmax_t t1,
                                        uintmax_t t0, struct factors *factors) {
   if (t0 % 2 == 0) {
-    unsigned int cnt;
+    UINT cnt;
 
     if (t0 == 0) {
       count_trailing_zeros(cnt, t1);
@@ -675,7 +677,7 @@ static uintmax_t factor_using_division(uintmax_t *t1p, uintmax_t t1,
   }
 
   uintmax_t p = 3;
-  unsigned int i;
+  UINT i;
   for (i = 0; t1 > 0 && i < PRIMES_PTAB_ENTRIES; i++) {
     for (;;) {
       uintmax_t q1, q0, hi, lo _GL_UNUSED;
@@ -745,7 +747,7 @@ static void mp_factor_using_division(mpz_t t, struct mp_factors *factors) {
   }
 
   p = 3;
-  for (unsigned int i = 1; i <= PRIMES_PTAB_ENTRIES;) {
+  for (UINT i = 1; i <= PRIMES_PTAB_ENTRIES;) {
     if (!mpz_divisible_ui_p(t, p)) {
       p += primes_diff[i++];
       if (mpz_cmp_ui(t, p * p) < 0)
@@ -952,7 +954,7 @@ static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
                        const uintmax_t *np, uintmax_t ni,
                        const uintmax_t *one) {
   uintmax_t r1, r0, b1, b0, n1, n0;
-  unsigned int i;
+  UINT i;
   uintmax_t e;
 
   b0 = bp[0];
@@ -985,7 +987,7 @@ static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
 
 static bool _GL_ATTRIBUTE_CONST millerrabin(uintmax_t n, uintmax_t ni,
                                             uintmax_t b, uintmax_t q,
-                                            unsigned int k, uintmax_t one) {
+                                            UINT k, uintmax_t one) {
   uintmax_t y = powm(b, q, n, ni, one);
 
   uintmax_t nm1 = n - one; /* -1, but in redc representation. */
@@ -993,7 +995,7 @@ static bool _GL_ATTRIBUTE_CONST millerrabin(uintmax_t n, uintmax_t ni,
   if (y == one || y == nm1)
     return true;
 
-  for (unsigned int i = 1; i < k; i++) {
+  for (UINT i = 1; i < k; i++) {
     y = mulredc(y, y, n, ni);
 
     if (y == nm1)
@@ -1005,7 +1007,7 @@ static bool _GL_ATTRIBUTE_CONST millerrabin(uintmax_t n, uintmax_t ni,
 }
 
 static bool millerrabin2(const uintmax_t *np, uintmax_t ni, const uintmax_t *bp,
-                         const uintmax_t *qp, unsigned int k,
+                         const uintmax_t *qp, UINT k,
                          const uintmax_t *one) {
   uintmax_t y1, y0, nm1_1, nm1_0, r1m;
 
@@ -1020,7 +1022,7 @@ static bool millerrabin2(const uintmax_t *np, uintmax_t ni, const uintmax_t *bp,
   if (y0 == nm1_0 && y1 == nm1_1)
     return true;
 
-  for (unsigned int i = 1; i < k; i++) {
+  for (UINT i = 1; i < k; i++) {
     y0 = mulredc2(&r1m, y1, y0, y1, y0, np[1], np[0], ni);
     y1 = r1m;
 
@@ -1087,10 +1089,10 @@ static bool prime_p(uintmax_t n) {
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite.  */
-  for (unsigned int r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     if (flag_prove_primality) {
       is_prime = true;
-      for (unsigned int i = 0; i < factors.nfactors && is_prime; i++) {
+      for (UINT i = 0; i < factors.nfactors && is_prime; i++) {
         is_prime = powm(a_prim, (n - 1) / factors.p[i], n, ni, one) != one;
       }
     } else {
@@ -1131,7 +1133,7 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
   uintmax_t one[2];
   uintmax_t na[2];
   uintmax_t ni;
-  unsigned int k;
+  UINT k;
   struct factors factors;
 
   if (n1 == 0)
@@ -1169,7 +1171,7 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite.  */
-  for (unsigned int r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     bool is_prime;
     uintmax_t e[2], y[2];
 
@@ -1183,7 +1185,7 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
         y[0] = powm2(&y[1], a_prim, e, na, ni, one);
         is_prime = (y[0] != one[0] || y[1] != one[1]);
       }
-      for (unsigned int i = 0; i < factors.nfactors && is_prime; i++) {
+      for (UINT i = 0; i < factors.nfactors && is_prime; i++) {
         /* FIXME: We always have the factor 2. Do we really need to
            handle it here? We have done the same powering as part
            of millerrabin. */
@@ -1251,7 +1253,7 @@ static bool mp_prime_p(mpz_t n) {
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite.  */
-  for (unsigned int r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     if (flag_prove_primality) {
       is_prime = true;
       for (uint i = 0; i < factors.nfactors && is_prime; i++) {
@@ -1552,7 +1554,7 @@ static uintmax_t _GL_ATTRIBUTE_CONST isqrt(uintmax_t n) {
 }
 
 static uintmax_t _GL_ATTRIBUTE_CONST isqrt2(uintmax_t nh, uintmax_t nl) {
-  unsigned int shift;
+  UINT shift;
   uintmax_t x;
 
   /* Ensures the remainder fits in an uintmax_t. */
@@ -1696,7 +1698,7 @@ static const unsigned short invtab[0x81] = {
 #if STAT_SQUFOF
 #define Q_FREQ_SIZE 50
 /* Element 0 keeps the total */
-static unsigned int q_freq[Q_FREQ_SIZE+1];
+static UINT q_freq[Q_FREQ_SIZE+1];
 #define MIN(a, b) ((a)<(b)?(a):(b))
 #endif
 
@@ -1714,13 +1716,13 @@ static bool factor_using_squfof(
      http://homes.cerias.purdue.edu/~ssw/squfof.pdf
    */
 
-  static const unsigned int multipliers_1[] = {/* = 1(mod 4) */
+  static const UINT multipliers_1[] = {/* = 1(mod 4) */
                                                105, 165, 21, 385, 33,
                                                5,   77,  1,  0};
-  static const unsigned int multipliers_3[] = {/* = 3(mod 4) */
+  static const UINT multipliers_3[] = {/* = 3(mod 4) */
                                                1155, 15, 231, 35, 3,
                                                55,   7,  11,  0};
-  const unsigned int *m;
+  const UINT *m;
   struct {
     uintmax_t Q, P;
   } queue[QUEUE_SIZE];
@@ -1748,7 +1750,7 @@ static bool factor_using_squfof(
           factor_using_pollard_rho(sqrt_n, 1, &f);
         }
         /* Duplicate the new factors */
-        for (unsigned int i = 0; i < f.nfactors; i++)
+        for (UINT i = 0; i < f.nfactors; i++)
           factor_insert_multiplicity(factors, f.p[i], 2 * f.e[i]);
       }
       return true;
@@ -1758,7 +1760,7 @@ static bool factor_using_squfof(
   /* Select multipliers so we always get n * mu = 3(mod 4) */
   for (m=(n0%4 == 1)?multipliers_3:multipliers_1; *m; ++m) {
     uintmax_t S, Dh, Dl, Q1, Q, P, L, L1, B;
-    unsigned int i, mu=*m, qpos=0;
+    UINT i, mu=*m, qpos=0;
 
     assert(mu*n0%4 == 3);
     /* In the notation of the paper, with mu * n == 3(mod 4), we
@@ -1837,7 +1839,7 @@ static bool factor_using_squfof(
       if ((i&1) == 0) {
         uintmax_t r = is_square(Q);
         if (r) {
-          for (unsigned int j=0; j<qpos; ++j) {
+          for (UINT j=0; j<qpos; ++j) {
             if (queue[j].Q == r) {
               if (r == 1)
                 /* Traversed entire cycle. */
@@ -1983,7 +1985,7 @@ static void mp_factor(mpz_t t, struct mp_factors *factors)
 static strtol_error strto2uintmax(
     uintmax_t *hip, uintmax_t *lop, const char *s)
 {
-  unsigned int lo_carry;
+  UINT lo_carry;
   uintmax_t hi=0, lo=0;
 
   strtol_error err = LONGINT_INVALID;
@@ -2003,7 +2005,7 @@ static strtol_error strto2uintmax(
   /* Initial scan for invalid digits.  */
   const char *p = s;
   for (;;) {
-    unsigned int c = *p++;
+    UINT c = *p++;
     if (c == 0)
       break;
 
@@ -2015,7 +2017,7 @@ static strtol_error strto2uintmax(
   }
 
   for (; err==LONGINT_OK; ) {
-    unsigned int c = *s++;
+    UINT c = *s++;
     if (c == 0)
       break;
     c -= '0';
@@ -2146,8 +2148,8 @@ static void print_factors_single(uintmax_t t1, uintmax_t t0)
   lbuf_putc(':');
   factor(t1, t0, &factors);
 
-  for (unsigned int j=0; j<factors.nfactors; ++j)
-    for (unsigned int k=0; k<factors.e[j]; ++k) {
+  for (UINT j=0; j<factors.nfactors; ++j)
+    for (UINT k=0; k<factors.e[j]; ++k) {
       lbuf_putc(' ');
       print_uintmaxes(0, factors.p[j]);
     }
@@ -2201,8 +2203,8 @@ static bool print_factors(const char *input)
   gmp_printf("%Zd:", t);
   mp_factor(t, &factors);
 
-  for (unsigned int j=0; j<factors.nfactors; ++j)
-    for (unsigned int k=0; k<factors.e[j]; ++k)
+  for (UINT j=0; j<factors.nfactors; ++j)
+    for (UINT k=0; k<factors.e[j]; ++k)
       gmp_printf(" %Zd", factors.p[j]);
 
   mp_factor_clear(&factors);
@@ -2299,7 +2301,7 @@ int main(int argc, char *argv[])
   if (q_freq[0] > 0) {
     double acc_f;
     printf("q  freq.  cum. freq.(total: %d)\n", q_freq[0]);
-    for (unsigned int i=1, acc_f=0.0; i<=Q_FREQ_SIZE; ++i) {
+    for (UINT i=1, acc_f=0.0; i<=Q_FREQ_SIZE; ++i) {
       double f = (double)q_freq[i]/q_freq[0];
       acc_f += f;
       printf("%s%d %.2f%% %.2f%%\n",

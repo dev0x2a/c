@@ -1,5 +1,2 @@
-#include"stdio_cpy.h"
-int
-main(){
-  printf("%d\n",1);
-}
+#include "stdio_cpy.h"
+int main() { printf("%d\n", 1); }

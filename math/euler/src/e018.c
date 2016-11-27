@@ -5,7 +5,7 @@
 #define MAX(a,b) ((a>b)?(a):(b))
 #define MIN(a,b) ((a<b)?(a):(b))
 
-char a[] = {
+int a[] = {
   75,
   95,64,
   17,47,82,
@@ -43,13 +43,12 @@ int main(void)
   "4 62 98 27 23  9 70 98 73 93 53 38 60  4 23\n");
 
   const int k = sizeof(a) / sizeof(a[0]);
-  const int b = (sqrt(8*k+1)-1)/2;
-  int s = b-1;
-  int i, c = 0;
+  const int n = (sqrt(8*k+1)-1)/2;
+  int s=n-1, c=0, i;
 
-  for (i=k-b-1; i>=0; --i) {
-    a[i] += MIN(a[i+s], a[i+s+1]);
-    if (++s == s) {
+  for (i=k-n-1; i>=0; --i) {
+    a[i] += MAX(a[i+s], a[i+s+1]);
+    if (++c == s) {
       s--;
       c = 0;
     }

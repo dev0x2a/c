@@ -16,9 +16,9 @@
 
 /* Written by Pádraig Brady.  LD_PRELOAD idea from Brian Dessent.  */
 
+#include "system.h"
 #include <config.h>
 #include <stdio.h>
-#include "system.h"
 
 /* Note currently for glibc (2.3.5) the following call does not change
    the buffer size, and more problematically does not give any indication
@@ -56,33 +56,28 @@
    However I think it's just a buggy implementation due to the various
    inconsistencies with write sizes and subsequent writes.  */
 
-static const char *
-fileno_to_name (const int fd)
-{
+static const char *fileno_to_name(const int fd) {
   const char *ret = NULL;
 
-  switch (fd)
-    {
-    case 0:
-      ret = "stdin";
-      break;
-    case 1:
-      ret = "stdout";
-      break;
-    case 2:
-      ret = "stderr";
-      break;
-    default:
-      ret = "unknown";
-      break;
-    }
+  switch (fd) {
+  case 0:
+    ret = "stdin";
+    break;
+  case 1:
+    ret = "stdout";
+    break;
+  case 2:
+    ret = "stderr";
+    break;
+  default:
+    ret = "unknown";
+    break;
+  }
 
   return ret;
 }
 
-static void
-apply_mode (FILE *stream, const char *mode)
-{
+static void apply_mode(FILE *stream, const char *mode) {
   char *buf = NULL;
   int setvbuf_mode;
   size_t size = 0;
@@ -90,52 +85,45 @@ apply_mode (FILE *stream, const char *mode)
   if (*mode == '0')
     setvbuf_mode = _IONBF;
   else if (*mode == 'L')
-    setvbuf_mode = _IOLBF;      /* FIXME: should we allow 1ML  */
-  else
-    {
-      setvbuf_mode = _IOFBF;
-      verify (SIZE_MAX <= ULONG_MAX);
-      size = strtoul (mode, NULL, 10);
-      if (size > 0)
-        {
-          if (!(buf = malloc (size)))   /* will be freed by fclose()  */
-            {
-              /* We could defer the allocation to libc, however since
-                 glibc currently ignores the combination of NULL buffer
-                 with non zero size, we'll fail here.  */
-              fprintf (stderr,
-                       _("failed to allocate a %" PRIuMAX
-                         " byte stdio buffer\n"), (uintmax_t) size);
-              return;
-            }
-        }
-      else
-        {
-          fprintf (stderr, _("invalid buffering mode %s for %s\n"),
-                   mode, fileno_to_name (fileno (stream)));
-          return;
-        }
+    setvbuf_mode = _IOLBF; /* FIXME: should we allow 1ML  */
+  else {
+    setvbuf_mode = _IOFBF;
+    verify(SIZE_MAX <= ULONG_MAX);
+    size = strtoul(mode, NULL, 10);
+    if (size > 0) {
+      if (!(buf = malloc(size))) /* will be freed by fclose()  */
+      {
+        /* We could defer the allocation to libc, however since
+           glibc currently ignores the combination of NULL buffer
+           with non zero size, we'll fail here.  */
+        fprintf(stderr,
+                _("failed to allocate a %" PRIuMAX " byte stdio buffer\n"),
+                (uintmax_t)size);
+        return;
+      }
+    } else {
+      fprintf(stderr, _("invalid buffering mode %s for %s\n"), mode,
+              fileno_to_name(fileno(stream)));
+      return;
     }
+  }
 
-  if (setvbuf (stream, buf, setvbuf_mode, size) != 0)
-    {
-      fprintf (stderr, _("could not set buffering of %s to mode %s\n"),
-               fileno_to_name (fileno (stream)), mode);
-      free (buf);
-    }
+  if (setvbuf(stream, buf, setvbuf_mode, size) != 0) {
+    fprintf(stderr, _("could not set buffering of %s to mode %s\n"),
+            fileno_to_name(fileno(stream)), mode);
+    free(buf);
+  }
 }
 
 /* Use __attribute to avoid elision of __attribute__ on SUNPRO_C etc.  */
-static void __attribute ((constructor))
-stdbuf (void)
-{
-  char *e_mode = getenv ("_STDBUF_E");
-  char *i_mode = getenv ("_STDBUF_I");
-  char *o_mode = getenv ("_STDBUF_O");
+static void __attribute((constructor)) stdbuf(void) {
+  char *e_mode = getenv("_STDBUF_E");
+  char *i_mode = getenv("_STDBUF_I");
+  char *o_mode = getenv("_STDBUF_O");
   if (e_mode) /* Do first so can write errors to stderr  */
-    apply_mode (stderr, e_mode);
+    apply_mode(stderr, e_mode);
   if (i_mode)
-    apply_mode (stdin, i_mode);
+    apply_mode(stdin, i_mode);
   if (o_mode)
-    apply_mode (stdout, o_mode);
+    apply_mode(stdout, o_mode);
 }

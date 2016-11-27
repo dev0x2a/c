@@ -1,0 +1,467 @@
+Pipe Logic
+
+Delightfully useless epiphany: Suppose the null-byte is
+an electron. Then, <tt>/dev/zero</tt> provides an infinite supply of electrons
+and <tt>/dev/null</tt> has an infinite appetite for them. Let's call these
+devices <tt>Vss</tt> and <tt>Vdd</tt>, respectively.</span></p>
+
+<p>In this model, a <a href="http://en.wikipedia.org/wiki/Named_pipe">UNIX
+pipe</a> acts like a wire, that is, a <a
+href="http://en.wikipedia.org/wiki/Electrical_conductor">conductor</a> with <a
+href="http://en.wikipedia.org/wiki/Parasitic_capacitance">parasitic
+capacitance</a>. If the pipe is connected to <tt>Vss</tt>, its pipe buffer in
+kernel space quickly fills up with null-bytes, and the pipe acts like a
+negatively charged metal plate. If it is connected to <tt>Vdd</tt>, the pipe
+buffer is drained, and the pipe acts like a positively charged metal plate.</p>
+
+<p>Pipes may thus carry <a
+href="http://en.wikipedia.org/wiki/Logic_level">logic signals</a>: A pipe that
+is filled with null-bytes corresponds to a logic zero, and a pipe that is
+completely empty corresponds to a logic one. A pipe that contains some
+null-bytes, but is neither full nor empty, corresponds to a voltage in the
+undefined range, and will act as a one or a zero depending on how we measure
+it.</p>
+
+<h2>Transistors</h2>
+
+<div style="float: right">
+<div style="width: 120px; float: left">
+<img src="nmosfet.png" alt="Schematic symbol" style="width: 100px; height: 100px" />
+<p class="stamp" style="text-align: center">nMOSFET</p>
+</div>
+<div style="width: 120px; float: left">
+<img src="pmosfet.png" alt="Schematic symbol" style="width: 100px; height: 100px" />
+<p class="stamp" style="text-align: center">pMOSFET</p>
+</div>
+</div>
+
+<p>So how <i>do</i> we measure it? In order to build logic, we're going to need
+some kind of <a href="http://en.wikipedia.org/wiki/Transistor">transistor</a>.
+Consider the <a
+href="http://en.wikipedia.org/wiki/Field-effect_transistor">field-effect&nbsp;transistor</a>:
+An <a
+href="http://en.wikipedia.org/wiki/MOSFET#Modes_of_operation">enhancement-mode&nbsp;nMOSFET</a>
+allows electrons to pass from the source pin to the drain pin when a logic one
+is present at the gate pin. Conversely, a pMOSFET allows electrons to pass from
+the drain pin to the source pin when a logic zero is present at the gate.
+However, no current flows through the gate pin; like a charged balloon sticking
+to the ceiling, the electrons at the gate just sit there and affect the
+transistor by means of the electromagnetic force.</p>
+
+<p>Pipes have <a
+href="http://en.wikipedia.org/wiki/Flow_control">flow&nbsp;control</a>: Writes
+to a full pipe will block, as will reads from an empty pipe. Hence, our MOSFET
+would need to sense whether a read or write would block, without actually
+performing the read or write operation. As far as I know, no standard UNIX
+command can be forced into this role, but we can write such a program from scratch easily
+enough:</p>
+
+<h3><a href="mosfet.c">mosfet.c</a></h3>
+
+<div class="otherbg" style="font-size: .6em"><pre>#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;err.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/select.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+
+int main(int argc, char **argv) {
+	int gate, pmos;
+	char buf[65536];
+	fd_set fds;
+	ssize_t size;
+	struct stat statbuf;
+	char *filename;
+
+	if(argc != 2) errx(1, &quot;Usage: %s [-]gate&quot;, argv[0]);
+
+	pmos = (*argv[1] == '-');
+	filename = argv[1] + pmos;
+
+	if((gate = open(filename, O_RDWR)) &lt; 0) err(1, &quot;%s&quot;, filename);
+	if(fstat(gate, &amp;statbuf) &lt; 0) err(1, &quot;stat: %s&quot;, filename);
+	if(!S_ISFIFO(statbuf.st_mode)) errx(1, &quot;%s: ceci n'est pas une pipe&quot;, filename);
+
+	for(;;) {
+		FD_ZERO(&amp;fds);
+		FD_SET(gate, &amp;fds);
+		if(select(gate + 1, (pmos? &amp;fds : 0), (pmos? 0 : &amp;fds), 0, 0) &lt; 0) err(1, &quot;select&quot;);
+		if(FD_ISSET(gate, &amp;fds)) {
+			if((size = read(0, buf, sizeof(buf))) &lt; 0) err(1, &quot;read&quot;);
+			if((size = write(1, buf, size)) &lt; 0) err(1, &quot;write&quot;);
+			usleep(20000);
+		}
+	}
+}</pre></div>
+
+<p>This program acts like a gated <tt>cat(1)</tt>. It connects to a named pipe,
+and senses whether it currently holds a logic one or a logic zero. Depending on
+the mode of the program (as indicated by a dash character in front of the
+argument), this will either enable or disable the continuous transfer of bytes
+from standard input (presumably a pipe or <tt>Vss</tt>) to standard output
+(presumably a pipe or <tt>Vdd</tt>). The call to <tt>usleep(3)</tt> ensures that
+no process will starve in situations where pipes have multiple readers and/or
+writers. The number <tt>65536</tt> is the Linux <i>pipe capacity</i>, as
+documented in <tt>pipe(7)</tt>.</p>
+
+<p>When the gate voltage is in the undefined range, our MOSFET program will
+conduct regardless of mode. Thus, whenever a signal switches, there will be a
+brief period of chaotic activity until the system settles down into a known
+state, just like with real <a
+href="http://en.wikipedia.org/wiki/CMOS">CMOS</a>&nbsp;circuits.</p>
+
+<div style="float: right">
+<img src="cmosnand.png" alt="Schematic diagram" />
+<p class="stamp" style="text-align: center">CMOS NAND gate</p>
+</div>
+
+<h2>Logic gates</h2>
+
+<p>Using only pipes and our small MOSFET program, we should be able to
+construct arbitrarily complex digital circuits. Let's start with a simple <a
+href="http://en.wikipedia.org/wiki/Nand_gate">NAND&nbsp;gate</a>, here in the
+form of a shell script:</p>
+
+<h3><a href="nand.sh">nand.sh</a></h3>
+<div class="otherbg" style="width: 60%"><pre>#!/bin/sh
+
+# Usage: nand.sh A B Out
+
+A=$1
+B=$2
+OUT=$3
+
+VDD=/dev/null
+VSS=/dev/zero
+
+./mosfet &lt;$OUT -$A &gt;$VDD &amp;
+./mosfet &lt;$OUT -$B &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $B | ./mosfet $A &gt;$OUT</pre></div>
+
+<p>We can test it by creating three named pipes, connecting them manually to
+<tt>Vss</tt> or <tt>Vdd</tt> using <tt>cat(1)</tt>, which behaves like a <a
+href="http://en.wikipedia.org/wiki/Diode">diode</a>, and connecting the output
+to something that acts like a <a
+href="http://en.wikipedia.org/wiki/Buzzer">buzzer</a> or <a
+href="http://en.wikipedia.org/wiki/Led">LED</a>:</p>
+
+<div style="float: left">
+<div class="otherbg"><pre>$ mkfifo a b q
+$ cat &lt;/dev/zero &gt;a &amp;     # a is low
+$ cat &lt;b &gt;/dev/null &amp;     # b is high
+$ ./nand.sh a b q &amp;
+$ tr '\000' '\a' &lt;q       # q should be high =&gt; no bell</pre></div>
+</div>
+
+<div style="float: left">
+<div class="otherbg"><pre>$ mkfifo a b q
+$ cat &lt;a &gt;/dev/null &amp;     # a is high
+$ cat &lt;b &gt;/dev/null &amp;     # b is high
+$ ./nand.sh a b q &amp;
+$ tr '\000' '\a' &lt;q       # q should be low =&gt; bell</pre></div>
+</div>
+
+<p style="clear: left">You'll want to do <tt>killall mosfet</tt> after each run.</p>
+
+<p>Note that we use <tt>tr(1)</tt> such that it will continuously ring or flash
+(depending on whether the terminal has an audible or visible bell) when the
+output <tt>q</tt> is <i>low</i>, that is, when both <tt>a</tt> and <tt>b</tt>
+are connected to <tt>/dev/null</tt>.</p>
+
+<h2>Control panel</h2>
+
+<p>This is clearly not practical for large designs, so we could benefit from
+some kind of control panel program with buttons and indicators: <a
+href="panel.c">panel.c</a></p>
+
+<p>You don't have to read the code, it's pretty straightforward. But download it
+and try it out! Each argument corresponds to a named pipe which is treated like a
+button when prefixed with a dash, and like an indicator otherwise.</p>
+
+<p>This is what it looks like for the NAND scenario:</p>
+
+<div class="otherbg">
+<tt>$&nbsp;mkfifo&nbsp;a&nbsp;b&nbsp;out</tt><br />
+<tt>$&nbsp;./nand.sh&nbsp;a&nbsp;b&nbsp;out&nbsp;&</tt><br />
+<tt>$&nbsp;./panel&nbsp;-a&nbsp;-b&nbsp;out</tt><br />
+<tt>[a]&nbsp;&nbsp;b&nbsp;&nbsp;(<span class="inverse">out</span>)</tt><br />
+</div>
+
+<p>The inverted <tt>out</tt> indicates that <tt>out</tt> is currently high. By
+moving the cursor (the <tt>[ ]</tt> brackets) you can select any button and
+toggle its value using the space key. Press <tt>q</tt> to quit the program. Don't
+forget to kill all <tt>mosfet</tt> processes when you're done.</p>
+
+<div style="float: right">
+<img src="mirroradder.png" alt="Schematic diagram" style="width: 400px" />
+<p class="stamp" style="text-align: center">CMOS Mirror Adder</p>
+</div>
+
+<h2>Adding integers</h2>
+
+<p>The next step is to implement a <a
+href="http://en.wikipedia.org/wiki/Full_adder#Full_adder">full&nbsp;adder</a>
+(a 1-bit adder with carry in and carry out). Now, of course, every <a
+href="http://en.wikipedia.org/wiki/Combinational_logic">combinational&nbsp;function</a>
+can be realised using NAND gates, but that's not very transistor efficient.
+This is how a typical CMOS full adder is constructed:</p>
+
+<h3 style="clear: both"><a href="fa.sh">fa.sh</a></h3>
+<div class="otherbg"><pre>#!/bin/sh
+
+# Usage: fa.sh A B Cin Cout Sum
+
+A=$1
+B=$2
+CIN=$3
+COUT=$4
+SUM=$5
+
+T1=tmp.fa.t1.$$
+T2=tmp.fa.t2.$$
+T3=tmp.fa.t3.$$
+T4=tmp.fa.t4.$$
+NCOUT=tmp.fa.ncout.$$
+NSUM=tmp.fa.nsum.$$
+
+VSS=/dev/zero
+VDD=/dev/null
+
+rm -f $T1 $T2 $T3 $T4 $NCOUT $NSUM
+mkfifo $T1 $T2 $T3 $T4 $NCOUT $NSUM
+
+# Mirror Adder
+
+./mosfet &lt;$T1 -$A &gt;$VDD &amp;
+./mosfet &lt;$T1 -$B &gt;$VDD &amp;
+./mosfet &lt;$NCOUT -$CIN &gt;$T1 &amp;
+./mosfet &lt;$NCOUT -$A | ./mosfet -$B &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $A &gt;$T2 &amp;
+./mosfet &lt;$VSS $B &gt;$T2 &amp;
+./mosfet &lt;$T2 $CIN &gt;$NCOUT &amp;
+./mosfet &lt;$VSS $B | ./mosfet $A &gt;$NCOUT &amp;
+
+./mosfet &lt;$T3 -$A &gt;$VDD &amp;
+./mosfet &lt;$T3 -$B &gt;$VDD &amp;
+./mosfet &lt;$T3 -$CIN &gt;$VDD &amp;
+./mosfet &lt;$NSUM -$NCOUT &gt;$T3 &amp;
+./mosfet &lt;$NSUM -$CIN | ./mosfet -$B | ./mosfet -$A &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $A &gt;$T4 &amp;
+./mosfet &lt;$VSS $B &gt;$T4 &amp;
+./mosfet &lt;$VSS $CIN &gt;$T4 &amp;
+./mosfet &lt;$T4 $NCOUT &gt;$NSUM &amp;
+./mosfet &lt;$VSS $A | ./mosfet $B | ./mosfet $CIN &gt;$NSUM &amp;
+
+# Invert outputs
+
+./mosfet &lt;$VSS $NCOUT &gt;$COUT &amp;
+./mosfet &lt;$COUT -$NCOUT &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $NSUM &gt;$SUM &amp;
+exec ./mosfet &lt;$SUM -$NSUM &gt;$VDD</pre></div>
+
+<p style="clear: left">Note how temporary fifos are created (<tt>T1</tt>,
+<tt>T2</tt>, <tt>T3</tt>, <tt>T4</tt>) with unique suffixes based on the
+current <a href="http://en.wikipedia.org/wiki/Process_ID">process&nbsp;ID</a> (the special variable <tt>$$</tt> expands to the PID of the
+shell).</p> 
+
+<p>Now we can cascade four full adders into a 4-bit adder and play with it
+using the control panel:</p>
+
+<h3><a href="add4.sh">add4.sh</a></h3>
+<div class="otherbg"><pre>#!/bin/sh
+
+FIFOS=&quot;a3 a2 a1 a0 b3 b2 b1 b0 c3 c2 c1 c0 s4 s3 s2 s1 s0&quot;
+
+rm -f $FIFOS
+mkfifo $FIFOS
+
+cat &lt;/dev/zero &gt;c0 &amp;
+./fa.sh a0 b0 c0 c1 s0 &amp;
+./fa.sh a1 b1 c1 c2 s1 &amp;
+./fa.sh a2 b2 c2 c3 s2 &amp;
+./fa.sh a3 b3 c3 s4 s3 &amp;
+
+./panel -a3 -a2 -a1 -a0 -b3 -b2 -b1 -b0 s4 s3 s2 s1 s0
+
+killall mosfet
+rm -f $FIFOS tmp.*</pre></div>
+
+<p>The reason for having a <tt>c0</tt>&nbsp;pipe which is connected to the electron
+supply via <tt>cat</tt>, rather than just using <tt>/dev/zero</tt> directly, is
+that our MOSFET program only works if the gate input is a proper pipe. That's
+because <tt>/dev/zero</tt> actually allows you to write data into it, just like
+<tt>/dev/null</tt>, so if we hook it up directly to a gate, it's going to
+behave like an undefined signal.</p>
+
+<p>This is what the 4-bit adder setup looks like when calculating the sum of
+five and seven:</p>
+
+<div class="otherbg" style="font-size: .9em">
+<tt>&nbsp;a3&nbsp;&nbsp;&nbsp;<span class="inverse">a2</span>&nbsp;&nbsp;&nbsp;a1&nbsp;&nbsp;&nbsp;<span class="inverse">a0</span>&nbsp;&nbsp;&nbsp;b3&nbsp;&nbsp;&nbsp;<span class="inverse">b2</span>&nbsp;&nbsp;&nbsp;<span class="inverse">b1</span>&nbsp;&nbsp;[<span class="inverse">b0</span>]&nbsp;(s4)&nbsp;(<span class="inverse">s3</span>)&nbsp;(<span class="inverse">s2</span>)&nbsp;(s1)&nbsp;(s0)</tt>
+</div>
+
+<p>Twelve looks about right. Clearly, we're approaching something useful here.</p>
+
+<h2>Where is the information?</h2>
+
+<p>Let's pause for a moment and consider which role the pipes play in this
+system. They form some kind of network fabric that allows our MOSFET instances
+to communicate, and yet the information being communicated is not transmitted
+through the pipes, because the pipes just provide an infinite series of
+completely predictable null-bytes. In contrast, the actual information is
+transmitted through the flow control mechanism of the pipes. This is akin to
+modulated <a
+href="http://en.wikipedia.org/wiki/Carrier_wave">carrier&nbsp;waves</a> such as
+a brief break that propagates backwards through a line of moving cars on a
+road.</p>
+
+<p>What's fascinating about this, is that flow control information can travel
+across a pipe in either direction. The null-bytes always travel from the
+writing end to the reading end, but just as the writer may signal the reader by
+filling an empty pipe, the reader may signal the writer by draining a full
+pipe. The communication is <a
+href="http://en.wikipedia.org/wiki/Half_duplex#Half-duplex">half-duplex</a>
+however, because the reader and the writer would get in each other's way if
+they tried to do this simultaneously.</p>
+
+<h2>Registers</h2>
+
+<p>One critical building block is still missing. Combinational logic is all
+very well, but large digital designs tend to consist of a number of
+interconnected <a
+href="http://en.wikipedia.org/wiki/State_machine">state&nbsp;machines</a>. In
+order to build state machines, we need to be able to keep track of the current
+state as bits in some kind of <a
+href="http://en.wikipedia.org/wiki/Semiconductor_memory">memory</a>.</p>
+
+<div style="float: right">
+<img src="register.png" alt="Schematic diagram" style="width: 250px" />
+<p class="stamp" style="text-align: center">Positive edge triggered flip&nbsp;flop</p>
+</div>
+
+<p>A convenient type of memory is the <a
+href="http://en.wikipedia.org/wiki/Flip-flop_(electronics)">D-flip&nbsp;flop</a>.
+It can be implemented in a number of ways, and we'll go for a variant that uses
+<i>TSPC</i> (true single-phase clocked) logic. This design is interesting
+because it relies on the parasitic capacitance of the wires, so when used in a
+real integrated circuit it requires a <i>minimum</i> clock frequency to work,
+otherwise the bits stored in the registers become corrupt through leakage
+currents. Our pipe capacitors are ideal in the sense that there's no leakage at
+all. The buffers hold their contents until the pipe is destroyed.</p>
+
+<h3><a href="flipflop.sh">flipflop.sh</a></h3>
+<div class="otherbg" style="width: 50%; float: left"><pre>#!/bin/sh
+
+# Usage: flipflop.sh Clk D Q
+
+CLK=$1
+D=$2
+Q=$3
+
+D1H=tmp.ff.d1h.$$
+D1L=tmp.ff.d1l.$$
+D2H=tmp.ff.d2h.$$
+D2L=tmp.ff.d2l.$$
+NQ=tmp.ff.nq.$$
+
+VSS=/dev/zero
+VDD=/dev/null
+
+FIFOS=&quot;$D1H $D1L $D2H $D2L $NQ&quot;
+rm -f $FIFOS
+mkfifo $FIFOS
+
+./mosfet &lt;$VSS $D &gt;$D1L &amp;
+./mosfet &lt;$D1L -$CLK &gt;$D1H &amp;
+./mosfet &lt;$D1H -$D &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $D1L &gt;$D2L &amp;
+./mosfet &lt;$D2L $CLK &gt;$D2H &amp;
+./mosfet &lt;$D2H -$D1H &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $D2L &gt;$NQ &amp;
+./mosfet &lt;$NQ -$D2H &gt;$VDD &amp;
+
+./mosfet &lt;$VSS $NQ &gt;$Q &amp;
+exec ./mosfet &lt;$Q -$NQ &gt;$VDD</pre></div>
+
+<p>Like we did with the full adder, we'll tack on an inverter at the end in
+order to get the same polarity at the output and input; in a real design, we'd
+just as often want the output signal inverted, in which case the extra inverter
+is unnecessary, which is why it's not considered to be a canonical part of the
+flip&nbsp;flop.</p>
+
+<p>The operation of this flip&nbsp;flop is quite elegant. Suppose <tt>Clk</tt>
+is low, so that the first stage becomes a regular inverter. Then, <tt>D1H</tt>
+= <tt>D1L</tt> = <tt>/D</tt>. The last stage is also an inverter, so let's
+assume we have <tt>D2H</tt> = <tt>D2L</tt> = <tt>Q</tt>. These two stages are
+separated by an inverter that has been split into two halves by the second
+clocking transistor. Suppose <tt>D</tt> &ne; <tt>Q</tt>, so that <tt>D1H</tt> =
+<tt>D1L</tt> = <tt>D2H</tt> = <tt>D2L</tt>, which would not be possible if the
+split inverter were a regular inverter. The upper half of the split inverter
+can only pull <tt>D2H</tt> to a high level, but <tt>D2H</tt> affects a
+transistor in the final stage which only turns on when provided with a low
+gate voltage. Conversely, the lower half of the split inverter can only pull
+<tt>D2L</tt> to a low level, but <tt>D2L</tt> affects a transistor which only
+turns on in response to a high gate voltage. The upshot of this is that
+<tt>/Q</tt> might be disconnected from whatever power rail was driving it, but
+as long as there is no leakage current, it retains its previous voltage.  When
+the clock toggles, a similar phenomenon takes place in the left half of the
+circuit, while the right half behaves like a regular inverter, and the value of
+<tt>D</tt> propagates one step to the right.</p>
+
+<p>Note that the register will power up in an unknown state, possibly a <a
+href="http://en.wikipedia.org/wiki/Metastability_in_electronics">metastable</a>
+one. It must be cleared by explicitly clocking in a logic zero.</p>
+
+Putting it all together
+
+Now we should be able to construct a working state machine. To keep it
+simple, we'll transform the 4-bit adder into a 4-bit accumulating machine. The
+current state is kept in a 4-bit register, its value represented by
+(q3, q2, q1, q0). The next state is
+calculated by adding a user-supplied 4-bit number to the current state. At
+every positive clock edge, the flip flops shift in the new bits provided
+by the adder, causing a state transition to take place.
+
+<h3><a href="counter.sh">counter.sh</a></h3>
+<div class="otherbg"><pre>#!/bin/sh
+
+FIFOS=&quot;clk a3 a2 a1 a0 c4 c3 c2 c1 c0 d3 d2 d1 d0 q3 q2 q1 q0&quot;
+
+rm -f $FIFOS
+mkfifo $FIFOS
+
+cat &lt;/dev/zero &gt;c0 &amp;
+./fa.sh a0 q0 c0 c1 d0 &amp;
+./fa.sh a1 q1 c1 c2 d1 &amp;
+./fa.sh a2 q2 c2 c3 d2 &amp;
+./fa.sh a3 q3 c3 c4 d3 &amp;
+
+./flipflop.sh clk d0 q0 &amp;
+./flipflop.sh clk d1 q1 &amp;
+./flipflop.sh clk d2 q2 &amp;
+./flipflop.sh clk d3 q3 &amp;
+
+./panel -a3 -a2 -a1 -a0 -clk q3 q2 q1 q0
+
+killall mosfet
+rm -f $FIFOS tmp.*</pre></div>
+
+And if you try it, you'll find that it runs like clockwork.
+
+Conclusion
+
+So there it is. We've been able to construct gates and flip flops using
+nothing but UNIX pipes and our small MOSFET tool. We may now proceed to design
+any digital circuits we want: Processors, memories, entire computers... The
+world is ours to conquer!
+
+As long as we don't run out of PIDs.
+

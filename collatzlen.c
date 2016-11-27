@@ -14,7 +14,7 @@ uint step(uint x)
 uint nseq(uint x0)
 {
   uint i=1, x;
-  
+
   if (x0==1 || x0==0)
     return i;
 

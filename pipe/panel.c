@@ -11,13 +11,13 @@
 #include <fcntl.h>
 #include <signal.h>
 
-#define NORMAL	"\033[0m"
+#define NORMAL "\033[0m"
 #define INVERSE	"\033[7m"
 
 struct widget {
 	char *label;
-	int	fd;
-	int	button, on;
+	int	fd
+    int button, on;
 } *widgets;
 int nwidgets, cursor, nbuttons;
 
@@ -39,7 +39,7 @@ void display(struct widget *w, int focus)
 {
 	if (w->button) {
 		printf("%c%s%s%s%c ",
-        focus? '[' : ' ', w->on? INVERSE : NORMAL, w->label, NORMAL, focus? ']' : ' ');
+        focus? '[' : ' ',w->on? INVERSE : NORMAL,w->label,NORMAL,focus? ']' : ' ');
 	} else {
 		printf("(%s%s%s) ", w->on? INVERSE : NORMAL, w->label, NORMAL);
 	}
@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
 		for (i=0; i<nwidgets; i++)
       display(widgets+i, cursor == widgets[i].button-1);
 		fflush(stdout);
-
 		usleep(20000);
 
 		FD_ZERO(&rfds);

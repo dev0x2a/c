@@ -1,3 +1,4 @@
+/* notes {{{*/
 /* factor -- print prime factors of n.
    Copyright(C) 1986-2016 Free Software Foundation, Inc. */
 
@@ -6,7 +7,7 @@
    Arbitrary-precision code adapted by James Youngman from Torbjörn
    Granlund's factorize.c, from GNU MP version 4.2.2.
    In 2012, the core was rewritten by Torbjörn Granlund and Niels Möller.
-   Contains code from GNU MP  */
+   Contains code from GNU M. */
 
 /* Efficiently factor numbers that fit in one or two words(word = uintmax_t),
    or, with GMP, numbers of any size.
@@ -69,7 +70,7 @@
       similar methoods.  These functions currently dominate run time when using
       the -w option.
 */
-
+/*}}}*/
 /* Whether to recursively factor to prove primality,
    or run faster probabilistic tests */
 #ifndef PROVE_PRIMALITY
@@ -107,7 +108,7 @@
 /* The official name of this program (eg, no 'g' prefix) */
 #define PROGRAM_NAME "factor"
 
-/* Token delimiters when reading from a file  */
+/* Token delimiters when reading from a fil. */
 #define DELIM "\n\t "
 #ifndef USE_LONGLONG_H
 /* With the way we use longlong.h, it's only safe to use
@@ -147,7 +148,7 @@ typedef unsigned long int USItype;
 #if HAVE_LONG_LONG_INT
 typedef long long int DItype;
 typedef unsigned long long int UDItype;
-#else /* Assume `long' gives us a wide enough type.  Needed for hppa2.0w.  */
+#else /* Assume `long' gives us a wide enough type.  Needed for hppa2.0w. */
 typedef long int DItype;
 typedef unsigned long int UDItype;
 #endif
@@ -161,7 +162,7 @@ typedef unsigned long int UDItype;
 #endif
 
 /* These stub macros are only used in longlong.h in certain system compiler
-   combinations, so ensure usage to avoid -Wunused-macros warnings.  */
+   combinations, so ensure usage to avoid -Wunused-macros warnings. */
 #if __GMP_GNUC_PREREQ(1, 1) && defined __clz_tab
 ASSERT(1)
 __GMP_DECLSPEC
@@ -199,7 +200,7 @@ const u8 factor_clz_tab[129] = {
 #if !defined __clz_tab && !defined UHWtype
 /* Without this seemingly useless conditional, gcc -Wunused-macros
    warns that each of the two tested macros is unused on Fedora 18.
-   FIXME: this is just an ugly band-aid.  Fix it properly.  */
+   FIXME: this is just an ugly band-aid.  Fix it properly. */
 #endif
 
 /* 2*3*5*7*11...*101 is 128 bits, and has 26 prime factors */
@@ -351,7 +352,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 
 /* Modular two-word addition and subtraction.  For performance reasons, the
    most significant bit of n1 must be clear.  The destination variables must be
-   distinct from the mod operand.  */
+   distinct from the mod operand. */
 #define addmod2(r1, r0, a1, a0, b1, b0, n1, n0)                                \
   do {                                                                         \
     add_ssaaaa((r1), (r0), (a1), (a0), (b1), (b0));                            \
@@ -372,7 +373,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
                                                     : (uintmax_t)0))
 
 /* Compute r = a mod d, where r = <*t1,retval>, a = <a1,a0>, d = <d1,d0>.
-   Requires that d1 != 0.  */
+   Requires that d1 != 0. */
 static uintmax_t mod2(uintmax_t *r1, uintmax_t a1, uintmax_t a0, uintmax_t d1,
     uintmax_t d0)
 {
@@ -467,7 +468,7 @@ static void factor_insert_multiplicity(struct factors *factors, uintmax_t prime,
   uintmax_t *p = factors->p;
   u8 *e = factors->e;
 
-  /* Locate position for insert new or increment e.  */
+  /* Locate position for insert new or increment e. */
   int i;
   for (i = nfactors - 1; i >= 0; --i) {
     if (p[i] <= prime)
@@ -533,7 +534,7 @@ static void mp_factor_insert(struct mp_factors *factors, mpz_t prime)
   uint nfactors=factors->nfactors, *e=factors->e;
   mpz_t *p = factors->p;
   long i;
-  /* Locate position for insert new or increment e.  */
+  /* Locate position for insert new or increment e. */
   for (i=nfactors-1; i>=0; --i) {
     if (mpz_cmp(p[i], prime) <= 0)
       break;
@@ -569,10 +570,10 @@ static void mp_factor_insert_ui(struct mp_factors *factors,
 }
 #endif /* HAVE_GMP */
 
-/* Number of bits in an uintmax_t.  */
+/* Number of bits in an uintmax_t. */
 enum { W = sizeof(uintmax_t) * CHAR_BIT };
 
-/* Verify that uintmax_t does not have holes in its representation.  */
+/* Verify that uintmax_t does not have holes in its representation. */
 verify(UINTMAX_MAX >> (W - 1) == 1);
 
 #define P(a, b, c, d) a,
@@ -605,14 +606,14 @@ static const struct primes_dtab primes_dtab[] = {
 #undef P
 
 /* Verify that uintmax_t is not wider than
-   the integers used to generate primes.h.  */
+   the integers used to generate primes.h. */
 verify(W <= WIDE_UINT_BITS);
 
 /* debugging for developers.  Enables devmsg().
-   This flag is used only in the GMP code.  */
+   This flag is used only in the GMP code. */
 static bool dev_debug = false;
 
-/* Prove primality or run probabilistic tests.  */
+/* Prove primality or run probabilistic tests. */
 static bool flag_prove_primality = PROVE_PRIMALITY;
 
 /* Number of Miller-Rabin tests to run when not proving primality. */
@@ -762,7 +763,7 @@ static void mp_factor_using_division(mpz_t t, struct mp_factors *factors) {
 }
 #endif
 
-/* Entry i contains(2i+1)^(-1) mod 2^8.  */
+/* Entry i contains(2i+1)^(-1) mod 2^8. */
 static const unsigned char binvert_table[128] = {
     0x01, 0xAB, 0xCD, 0xB7, 0x39, 0xA3, 0xC5, 0xEF, 0xF1, 0x1B, 0x3D, 0xA7,
     0x29, 0x13, 0x35, 0xDF, 0xE1, 0x8B, 0xAD, 0x97, 0x19, 0x83, 0xA5, 0xCF,
@@ -776,7 +777,7 @@ static const unsigned char binvert_table[128] = {
     0x69, 0x53, 0x75, 0x1F, 0x21, 0xCB, 0xED, 0xD7, 0x59, 0xC3, 0xE5, 0x0F,
     0x11, 0x3B, 0x5D, 0xC7, 0x49, 0x33, 0x55, 0xFF};
 
-/* Compute n^(-1) mod B, using a Newton iteration.  */
+/* Compute n^(-1) mod B, using a Newton iteration. */
 #define binv(inv, n)                                                           \
   do {                                                                         \
     uintmax_t __n = (n);                                                       \
@@ -801,7 +802,7 @@ static const unsigned char binvert_table[128] = {
     (inv) = __inv;                                                             \
   } while (0)
 
-/* q = u / d, assuming d|u.  */
+/* q = u / d, assuming d|u. */
 #define divexact_21(q1, q0, u1, u0, d)                                         \
   do {                                                                         \
     uintmax_t _di, _q0;                                                        \
@@ -1054,7 +1055,7 @@ static bool mp_millerrabin(mpz_srcptr n, mpz_srcptr nm1, mpz_ptr x, mpz_ptr y,
 #endif
 
 /* Lucas' prime test.  The number of iterations vary greatly, up to a few dozen
-   have been observed.  The average seem to be about 2.  */
+   have been observed.  The average seem to be about 2. */
 static bool prime_p(uintmax_t n) {
   int k;
   bool is_prime;
@@ -1068,7 +1069,7 @@ static bool prime_p(uintmax_t n) {
   if (n < (uintmax_t)FIRST_OMITTED_PRIME * FIRST_OMITTED_PRIME)
     return true;
 
-  /* Precomputation for Miller-Rabin.  */
+  /* Precomputation for Miller-Rabin. */
   uintmax_t q = n - 1;
   for (k = 0; (q & 1) == 0; k++)
     q >>= 1;
@@ -1078,17 +1079,17 @@ static bool prime_p(uintmax_t n) {
   redcify(one, 1, n);
   addmod(a_prim, one, one, n); /* i.e., redcify a = 2 */
 
-  /* Perform a Miller-Rabin test, finds most composites quickly.  */
+  /* Perform a Miller-Rabin test, finds most composites quickly. */
   if (!millerrabin(n, ni, a_prim, q, k, one))
     return false;
 
   if (flag_prove_primality) {
-    /* Factor n-1 for Lucas.  */
+    /* Factor n-1 for Lucas. */
     factor(0, n - 1, &factors);
   }
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
-     number composite.  */
+     number composite. */
   for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     if (flag_prove_primality) {
       is_prime = true;
@@ -1103,11 +1104,11 @@ static bool prime_p(uintmax_t n) {
     if (is_prime)
       return true;
 
-    a += primes_diff[r]; /* Establish new base.  */
+    a += primes_diff[r]; /* Establish new base. */
 
     /* The following is equivalent to redcify(a_prim, a, n).  It runs faster
        on most processors, since it avoids udiv_qrnnd.  If we go down the
-       udiv_qrnnd_preinv path, this code should be replaced.  */
+       udiv_qrnnd_preinv path, this code should be replaced. */
     {
       uintmax_t s1, s0;
       umul_ppmm(s1, s0, one, a);
@@ -1165,12 +1166,12 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
     return false;
 
   if (flag_prove_primality) {
-    /* Factor n-1 for Lucas.  */
+    /* Factor n-1 for Lucas. */
     factor(nm1[1], nm1[0], &factors);
   }
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
-     number composite.  */
+     number composite. */
   for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     bool is_prime;
     uintmax_t e[2], y[2];
@@ -1204,7 +1205,7 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
     if (is_prime)
       return true;
 
-    a += primes_diff[r]; /* Establish new base.  */
+    a += primes_diff[r]; /* Establish new base. */
     redcify2(a_prim[1], a_prim[0], a, n1, n0);
 
     if (!millerrabin2(na, ni, a_prim, q, k, one))
@@ -1230,29 +1231,29 @@ static bool mp_prime_p(mpz_t n) {
 
   mpz_inits(q, a, nm1, tmp, NULL);
 
-  /* Precomputation for Miller-Rabin.  */
+  /* Precomputation for Miller-Rabin. */
   mpz_sub_ui(nm1, n, 1);
 
-  /* Find q and k, where q is odd and n = 1 + 2**k * q.  */
+  /* Find q and k, where q is odd and n = 1 + 2**k * q. */
   uint k = mpz_scan1(nm1, 0);
   mpz_tdiv_q_2exp(q, nm1, k);
 
   mpz_set_ui(a, 2);
 
-  /* Perform a Miller-Rabin test, finds most composites quickly.  */
+  /* Perform a Miller-Rabin test, finds most composites quickly. */
   if (!mp_millerrabin(n, nm1, a, tmp, q, k)) {
     is_prime = false;
     goto ret2;
   }
 
   if (flag_prove_primality) {
-    /* Factor n-1 for Lucas.  */
+    /* Factor n-1 for Lucas. */
     mpz_set(tmp, nm1);
     mp_factor(tmp, &factors);
   }
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
-     number composite.  */
+     number composite. */
   for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
     if (flag_prove_primality) {
       is_prime = true;
@@ -1269,7 +1270,7 @@ static bool mp_prime_p(mpz_t n) {
     if (is_prime)
       goto ret1;
 
-    mpz_add_ui(a, a, primes_diff[r]); /* Establish new base.  */
+    mpz_add_ui(a, a, primes_diff[r]); /* Establish new base. */
 
     if (!mp_millerrabin(n, nm1, a, tmp, q, k)) {
       is_prime = false;
@@ -1425,7 +1426,7 @@ static void factor_using_pollard_rho2(
         factor_insert(factors, g0);
     } else {
       /* The found factor is two words.  This is highly unlikely, thus hard
-         to trigger.  Please be careful before you change this code!  */
+         to trigger.  Please be careful before you change this code. */
       uintmax_t ginv;
 
       binv(ginv, g0); /* Compute n = n / g.  Since the result will */
@@ -1714,7 +1715,7 @@ static bool factor_using_squfof(
      JASON E. GOWER AND SAMUEL S. WAGSTAFF, JR.
 
      http://homes.cerias.purdue.edu/~ssw/squfof.pdf
-   */
+. */
 
   static const UINT multipliers_1[] = {/* = 1(mod 4) */
                                                105, 165, 21, 385, 33,
@@ -1901,15 +1902,12 @@ static bool factor_using_squfof(
             Q /= 2;
           Q /= gcd_odd(Q, mu);
 
-          assert(Q>1 && (n1 || Q < n0));
-
+          assert(Q>1 && (n1 || Q<n0));
           if (prime_p(Q))
             factor_insert(factors, Q);
           else if (!factor_using_squfof(0, Q, factors))
             factor_using_pollard_rho(Q, 2, factors);
-
           divexact_21(n1, n0, n1, n0, Q);
-
           if (prime2_p(n1, n0))
             factor_insert_large(factors, n1, n0);
           else {
@@ -1932,20 +1930,16 @@ static bool factor_using_squfof(
 #endif
 
 /* Compute the prime factors of the 128-bit number(T1,T0), and put the
-   results in FACTORS.  */
+   results in FACTORS. */
 static void factor(uintmax_t t1, uintmax_t t0, struct factors *factors)
 {
   factors->nfactors = 0;
   factors->plarge[1] = 0;
-
   if (t1==0 && t0<2)
     return;
-
   t0 = factor_using_division(&t1, t1, t0, factors);
-
-  if (t1 == 0 && t0 < 2)
+  if (t1==0 && t0<2)
     return;
-
   if (prime2_p(t1, t0))
     factor_insert_large(factors, t1, t0);
   else {
@@ -1953,7 +1947,6 @@ static void factor(uintmax_t t1, uintmax_t t0, struct factors *factors)
     if (factor_using_squfof(t1, t0, factors))
       return;
 #endif
-
     if (t1 == 0)
       factor_using_pollard_rho(t0, 1, factors);
     else
@@ -1963,11 +1956,10 @@ static void factor(uintmax_t t1, uintmax_t t0, struct factors *factors)
 
 #if HAVE_GMP
 /* Use Pollard-rho to compute the prime factors of
-   arbitrary-precision T, and put the results in FACTORS.  */
+   arbitrary-precision T, and put the results in FACTORS. */
 static void mp_factor(mpz_t t, struct mp_factors *factors)
 {
   mp_factor_init(factors);
-
   if (mpz_sgn(t) != 0) {
     mp_factor_using_division(t, factors);
 
@@ -1987,10 +1979,9 @@ static strtol_error strto2uintmax(
 {
   UINT lo_carry;
   uintmax_t hi=0, lo=0;
-
   strtol_error err = LONGINT_INVALID;
 
-  /* Skip initial spaces and '+'.  */
+  /* Skip initial spaces and '+'. */
   for (;;) {
     char c = *s;
     if (c == ' ')
@@ -2002,7 +1993,7 @@ static strtol_error strto2uintmax(
       break;
   }
 
-  /* Initial scan for invalid digits.  */
+  /* Initial scan for invalid digits. */
   const char *p = s;
   for (;;) {
     UINT c = *p++;
@@ -2025,12 +2016,12 @@ static strtol_error strto2uintmax(
       err = LONGINT_OVERFLOW;
       break;
     }
-    hi = 10*hi;
+    hi *= 10;
 
     lo_carry = (lo >> (W_TYPE_SIZE-3))+(lo >> (W_TYPE_SIZE-1));
     lo_carry += 10*lo < 2*lo;
 
-    lo = 10 * lo;
+    lo *= 10;
     lo += c;
 
     lo_carry += lo < c;
@@ -2046,7 +2037,7 @@ static strtol_error strto2uintmax(
 }
 
 /* Structure and routines for buffering and outputting full lines,
-   to support parallel operation efficiently.  */
+   to support parallel operation efficiently. */
 static struct lbuf_ {
   char *buf, *end;
 } lbuf;
@@ -2055,21 +2046,19 @@ static struct lbuf_ {
    and also is the max guaranteed size that
    consumers can read atomically through pipes.
    Also it's big enough to cater for max line length
-   even with 128 bit uintmax_t.  */
+   even with 128 bit uintmax_t. */
 #define FACTOR_PIPE_BUF 512
-
 static void lbuf_alloc(void)
 {
   if (lbuf.buf)
     return;
-
   /* Double to ensure enough space for
-     previous numbers + next number.  */
+     previous numbers + next number. */
   lbuf.buf = xmalloc(FACTOR_PIPE_BUF*2);
   lbuf.end = lbuf.buf;
 }
 
-/* Write complete LBUF to standard output.  */
+/* Write complete LBUF to standard output. */
 static void lbuf_flush(void)
 {
   size_t size = lbuf.end-lbuf.buf;
@@ -2080,7 +2069,7 @@ static void lbuf_flush(void)
 
 /* Add a character C to LBUF and if it's a newline
    and enough bytes are already buffered,
-   then write atomically to standard output.  */
+   then write atomically to standard output. */
 static void lbuf_putc(char c)
 {
   *lbuf.end++ = c;
@@ -2089,26 +2078,26 @@ static void lbuf_putc(char c)
 
     if (buffered >= FACTOR_PIPE_BUF) {
       /* Write output in <= PIPE_BUF chunks
-         so consumers can read atomically.  */
+         so consumers can read atomically. */
       char const *tend = lbuf.end;
 
       /* Since a umaxint_t's factors must fit in 512
-         we're guaranteed to find a newline here.  */
-      char *tlend = lbuf.buf + FACTOR_PIPE_BUF;
+         we're guaranteed to find a newline here. */
+      char *tlend = lbuf.buf+FACTOR_PIPE_BUF;
       while (*--tlend != '\n');
       tlend++;
 
       lbuf.end = tlend;
       lbuf_flush();
 
-      /* Buffer the remainder.  */
+      /* Buffer the remainder. */
       memcpy(lbuf.buf, tlend, tend-tlend);
       lbuf.end = lbuf.buf+(tend-tlend);
     }
   }
 }
 
-/* Buffer an int to the internal LBUF.  */
+/* Buffer an int to the internal LBUF. */
 static void lbuf_putint(uintmax_t i, size_t min_width)
 {
   char buf[INT_BUFSIZE_BOUND(uintmax_t)];
@@ -2130,7 +2119,7 @@ static void print_uintmaxes(uintmax_t t1, uintmax_t t0)
     lbuf_putint(t0, 0);
   else {
     /* Use very plain code here since it seems hard to write fast code
-       without assuming a specific word size.  */
+       without assuming a specific word size. */
     q = t1/1000000000;
     r = t1%1000000000;
     udiv_qrnnd(t0, r, r, t0, 1000000000);
@@ -2165,14 +2154,14 @@ static void print_factors_single(uintmax_t t1, uintmax_t t0)
    either algorithm, we select on the basis of the length of the number.
    For longer numbers, we prefer the MP algorithm even if the native algorithm
    has enough digits, because the algorithm is better.  The turnover point
-   depends on the value.  */
+   depends on the value. */
 static bool print_factors(const char *input)
 {
   uintmax_t t1, t0;
   /* Try converting the number to one or two words.  If it fails, use GMP or
      print an error message.  The 2nd condition checks that the most
      significant bit of the two-word number is clear, in a typesize neutral
-     way.  */
+     way. */
   strtol_error err = strto2uintmax(&t1, &t0, input);
 
   switch (err) {
@@ -2181,18 +2170,14 @@ static bool print_factors(const char *input)
       devmsg("[using single-precision arithmetic] ");
       print_factors_single(t1, t0);
       return true;
-    }
-    break;
-
+    } break;
   case LONGINT_OVERFLOW:
-    /* Try GMP.  */
+    /* Try GMP. */
     break;
-
   default:
     error(0, 0, _("%s is not a valid positive integer"), quote(input));
     return false;
   }
-
 #if HAVE_GMP
   devmsg("[using arbitrary-precision arithmetic] ");
   mpz_t t;
@@ -2223,15 +2208,10 @@ void usage(int status)
   if (status != EXIT_SUCCESS)
     emit_try_help();
   else {
-    printf(_("\
-Usage: %s [NUMBER]...\n\
-  or:  %s OPTION\n\
-"), program_name, program_name);
-    fputs(_("\
-Print the prime factors of each specified integer NUMBER.  If none\n\
-are specified on the command line, read them from standard input.\n\
-\n\
-"), stdout);
+    printf(_("Usage: %s [NUMBER]...\n\
+  or:  %s OPTION\n"), program_name,program_name);
+    fputs(_("Print the prime factors of each specified integer NUMBER.  If none\n\
+are specified on the command line, read them from standard input.\n\n"), stdout);
     fputs(HELP_OPTION_DESCRIPTION, stdout);
     fputs(VERSION_OPTION_DESCRIPTION, stdout);
     emit_ancillary_info(PROGRAM_NAME);
@@ -2278,8 +2258,7 @@ int main(int argc, char *argv[])
     case_GETOPT_HELP_CHAR;
     case_GETOPT_VERSION_CHAR(PROGRAM_NAME, AUTHORS);
 
-    default:
-      usage(EXIT_FAILURE);
+    default:usage(EXIT_FAILURE);
     }
   }
 

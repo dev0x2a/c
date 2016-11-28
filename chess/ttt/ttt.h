@@ -2,47 +2,70 @@
 #define TTT_H
 
 #include "typedef.h"
-
-char initb[3][3] = {
-  {'.','.','.'},
-  {'.','.','.'},
-  {'.','.','.'}
-};
+#define DEBUG 0
 
 enum { X=0, O };
 enum { OFF=0, ON };
 
 struct user {
-  u8 stat:1;
-  u8 turn:1;
-  u8 who:1;
+  char stat:1, turn:1, who:1;
 };
 typedef struct user *usr_t;
 
 struct nodetype {
-  char board[3][3];
   char turn:1;
+  char board[3][3];
   struct nodetype *son, *next;
 };
 typedef struct nodetype *NODEPTR;
 
 void pboard(char board[3][3]);
+int evaluate(NODEPTR p, char player);
 void expand(NODEPTR p, int plevel, int depth);
 void nextmove(char board[][3], char nboard[][3], int looklvl, char player);
 void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
 NODEPTR buildtree(char board[][3], int looklvl);
-int evaluate(NODEPTR p, char player);
 NODEPTR generate(NODEPTR p);
 NODEPTR getnode(void);
 
+void prompt(char who, char board[3][3])
+{
+  u8 c;
+  unsigned int r, chk, stat=0;
+  while (1) {
+    printf("\n%c ? ", who?'o':'x');
+    scanf("%c%d", &c,&r);
+    switch (c) {
+      case 'a': chk=0;break;
+      case 'b': chk=1;break;
+      case 'c': chk=2;break;
+      default:putchar('e');
+    }
+    if (board[r-1][chk]!='.' || r>3 || chk>2) {
+      ++stat;
+      if (stat > 9) {
+        printf("input (a,b,c)(1,2,3)\n"
+               "? a 1\n"
+               "for row a, col 1, etc\n");
+        stat = 0;
+      }
+      continue;
+    } else {
+      board[r-1][chk] = who ? 'o' : 'x';
+      break;
+    }
+  }
+  return;
+}
+
+/*
 int evaluate(NODEPTR p, char player)
 {
-  int val;
-
+  static int val;
   p->board;
-
-  return(val);
+  return val;
 }
+*/
 
 void pboard(char board[3][3])
 {
@@ -56,6 +79,7 @@ void pboard(char board[3][3])
   puts("a b c\n");
 }
 
+#if DEBUG
 NODEPTR getnode(void)
 {
   NODEPTR p;
@@ -86,7 +110,7 @@ NODEPTR buildtree(char board[][3], int looklvl)
 
   /* create root of tree and init */
   ptree = getnode();
-  for (i=0; i<3 ++i)
+  for (i=0; i<3; ++i)
     for (j=0; j<3; ++j)
       ptree->board[i][j] = board[i][j];
   /* root is a (+)node */
@@ -149,5 +173,5 @@ void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player)
       *pvalue = -*pvalue;
   }
 }
-
+#endif /* DEBUG */
 #endif /* TTT_H */

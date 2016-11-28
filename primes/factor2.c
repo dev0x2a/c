@@ -87,7 +87,7 @@
 #define STAT_SQUFOF 0
 #endif
 
-//#include <config.h>
+#include <config.h>
 #include <getopt.h>
 #include <stdio.h>
 #if HAVE_GMP
@@ -97,7 +97,6 @@
 #endif
 #endif
 #include <assert.h>
-
 #include "error.h"
 #include "full-write.h"
 #include "quote.h"
@@ -105,7 +104,6 @@
 #include "system.h"
 #include "xstrtol.h"
 
-/* The official name of this program (eg, no 'g' prefix) */
 #define PROGRAM_NAME "factor"
 
 /* Token delimiters when reading from a fil. */
@@ -124,11 +122,11 @@
 #if USE_LONGLONG_H
 /* Make definitions for longlong.h to make it do what it can do for us */
 /* bitcount for uintmax_t */
-#if UINTMAX_MAX==UINT32_MAX
+#if UINTMAX_MAX == UINT32_MAX
 #define W_TYPE_SIZE 32
-#elif UINTMAX_MAX==UINT64_MAX
+#elif UINTMAX_MAX == UINT64_MAX
 #define W_TYPE_SIZE 64
-#elif UINTMAX_MAX==UINT128_MAX
+#elif UINTMAX_MAX == UINT128_MAX
 #define W_TYPE_SIZE 128
 #endif
 
@@ -158,12 +156,12 @@ typedef unsigned long int UDItype;
 #define __GMP_DECLSPEC           /* FIXME make longlong.h really standalone */
 #define __clz_tab factor_clz_tab /* Rename to avoid glibc collision */
 #ifndef __GMP_GNUC_PREREQ
-#define __GMP_GNUC_PREREQ(a, b) 1
+#define __GMP_GNUC_PREREQ(a,b) 1
 #endif
 
 /* These stub macros are only used in longlong.h in certain system compiler
    combinations, so ensure usage to avoid -Wunused-macros warnings. */
-#if __GMP_GNUC_PREREQ(1, 1) && defined __clz_tab
+#if __GMP_GNUC_PREREQ(1,1) && defined __clz_tab
 ASSERT(1)
 __GMP_DECLSPEC
 #endif
@@ -171,10 +169,7 @@ __GMP_DECLSPEC
 typedef unsigned char u8;
 typedef unsigned long int uint;
 typedef unsigned int UINT;
-
-
 /*************************/
-
 #if _ARCH_PPC
 #define HAVE_HOST_CPU_FAMILY_powerpc 1
 #endif
@@ -194,20 +189,17 @@ const u8 factor_clz_tab[129] = {
 #define __ll_B((uintmax_t) 1 << (W_TYPE_SIZE / 2))
 #define __ll_lowpart(t) ((uintmax_t)(t) & (__ll_B - 1))
 #define __ll_highpart(t) ((uintmax_t)(t) >> (W_TYPE_SIZE / 2))
-
 #endif
 
 #if !defined __clz_tab && !defined UHWtype
 /* Without this seemingly useless conditional, gcc -Wunused-macros
-   warns that each of the two tested macros is unused on Fedora 18.
-   FIXME: this is just an ugly band-aid.  Fix it properly. */
+   warns that each of the two tested macros is unused on Fedora 18 */
 #endif
 
 /* 2*3*5*7*11...*101 is 128 bits, and has 26 prime factors */
 #define MAX_NFACTS 26
 
 enum { DEV_DEBUG_OPTION = CHAR_MAX+1 };
-
 static struct option const long_options[] = {
     {"-debug", no_argument, NULL, DEV_DEBUG_OPTION},
     {GETOPT_HELP_OPTION_DECL},
@@ -229,25 +221,25 @@ struct mp_factors {
 static void factor(uintmax_t, uintmax_t, struct factors *);
 
 #ifndef umul_ppmm
-#define umul_ppmm(w1, w0, u, v)                                                \
-  do {                                                                         \
-    uintmax_t __x0, __x1, __x2, __x3;                                          \
-    uint __ul, __vl, __uh, __vh;                                  \
-    uintmax_t __u = (u), __v = (v);                                            \
-    __ul = __ll_lowpart(__u);                                                  \
-    __uh = __ll_highpart(__u);                                                 \
-    __vl = __ll_lowpart(__v);                                                  \
-    __vh = __ll_highpart(__v);                                                 \
-    __x0 = (uintmax_t)__ul * __vl;                                             \
-    __x1 = (uintmax_t)__ul * __vh;                                             \
-    __x2 = (uintmax_t)__uh * __vl;                                             \
-    __x3 = (uintmax_t)__uh * __vh;                                             \
-    __x1 += __ll_highpart(__x0); /* this can't give carry */                   \
-    __x1 += __x2;                /* but this indeed can */                     \
-    if (__x1 < __x2)             /* did we get it? */                          \
-      __x3 += __ll_B;            /* yes, add it in the proper pos */           \
-    (w1) = __x3 + __ll_highpart(__x1);                                         \
-    (w0) = (__x1 << W_TYPE_SIZE / 2) + __ll_lowpart(__x0);                     \
+#define umul_ppmm(w1,w0,u,v)                                         \
+  do {                                                               \
+    uintmax_t __x0, __x1, __x2, __x3;                                \
+    uintmax_t __u = (u), __v = (v);                                  \
+    uint __ul, __vl, __uh, __vh;                                     \
+    __ul = __ll_lowpart(__u);                                        \
+    __uh = __ll_highpart(__u);                                       \
+    __vl = __ll_lowpart(__v);                                        \
+    __vh = __ll_highpart(__v);                                       \
+    __x0 = (uintmax_t)__ul * __vl;                                   \
+    __x1 = (uintmax_t)__ul * __vh;                                   \
+    __x2 = (uintmax_t)__uh * __vl;                                   \
+    __x3 = (uintmax_t)__uh * __vh;                                   \
+    __x1 += __ll_highpart(__x0); /* this can't give carry */         \
+    __x1 += __x2;                /* but this indeed can */           \
+    if (__x1 < __x2)             /* did we get it? */                \
+      __x3 += __ll_B;            /* yes, add it in the proper pos */ \
+    (w1) = __x3 + __ll_highpart(__x1);                               \
+    (w0) = (__x1 << W_TYPE_SIZE / 2) + __ll_lowpart(__x0);           \
   } while (0)
 #endif
 
@@ -256,121 +248,118 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
    currently not performance critical, so keep it simple. Similar to
    the mod macro below. */
 #undef udiv_qrnnd
-#define udiv_qrnnd(q, r, n1, n0, d)                                            \
-  do {                                                                         \
-    uintmax_t __d1, __d0, __q, __r1, __r0;                                     \
-    assert((n1) < (d));                                                        \
-    __d1 = (d);                                                                \
-    __d0 = 0;                                                                  \
-    __r1 = (n1);                                                               \
-    __r0 = (n0);                                                               \
-    __q = 0;                                                                   \
-    for (UINT __i = W_TYPE_SIZE; __i > 0; __i--) {                     \
-      rsh2(__d1, __d0, __d1, __d0, 1);                                         \
-      __q <<= 1;                                                               \
-      if (ge2(__r1, __r0, __d1, __d0)) {                                       \
-        __q++;                                                                 \
-        sub_ddmmss(__r1, __r0, __r1, __r0, __d1, __d0);                        \
-      }                                                                        \
-    }                                                                          \
-    (r) = __r0;                                                                \
-    (q) = __q;                                                                 \
+#define udiv_qrnnd(q,r,n1,n0,d)                          \
+  do {                                                   \
+    uintmax_t __d1, __d0, __q, __r1, __r0;               \
+    assert((n1) < (d));                                  \
+    __d1 = (d);                                          \
+    __d0 = 0;                                            \
+    __r1 = (n1);                                         \
+    __r0 = (n0);                                         \
+    __q = 0;                                             \
+    for (UINT __i=W_TYPE_SIZE; __i>0; __i--) {           \
+      rsh2(__d1, __d0, __d1, __d0, 1);                   \
+      __q <<= 1;                                         \
+      if (ge2(__r1, __r0, __d1, __d0)) {                 \
+        __q++;                                           \
+        sub_ddmmss(__r1, __r0, __r1, __r0, __d1, __d0);  \
+      }                                                  \
+    }                                                    \
+    (r) = __r0;                                          \
+    (q) = __q;                                           \
   } while (0)
 #endif
 
 #if !defined add_ssaaaa
-#define add_ssaaaa(sh, sl, ah, al, bh, bl)                                     \
-  do {                                                                         \
-    uintmax_t _add_x;                                                          \
-    _add_x = (al) + (bl);                                                      \
-    (sh) = (ah) + (bh) + (_add_x < (al));                                      \
-    (sl) = _add_x;                                                             \
+#define add_ssaaaa(sh,sl,ah,al,bh,bl)                        \
+  do {                                                       \
+    uintmax_t _add_x;                                        \
+    _add_x = (al)+(bl);                                      \
+    (sh) = (ah)+(bh)+(_add_x < (al));                        \
+    (sl) = _add_x;                                           \
   } while (0)
 #endif
 
-#define rsh2(rh, rl, ah, al, cnt)                                              \
-  do {                                                                         \
-    (rl) = ((ah) << (W_TYPE_SIZE - (cnt))) | ((al) >> (cnt));                  \
-    (rh) = (ah) >> (cnt);                                                      \
+#define rsh2(rh,rl,ah,al,cnt)                                \
+  do {                                                       \
+    (rl) = ((ah) << (W_TYPE_SIZE - (cnt))) | ((al) >> (cnt));\
+    (rh) = (ah) >> (cnt);                                    \
   } while (0)
 
-#define lsh2(rh, rl, ah, al, cnt)                                              \
-  do {                                                                         \
-    (rh) = ((ah) << cnt) | ((al) >> (W_TYPE_SIZE - (cnt)));                    \
-    (rl) = (al) << (cnt);                                                      \
+#define lsh2(rh,rl,ah,al,cnt)                              \
+  do {                                                     \
+    (rh) = ((ah) << cnt) | ((al) >> (W_TYPE_SIZE-(cnt)));  \
+    (rl) = (al) << (cnt);                                  \
   } while (0)
 
-#define ge2(ah, al, bh, bl) ((ah) > (bh) || ((ah) == (bh) && (al) >= (bl)))
-
-#define gt2(ah, al, bh, bl) ((ah) > (bh) || ((ah) == (bh) && (al) > (bl)))
+#define ge2(ah,al,bh,bl) ((ah) > (bh) || ((ah) == (bh) && (al) >= (bl)))
+#define gt2(ah,al,bh,bl) ((ah) > (bh) || ((ah) == (bh) && (al) > (bl)))
 
 #ifndef sub_ddmmss
-#define sub_ddmmss(rh, rl, ah, al, bh, bl)                                     \
-  do {                                                                         \
-    uintmax_t _cy;                                                             \
-    _cy = (al) < (bl);                                                         \
-    (rl) = (al) - (bl);                                                        \
-    (rh) = (ah) - (bh)-_cy;                                                    \
+#define sub_ddmmss(rh,rl,ah,al,bh,bl) \
+  do {                                \
+    uintmax_t _cy;                    \
+    _cy = (al) < (bl);                \
+    (rl) = (al)-(bl);                 \
+    (rh) = (ah)-(bh)-_cy;             \
   } while (0)
 #endif
 
 #ifndef count_leading_zeros
-#define count_leading_zeros(count, x)                                          \
-  do {                                                                         \
-    uintmax_t __clz_x = (x);                                                   \
-    UINT __clz_c;                                                      \
-    for (__clz_c = 0; (__clz_x & ((uintmax_t)0xff << (W_TYPE_SIZE - 8))) == 0; \
-         __clz_c += 8)                                                         \
-      __clz_x <<= 8;                                                           \
-    for (; (intmax_t)__clz_x >= 0; __clz_c++)                                  \
-      __clz_x <<= 1;                                                           \
-    (count) = __clz_c;                                                         \
+#define count_leading_zeros(count,x)                                       \
+  do {                                                                     \
+    uintmax_t __clz_x = (x);                                               \
+    UINT __clz_c;                                                          \
+    for (__clz_c=0; (__clz_x & ((uintmax_t)0xff << (W_TYPE_SIZE-8))) == 0; \
+         __clz_c += 8)                                                     \
+      __clz_x <<= 8;                                                       \
+    for (; (intmax_t)__clz_x>=0; __clz_c++)                                \
+      __clz_x <<= 1;                                                       \
+    (count) = __clz_c;                                                     \
   } while (0)
 #endif
 
 #ifndef count_trailing_zeros
-#define count_trailing_zeros(count, x)                                         \
-  do {                                                                         \
-    uintmax_t __ctz_x = (x);                                                   \
-    UINT __ctz_c = 0;                                                  \
-    while ((__ctz_x & 1) == 0) {                                               \
-      __ctz_x >>= 1;                                                           \
-      __ctz_c++;                                                               \
-    }                                                                          \
-    (count) = __ctz_c;                                                         \
+#define count_trailing_zeros(count,x) \
+  do {                              \
+    uintmax_t __ctz_x = (x);        \
+    UINT __ctz_c = 0;               \
+    while ((__ctz_x & 1) == 0) {    \
+      __ctz_x >>= 1;                \
+      __ctz_c++;                    \
+    }                               \
+    (count) = __ctz_c;              \
   } while (0)
 #endif
 
 /* Requires that a < n and b <= n */
-#define submod(r, a, b, n)                                                     \
-  do {                                                                         \
-    uintmax_t _t = -(uintmax_t)(a < b);                                        \
-    (r) = ((n)&_t) + (a) - (b);                                                \
+#define submod(r,a,b,n)                 \
+  do {\
+    uintmax_t _t = -(uintmax_t)(a < b); \
+    (r) = ((n)&_t)+(a)-(b);             \
   } while (0)
 
-#define addmod(r, a, b, n) submod((r), (a), ((n) - (b)), (n))
+#define addmod(r,a,b,n) submod((r), (a), ((n)-(b)), (n))
 
 /* Modular two-word addition and subtraction.  For performance reasons, the
    most significant bit of n1 must be clear.  The destination variables must be
-   distinct from the mod operand. */
-#define addmod2(r1, r0, a1, a0, b1, b0, n1, n0)                                \
-  do {                                                                         \
-    add_ssaaaa((r1), (r0), (a1), (a0), (b1), (b0));                            \
-    if (ge2((r1), (r0), (n1), (n0)))                                           \
-      sub_ddmmss((r1), (r0), (r1), (r0), (n1), (n0));                          \
+   distinct from the mod operand */
+#define addmod2(r1,r0,a1,a0,b1,b0,n1,n0)              \
+  do {                                                \
+    add_ssaaaa((r1), (r0), (a1), (a0), (b1), (b0));   \
+    if (ge2((r1), (r0), (n1), (n0)))                  \
+      sub_ddmmss((r1), (r0), (r1), (r0), (n1), (n0)); \
   } while (0)
-#define submod2(r1, r0, a1, a0, b1, b0, n1, n0)                                \
-  do {                                                                         \
-    sub_ddmmss((r1), (r0), (a1), (a0), (b1), (b0));                            \
-    if ((intmax_t)(r1) < 0)                                                    \
-      add_ssaaaa((r1), (r0), (r1), (r0), (n1), (n0));                          \
+#define submod2(r1,r0,a1,a0,b1,b0,n1,n0)              \
+  do {                                                \
+    sub_ddmmss((r1), (r0), (a1), (a0), (b1), (b0));   \
+    if ((intmax_t)(r1) < 0)                           \
+      add_ssaaaa((r1), (r0), (r1), (r0), (n1), (n0)); \
   } while (0)
 
-#define HIGHBIT_TO_MASK(x)                                                     \
-  (((intmax_t)-1 >> 1) < 0                                                     \
-       ? (uintmax_t)((intmax_t)(x) >> (W_TYPE_SIZE - 1))                       \
-       : ((x) & ((uintmax_t)1 << (W_TYPE_SIZE - 1)) ? UINTMAX_MAX              \
-                                                    : (uintmax_t)0))
+#define HIGHBIT_TO_MASK(x) \
+  (((intmax_t)-1 >> 1) < 0 ? (uintmax_t)((intmax_t)(x) >> (W_TYPE_SIZE-1)) \
+   : ((x) & ((uintmax_t)1 << (W_TYPE_SIZE-1)) ? UINTMAX_MAX : (uintmax_t)0))
 
 /* Compute r = a mod d, where r = <*t1,retval>, a = <a1,a0>, d = <d1,d0>.
    Requires that d1 != 0. */

@@ -83,8 +83,8 @@ static void print_wide_uint(wide_uint n, int nesting, unsigned wide_uint_bits)
 
 static void output_primes(const struct prime *primes, unsigned nprimes)
 {
-  unsigned i, p;
   int is_prime;
+  unsigned i, p;
   /* Compute wide_uint_bits by repeated shifting, rather than by
      multiplying sizeof by CHAR_BIT, as this works even if the
      wide_uint representation has holes.  */
@@ -109,7 +109,7 @@ static void output_primes(const struct prime *primes, unsigned nprimes)
   /* Find next prime */
   do {
     p += 2;
-    for (i=0, is_prime=1; is_prime; i++) {
+    for (i=0,is_prime=1; is_prime; i++) {
       if (primes[i].p*primes[i].p > p)
         break;
       if (p*primes[i].pinv <= primes[i].lim) {
@@ -158,11 +158,10 @@ int main(int argc, char *argv[])
   nprimes = 0;
 
   for (i=0; i<size; ) {
-    unsigned p = 3+2*i;
-    unsigned j;
+    unsigned j, p = 3+2*i;
 
     process_prime(&prime_list[nprimes++], p);
-    for (j =(p*p-3)/2; j<size; j+=p)
+    for (j=(p*p-3)/2; j<size; j+=p)
       sieve[j] = 0;
     while (++i<size && sieve[i]==0);
   }

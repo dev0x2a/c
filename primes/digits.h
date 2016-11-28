@@ -17,7 +17,7 @@ int dgt(int t, int n)
         a[j] = x%10;
         tmp = x/10;
       }
-      while (tmp>0) {
+      while (tmp > 0) {
         a[m] =tmp%10;
         tmp /= 10;
         ++m;
@@ -36,8 +36,8 @@ void dgt_fact(int a[], int n)
   /* factorial in array */
   if (!n) 
     return;
-  int carry = 0;
-  for (int i=dgt_max-1; i>=0; --i) {
+  int i, carry=0;
+  for (i=dgt_max-1; i>=0; --i) {
     a[i] = (a[i]*n)+carry;
     carry = a[i]/10;
     a[i] %= 10;
@@ -48,8 +48,8 @@ void dgt_fact(int a[], int n)
 void dgt_disp(int a[])
 {
   /* to print array */
-  int c=0;
-  for (int i=0; i<dgt_max; ++i) {
+  int i, c=0;
+  for (i=0; i<dgt_max; ++i) {
     if (!c && a[i])      
       c = 1;
     if (c)
@@ -70,3 +70,4 @@ int dgt_main(int num)
   return(0);
 }
 #endif /* DIGITS_H */
+

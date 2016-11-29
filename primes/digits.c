@@ -2,6 +2,8 @@
 #include "digits.h"
 
 int main(){
-  dgt_main(500);
+
+dgt(4,4);
+//  dgt_main(1000);
   return 0;
 }

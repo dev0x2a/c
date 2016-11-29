@@ -37,10 +37,8 @@ int main(void)
   pboard(board);
 
   while (1) {
-
     prompt(c&1 ? p2->who:p1->who, board);
     ++c;
-    putchar('\n');
     pboard(board);
   }
   free(p1);

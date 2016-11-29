@@ -30,28 +30,29 @@ NODEPTR getnode(void);
 
 void prompt(char who, char board[3][3])
 {
-  u8 c;
-  unsigned int r, chk, stat=0;
-  while (1) {
+  char c;
+  int r, chk, flag=1, stat=0;
+  while (flag) {
     printf("\n%c ? ", who?'o':'x');
     scanf("%c%d", &c,&r);
     switch (c) {
-      case 'a': chk=0;break;
-      case 'b': chk=1;break;
-      case 'c': chk=2;break;
-      default:putchar('e');
+      case 'a': chk=0;
+      case 'b': chk=1;
+      case 'c': chk=2;
+      default:break;
     }
-    if (board[r-1][chk]!='.' || r>3 || chk>2) {
+    if (board[chk][r-1]!='.' || r>3 || chk>2) {
       ++stat;
-      if (stat > 9) {
+      continue;
+      /*if (stat > 9) {
         printf("input (a,b,c)(1,2,3)\n"
                "? a 1\n"
                "for row a, col 1, etc\n");
         stat = 0;
-      }
-      continue;
+      }*/
     } else {
-      board[r-1][chk] = who ? 'o' : 'x';
+      board[chk][r-1] = who ? 'o' : 'x';
+      flag = 0;
       break;
     }
   }
@@ -70,6 +71,7 @@ int evaluate(NODEPTR p, char player)
 void pboard(char board[3][3])
 {
   short i, j;
+  putchar('\n');
   for (i=0; i<3; ++i) {
     for (j=0; j<3; ++j) {
       printf("%c ", board[i][j]);

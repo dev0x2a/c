@@ -3,6 +3,14 @@
 
 #include <stdlib.h>
 
+#ifndef DMAX
+#define DMAX(a,b) ((a>b)?(a):(b))
+#endif
+
+#ifndef DMIN
+#define DMIN(a,b) ((a<b)?(a):(b))
+#endif
+
 int dgt(int t, int n)
 {
   int a[200];

@@ -26,6 +26,11 @@ typedef unsigned int uint;
 
 #define BASE 16
 
+struct integer {
+  char c;
+  struct integer *next;
+};
+
 typedef struct {
   int sign;
   int size;
@@ -66,7 +71,6 @@ bignum decryptrsa(bignum c, bignum d, bignum n);
 void testrsa(int len);
 
 
-
 /* 
  * notes
  *
@@ -95,6 +99,8 @@ void testrsa(int len);
  *
  * base-B
  */
+
+#if 0
 int table[489720];
 
 int lookup(unsigned char *key)
@@ -128,6 +134,47 @@ int hashstring(const char *s)
   }
   return key;
 }
-
-
 #endif
+#include <stdio.h>
+int test()
+{
+  int t;
+  int a[200];
+  int n,i,j,tmp,m,x;
+
+  scanf("%d", &t);
+  while (t--) {
+    scanf("%d", &n);
+    a[0] = 1; //array init 1
+    m = 1;    //dgt counter
+
+    tmp = 0; //carry
+    for (i=1; i<=n; ++i) {
+      for (j=0; j<m; ++j) {
+        x = a[j]*i+tmp; //x contains dgt by dgt product
+        a[j] = x%10; //dgt in pos j
+        tmp = x/10;  //carry value that will be stored on later indices
+        }
+      while (tmp > 0) { //store carry in arr
+        a[m] = tmp%10;
+        tmp /= 10;
+        m++; //dgt counter
+      }
+    }
+    for (i=m-1; i>=0; --i)//print
+      printf("%d", a[i]);
+    putchar('\n');
+  }
+  return 0;
+}
+#if 0
+uint32_t carry=0;
+for (i=0; i<len; ++i) {
+  uint64_t tmp = n*(uint64_t)big[i] + carry;
+  big[i] = tmp;
+  carry = tmp >> 32;
+}
+if (carry) big[len++] = carry;
+#endif
+
+#endif /* RBIGNUM_H */

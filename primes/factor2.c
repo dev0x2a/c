@@ -204,7 +204,8 @@ static struct option const long_options[] = {
     {"-debug", no_argument, NULL, DEV_DEBUG_OPTION},
     {GETOPT_HELP_OPTION_DECL},
     {GETOPT_VERSION_OPTION_DECL},
-    {NULL, 0, NULL, 0}};
+    {NULL, 0, NULL, 0}
+};
 
 struct factors {
   /* Can have a single large factor */
@@ -223,8 +224,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 #ifndef umul_ppmm
 #define umul_ppmm(w1,w0,u,v)                                         \
   do {                                                               \
-    uintmax_t __x0, __x1, __x2, __x3;                                \
-    uintmax_t __u = (u), __v = (v);                                  \
+    uintmax_t __x0, __x1, __x2, __x3, __u = (u), __v = (v);          \
     uint __ul, __vl, __uh, __vh;                                     \
     __ul = __ll_lowpart(__u);                                        \
     __uh = __ll_highpart(__u);                                       \
@@ -271,25 +271,24 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 #endif
 
 #if !defined add_ssaaaa
-#define add_ssaaaa(sh,sl,ah,al,bh,bl)                        \
-  do {                                                       \
-    uintmax_t _add_x;                                        \
-    _add_x = (al)+(bl);                                      \
-    (sh) = (ah)+(bh)+(_add_x < (al));                        \
-    (sl) = _add_x;                                           \
+#define add_ssaaaa(sh,sl,ah,al,bh,bl) \
+  do {                                \
+    uintmax_t _add_x = (al)+(bl);     \
+    (sh) = (ah)+(bh)+(_add_x < (al)); \
+    (sl) = _add_x;                    \
   } while (0)
 #endif
 
-#define rsh2(rh,rl,ah,al,cnt)                                \
-  do {                                                       \
-    (rl) = ((ah) << (W_TYPE_SIZE - (cnt))) | ((al) >> (cnt));\
-    (rh) = (ah) >> (cnt);                                    \
+#define rsh2(rh,rl,ah,al,cnt)                               \
+  do {                                                      \
+    (rl) = ((ah) << (W_TYPE_SIZE-(cnt))) | ((al) >> (cnt)); \
+    (rh) = (ah) >> (cnt);                                   \
   } while (0)
 
-#define lsh2(rh,rl,ah,al,cnt)                              \
-  do {                                                     \
-    (rh) = ((ah) << cnt) | ((al) >> (W_TYPE_SIZE-(cnt)));  \
-    (rl) = (al) << (cnt);                                  \
+#define lsh2(rh,rl,ah,al,cnt)                             \
+  do {                                                    \
+    (rh) = ((ah) << cnt) | ((al) >> (W_TYPE_SIZE-(cnt))); \
+    (rl) = (al) << (cnt);                                 \
   } while (0)
 
 #define ge2(ah,al,bh,bl) ((ah) > (bh) || ((ah) == (bh) && (al) >= (bl)))
@@ -298,8 +297,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 #ifndef sub_ddmmss
 #define sub_ddmmss(rh,rl,ah,al,bh,bl) \
   do {                                \
-    uintmax_t _cy;                    \
-    _cy = (al) < (bl);                \
+    uintmax_t _cy = (al) < (bl);      \
     (rl) = (al)-(bl);                 \
     (rh) = (ah)-(bh)-_cy;             \
   } while (0)
@@ -313,7 +311,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
     for (__clz_c=0; (__clz_x & ((uintmax_t)0xff << (W_TYPE_SIZE-8))) == 0; \
          __clz_c += 8)                                                     \
       __clz_x <<= 8;                                                       \
-    for (; (intmax_t)__clz_x>=0; __clz_c++)                                \
+    for (; (intmax_t)__clz_x>=0; ++__clz_c)                                \
       __clz_x <<= 1;                                                       \
     (count) = __clz_c;                                                     \
   } while (0)
@@ -334,7 +332,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 
 /* Requires that a < n and b <= n */
 #define submod(r,a,b,n)                 \
-  do {\
+  do {                                  \
     uintmax_t _t = -(uintmax_t)(a < b); \
     (r) = ((n)&_t)+(a)-(b);             \
   } while (0)
@@ -350,6 +348,7 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
     if (ge2((r1), (r0), (n1), (n0)))                  \
       sub_ddmmss((r1), (r0), (r1), (r0), (n1), (n0)); \
   } while (0)
+
 #define submod2(r1,r0,a1,a0,b1,b0,n1,n0)              \
   do {                                                \
     sub_ddmmss((r1), (r0), (a1), (a0), (b1), (b0));   \
@@ -363,8 +362,8 @@ static void factor(uintmax_t, uintmax_t, struct factors *);
 
 /* Compute r = a mod d, where r = <*t1,retval>, a = <a1,a0>, d = <d1,d0>.
    Requires that d1 != 0. */
-static uintmax_t mod2(uintmax_t *r1, uintmax_t a1, uintmax_t a0, uintmax_t d1,
-    uintmax_t d0)
+static uintmax_t mod2(
+    uintmax_t *r1, uintmax_t a1, uintmax_t a0, uintmax_t d1, uintmax_t d0)
 {
   int cntd, cnta;
   assert(d1 != 0);
@@ -376,8 +375,9 @@ static uintmax_t mod2(uintmax_t *r1, uintmax_t a1, uintmax_t a0, uintmax_t d1,
 
   count_leading_zeros(cntd, d1);
   count_leading_zeros(cnta, a1);
-  int cnt = cntd - cnta;
+  int cnt = cntd-cnta;
   lsh2(d1, d0, d1, d0, cnt);
+  
   for (int i=0; i<cnt; ++i) {
     if (ge2(a1, a0, d1, d0))
       sub_ddmmss(a1, a0, a1, a0, d1, d0);
@@ -407,7 +407,7 @@ static uintmax_t _GL_ATTRIBUTE_CONST gcd_odd(uintmax_t a, uintmax_t b)
       a >>= 1;
     a >>= 1;
 
-    t = a - b;
+    t = a-b;
     if (t == 0)
       return (a << 1)+1;
 
@@ -420,7 +420,8 @@ static uintmax_t _GL_ATTRIBUTE_CONST gcd_odd(uintmax_t a, uintmax_t b)
   }
 }
 
-static uintmax_t gcd2_odd(uintmax_t *r1, uintmax_t a1, uintmax_t a0,
+static uintmax_t gcd2_odd(
+    uintmax_t *r1, uintmax_t a1, uintmax_t a0,
     uintmax_t b1, uintmax_t b0)
 {
   while ((a0 & 1) == 0)
@@ -450,8 +451,8 @@ static uintmax_t gcd2_odd(uintmax_t *r1, uintmax_t a1, uintmax_t a0,
   return a0;
 }
 
-static void factor_insert_multiplicity(struct factors *factors, uintmax_t prime,
-    UINT m)
+static void factor_insert_multiplicity(
+    struct factors *factors, uintmax_t prime, UINT m)
 {
   UINT nfactors = factors->nfactors;
   uintmax_t *p = factors->p;
@@ -459,7 +460,7 @@ static void factor_insert_multiplicity(struct factors *factors, uintmax_t prime,
 
   /* Locate position for insert new or increment e. */
   int i;
-  for (i = nfactors - 1; i >= 0; --i) {
+  for (i=nfactors-1; i>=0; --i) {
     if (p[i] <= prime)
       break;
   }
@@ -477,10 +478,11 @@ static void factor_insert_multiplicity(struct factors *factors, uintmax_t prime,
   }
 }
 
-#define factor_insert(f, p) factor_insert_multiplicity(f, p, 1)
+#define factor_insert(f,p) factor_insert_multiplicity(f, p, 1)
 
-static void factor_insert_large(struct factors *factors, uintmax_t p1,
-    uintmax_t p0) {
+static void factor_insert_large(
+    struct factors *factors, uintmax_t p1, uintmax_t p0)
+{
   if (p1 > 0) {
     assert(factors->plarge[1] == 0);
     factors->plarge[0] = p0;
@@ -549,10 +551,9 @@ static void mp_factor_insert(struct mp_factors *factors, mpz_t prime)
   }
 }
 
-static void mp_factor_insert_ui(struct mp_factors *factors,
-    uint prime) {
+static void mp_factor_insert_ui(struct mp_factors *factors, uint prime)
+{
   mpz_t pz;
-
   mpz_init_set_ui(pz, prime);
   mp_factor_insert(factors, pz);
   mpz_clear(pz);
@@ -560,22 +561,22 @@ static void mp_factor_insert_ui(struct mp_factors *factors,
 #endif /* HAVE_GMP */
 
 /* Number of bits in an uintmax_t. */
-enum { W = sizeof(uintmax_t) * CHAR_BIT };
+enum { W = sizeof(uintmax_t)*CHAR_BIT };
 
 /* Verify that uintmax_t does not have holes in its representation. */
-verify(UINTMAX_MAX >> (W - 1) == 1);
+verify(UINTMAX_MAX >> (W-1) == 1);
 
-#define P(a, b, c, d) a,
+#define P(a,b,c,d) a,
 static const unsigned char primes_diff[] = {
 #include "primes.h"
     0, 0, 0, 0, 0, 0, 0 /* 7 sentinels for 8-way loop */
 };
 #undef P
 
-#define PRIMES_PTAB_ENTRIES                                                    \
-  (sizeof(primes_diff) / sizeof(primes_diff[0]) - 8 + 1)
+#define PRIMES_PTAB_ENTRIES \
+  (sizeof(primes_diff)/sizeof(primes_diff[0])-8+1)
 
-#define P(a, b, c, d) b,
+#define P(a,b,c,d) b,
 static const unsigned char primes_diff8[] = {
 #include "primes.h"
     0, 0, 0, 0, 0, 0, 0 /* 7 sentinels for 8-way loop */
@@ -586,7 +587,7 @@ struct primes_dtab {
   uintmax_t binv, lim;
 };
 
-#define P(a, b, c, d) {c, d},
+#define P(a,b,c,d) {c, d},
 static const struct primes_dtab primes_dtab[] = {
 #include "primes.h"
     {1, 0}, {1, 0}, {1, 0}, {1, 0},
@@ -608,15 +609,16 @@ static bool flag_prove_primality = PROVE_PRIMALITY;
 /* Number of Miller-Rabin tests to run when not proving primality. */
 #define MR_REPS 25
 
-static void factor_insert_refind(struct factors *factors, uintmax_t p,
-                                 UINT i, UINT off) {
-  for (UINT j = 0; j < off; j++)
-    p += primes_diff[i + j];
+static void factor_insert_refind(
+    struct factors *factors, uintmax_t p, UINT i, UINT off)
+{
+  for (UINT j=0; j<off; ++j)
+    p += primes_diff[i+j];
   factor_insert(factors, p);
 }
 
 /* Trial division with odd primes uses the following trick.
-
+ *
    Let p be an odd prime, and B = 2^{W_TYPE_SIZE}. For simplicity,
    consider the case t < B(this is the second loop below).
 
@@ -648,8 +650,9 @@ static void factor_insert_refind(struct factors *factors, uintmax_t p,
    order, and the non-multiples of p onto the range lim < q < B.
  */
 
-static uintmax_t factor_using_division(uintmax_t *t1p, uintmax_t t1,
-                                       uintmax_t t0, struct factors *factors) {
+static uintmax_t factor_using_division(
+    uintmax_t *t1p, uintmax_t t1, uintmax_t t0, struct factors *factors)
+{
   if (t0 % 2 == 0) {
     UINT cnt;
 
@@ -668,39 +671,38 @@ static uintmax_t factor_using_division(uintmax_t *t1p, uintmax_t t1,
 
   uintmax_t p = 3;
   UINT i;
-  for (i = 0; t1 > 0 && i < PRIMES_PTAB_ENTRIES; i++) {
+  for (i=0; t1>0 && i<PRIMES_PTAB_ENTRIES; ++i) {
     for (;;) {
       uintmax_t q1, q0, hi, lo _GL_UNUSED;
 
-      q0 = t0 * primes_dtab[i].binv;
+      q0 = t0*primes_dtab[i].binv;
       umul_ppmm(hi, lo, q0, p);
       if (hi > t1)
         break;
-      hi = t1 - hi;
-      q1 = hi * primes_dtab[i].binv;
+      hi = t1-hi;
+      q1 = hi*primes_dtab[i].binv;
       if (LIKELY(q1 > primes_dtab[i].lim))
         break;
       t1 = q1;
       t0 = q0;
       factor_insert(factors, p);
     }
-    p += primes_diff[i + 1];
+    p += primes_diff[i+1];
   }
   if (t1p)
     *t1p = t1;
 
-#define DIVBLOCK(I)                                                            \
-  do {                                                                         \
-    for (;;) {                                                                 \
-      q = t0 * pd[I].binv;                                                     \
-      if (LIKELY(q > pd[I].lim))                                               \
-        break;                                                                 \
-      t0 = q;                                                                  \
-      factor_insert_refind(factors, p, i + 1, I);                              \
-    }                                                                          \
+#define DIVBLOCK(I)                             \
+  do {                                          \
+    for (;;) {                                  \
+      q = t0 * pd[I].binv;                      \
+      if (LIKELY(q > pd[I].lim)) break;         \
+      t0 = q;                                   \
+      factor_insert_refind(factors, p, i+1, I); \
+    }                                           \
   } while (0)
 
-  for (; i < PRIMES_PTAB_ENTRIES; i += 8) {
+  for (; i<PRIMES_PTAB_ENTRIES; i+=8) {
     uintmax_t q;
     const struct primes_dtab *pd = &primes_dtab[i];
     DIVBLOCK(0);
@@ -713,20 +715,19 @@ static uintmax_t factor_using_division(uintmax_t *t1p, uintmax_t t1,
     DIVBLOCK(7);
 
     p += primes_diff8[i];
-    if (p * p > t0)
+    if (p*p > t0)
       break;
   }
-
   return t0;
 }
 
 #if HAVE_GMP
-static void mp_factor_using_division(mpz_t t, struct mp_factors *factors) {
+static void mp_factor_using_division(mpz_t t, struct mp_factors *factors)
+{
   mpz_t q;
   uint p;
 
   devmsg("[trial division] ");
-
   mpz_init(q);
 
   p = mpz_scan1(t, 0);
@@ -737,17 +738,16 @@ static void mp_factor_using_division(mpz_t t, struct mp_factors *factors) {
   }
 
   p = 3;
-  for (UINT i = 1; i <= PRIMES_PTAB_ENTRIES;) {
+  for (UINT i=1; i<=PRIMES_PTAB_ENTRIES; ) {
     if (!mpz_divisible_ui_p(t, p)) {
       p += primes_diff[i++];
-      if (mpz_cmp_ui(t, p * p) < 0)
+      if (mpz_cmp_ui(t, p*p) < 0)
         break;
     } else {
       mpz_tdiv_q_ui(t, t, p);
       mp_factor_insert_ui(factors, p);
     }
   }
-
   mpz_clear(q);
 }
 #endif
@@ -767,103 +767,101 @@ static const unsigned char binvert_table[128] = {
     0x11, 0x3B, 0x5D, 0xC7, 0x49, 0x33, 0x55, 0xFF};
 
 /* Compute n^(-1) mod B, using a Newton iteration. */
-#define binv(inv, n)                                                           \
-  do {                                                                         \
-    uintmax_t __n = (n);                                                       \
-    uintmax_t __inv;                                                           \
-                                                                               \
-    __inv = binvert_table[(__n / 2) & 0x7F]; /*  8 */                          \
-    if (W_TYPE_SIZE > 8)                                                       \
-      __inv = 2 * __inv - __inv * __inv * __n;                                 \
-    if (W_TYPE_SIZE > 16)                                                      \
-      __inv = 2 * __inv - __inv * __inv * __n;                                 \
-    if (W_TYPE_SIZE > 32)                                                      \
-      __inv = 2 * __inv - __inv * __inv * __n;                                 \
-                                                                               \
-    if (W_TYPE_SIZE > 64) {                                                    \
-      int __invbits = 64;                                                      \
-      do {                                                                     \
-        __inv = 2 * __inv - __inv * __inv * __n;                               \
-        __invbits *= 2;                                                        \
-      } while (__invbits < W_TYPE_SIZE);                                       \
-    }                                                                          \
-                                                                               \
-    (inv) = __inv;                                                             \
+#define binv(inv,n)                                  \
+  do {                                               \
+    uintmax_t __n = (n), __inv;                      \
+                                                     \
+    __inv = binvert_table[(__n / 2) & 0x7F]; /* 8 */ \
+    if (W_TYPE_SIZE > 8)                             \
+      __inv = 2 * __inv - __inv * __inv * __n;       \
+    if (W_TYPE_SIZE > 16)                            \
+      __inv = 2 * __inv - __inv * __inv * __n;       \
+    if (W_TYPE_SIZE > 32)                            \
+      __inv = 2 * __inv - __inv * __inv * __n;       \
+    if (W_TYPE_SIZE > 64) {                          \
+      int __invbits = 64;                            \
+      do {                                           \
+        __inv = 2 * __inv - __inv * __inv * __n;     \
+        __invbits *= 2;                              \
+      } while (__invbits < W_TYPE_SIZE);             \
+    }                                                \
+    (inv) = __inv;                                   \
   } while (0)
 
 /* q = u / d, assuming d|u. */
-#define divexact_21(q1, q0, u1, u0, d)                                         \
-  do {                                                                         \
-    uintmax_t _di, _q0;                                                        \
-    binv(_di, (d));                                                            \
-    _q0 = (u0)*_di;                                                            \
-    if ((u1) >= (d)) {                                                         \
-      uintmax_t _p1, _p0 _GL_UNUSED;                                           \
-      umul_ppmm(_p1, _p0, _q0, d);                                             \
-      (q1) = ((u1)-_p1) * _di;                                                 \
-      (q0) = _q0;                                                              \
-    } else {                                                                   \
-      (q0) = _q0;                                                              \
-      (q1) = 0;                                                                \
-    }                                                                          \
+#define divexact_21(q1,q0,u1,u0,d)   \
+  do {                               \
+    uintmax_t _di, _q0;              \
+    binv(_di, (d));                  \
+    _q0 = (u0)*_di;                  \
+    if ((u1) >= (d)) {               \
+      uintmax_t _p1, _p0 _GL_UNUSED; \
+      umul_ppmm(_p1, _p0, _q0, d);   \
+      (q1) = ((u1)-_p1) * _di;       \
+      (q0) = _q0;                    \
+    } else {                         \
+      (q0) = _q0;                    \
+      (q1) = 0;                      \
+    }                                \
   } while (0)
 
 /* x B(mod n). */
-#define redcify(r_prim, r, n)                                                  \
-  do {                                                                         \
-    uintmax_t _redcify_q _GL_UNUSED;                                           \
-    udiv_qrnnd(_redcify_q, r_prim, r, 0, n);                                   \
+#define redcify(r_prim,r,n)                  \
+  do {                                       \
+    uintmax_t _redcify_q _GL_UNUSED;         \
+    udiv_qrnnd(_redcify_q, r_prim, r, 0, n); \
   } while (0)
 
 /* x B^2(mod n). Requires x > 0, n1 < B/2 */
-#define redcify2(r1, r0, x, n1, n0)                                            \
-  do {                                                                         \
-    uintmax_t _r1, _r0, _i;                                                    \
-    if ((x) < (n1)) {                                                          \
-      _r1 = (x);                                                               \
-      _r0 = 0;                                                                 \
-      _i = W_TYPE_SIZE;                                                        \
-    } else {                                                                   \
-      _r1 = 0;                                                                 \
-      _r0 = (x);                                                               \
-      _i = 2 * W_TYPE_SIZE;                                                    \
-    }                                                                          \
-    while (_i-- > 0) {                                                         \
-      lsh2(_r1, _r0, _r1, _r0, 1);                                             \
-      if (ge2(_r1, _r0, (n1), (n0)))                                           \
-        sub_ddmmss(_r1, _r0, _r1, _r0, (n1), (n0));                            \
-    }                                                                          \
-    (r1) = _r1;                                                                \
-    (r0) = _r0;                                                                \
+#define redcify2(r1,r0,x,n1,n0)                     \
+  do {                                              \
+    uintmax_t _r1, _r0, _i;                         \
+    if ((x) < (n1)) {                               \
+      _r1 = (x);                                    \
+      _r0 = 0;                                      \
+      _i = W_TYPE_SIZE;                             \
+    } else {                                        \
+      _r1 = 0;                                      \
+      _r0 = (x);                                    \
+      _i = 2 * W_TYPE_SIZE;                         \
+    }                                               \
+    while (_i-- > 0) {                              \
+      lsh2(_r1, _r0, _r1, _r0, 1);                  \
+      if (ge2(_r1, _r0, (n1), (n0)))                \
+        sub_ddmmss(_r1, _r0, _r1, _r0, (n1), (n0)); \
+    }                                               \
+    (r1) = _r1;                                     \
+    (r0) = _r0;                                     \
   } while (0)
 
 /* Modular two-word multiplication, r = a * b mod m, with mi = m^(-1) mod B.
    Both a and b must be in redc form, the result will be in redc form too. */
-static inline uintmax_t mulredc(uintmax_t a, uintmax_t b, uintmax_t m,
-                                uintmax_t mi) {
+static inline uintmax_t mulredc(
+    uintmax_t a, uintmax_t b, uintmax_t m, uintmax_t mi)
+{
   uintmax_t rh, rl, q, th, tl _GL_UNUSED, xh;
 
   umul_ppmm(rh, rl, a, b);
-  q = rl * mi;
+  q = rl*mi;
   umul_ppmm(th, tl, q, m);
   xh = rh - th;
   if (rh < th)
     xh += m;
-
   return xh;
 }
 
 /* Modular two-word multiplication, r = a * b mod m, with mi = m^(-1) mod B.
    Both a and b must be in redc form, the result will be in redc form too.
    For performance reasons, the most significant bit of m must be clear. */
-static uintmax_t mulredc2(uintmax_t *r1p, uintmax_t a1, uintmax_t a0,
-                          uintmax_t b1, uintmax_t b0, uintmax_t m1,
-                          uintmax_t m0, uintmax_t mi) {
+static uintmax_t mulredc2(
+    uintmax_t *r1p, uintmax_t a1, uintmax_t a0, uintmax_t b1,
+    uintmax_t b0, uintmax_t m1, uintmax_t m0, uintmax_t mi)
+{
   uintmax_t r1, r0, q, p1, p0 _GL_UNUSED, t1, t0, s1, s0;
   mi = -mi;
-  assert((a1 >> (W_TYPE_SIZE - 1)) == 0);
-  assert((b1 >> (W_TYPE_SIZE - 1)) == 0);
-  assert((m1 >> (W_TYPE_SIZE - 1)) == 0);
+  assert((a1 >> (W_TYPE_SIZE-1)) == 0);
+  assert((b1 >> (W_TYPE_SIZE-1)) == 0);
+  assert((m1 >> (W_TYPE_SIZE-1)) == 0);
 
   /* First compute a0 * <b1, b0> B^{-1}
         +-----+
@@ -880,7 +878,7 @@ static uintmax_t mulredc2(uintmax_t *r1p, uintmax_t a1, uintmax_t a0,
   */
   umul_ppmm(t1, t0, a0, b0);
   umul_ppmm(r1, r0, a0, b1);
-  q = mi * t0;
+  q = mi*t0;
   umul_ppmm(p1, p0, q, m0);
   umul_ppmm(s1, s0, q, m1);
   r0 += (t0 != 0); /* Carry */
@@ -906,7 +904,7 @@ static uintmax_t mulredc2(uintmax_t *r1p, uintmax_t a1, uintmax_t a0,
   umul_ppmm(t1, t0, a1, b0);
   umul_ppmm(s1, s0, a1, b1);
   add_ssaaaa(t1, t0, t1, t0, 0, r0);
-  q = mi * t0;
+  q = mi*t0;
   add_ssaaaa(r1, r0, s1, s0, 0, r1);
   umul_ppmm(p1, p0, q, m0);
   umul_ppmm(s1, s0, q, m1);
@@ -922,8 +920,9 @@ static uintmax_t mulredc2(uintmax_t *r1p, uintmax_t a1, uintmax_t a0,
   return r0;
 }
 
-static uintmax_t _GL_ATTRIBUTE_CONST powm(uintmax_t b, uintmax_t e, uintmax_t n,
-                                          uintmax_t ni, uintmax_t one) {
+static uintmax_t _GL_ATTRIBUTE_CONST powm(
+    uintmax_t b, uintmax_t e, uintmax_t n, uintmax_t ni, uintmax_t one)
+{
   uintmax_t y = one;
 
   if (e & 1)
@@ -936,16 +935,15 @@ static uintmax_t _GL_ATTRIBUTE_CONST powm(uintmax_t b, uintmax_t e, uintmax_t n,
     if (e & 1)
       y = mulredc(y, b, n, ni);
   }
-
   return y;
 }
 
-static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
-                       const uintmax_t *np, uintmax_t ni,
-                       const uintmax_t *one) {
-  uintmax_t r1, r0, b1, b0, n1, n0;
+static uintmax_t powm2(
+    uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
+    const uintmax_t *np, uintmax_t ni, const uintmax_t *one)
+{
+  uintmax_t r1, r0, b1, b0, n1, n0, e;
   UINT i;
-  uintmax_t e;
 
   b0 = bp[0];
   b1 = bp[1];
@@ -955,7 +953,7 @@ static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
   r0 = one[0];
   r1 = one[1];
 
-  for (e = ep[0], i = W_TYPE_SIZE; i > 0; i--, e >>= 1) {
+  for (e=ep[0], i=W_TYPE_SIZE; i>0; i--, e>>=1) {
     if (e & 1) {
       r0 = mulredc2(r1m, r1, r0, b1, b0, n1, n0, ni);
       r1 = *r1m;
@@ -963,7 +961,7 @@ static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
     b0 = mulredc2(r1m, b1, b0, b1, b0, n1, n0, ni);
     b1 = *r1m;
   }
-  for (e = ep[1]; e > 0; e >>= 1) {
+  for (e=ep[1]; e>0; e>>=1) {
     if (e & 1) {
       r0 = mulredc2(r1m, r1, r0, b1, b0, n1, n0, ni);
       r1 = *r1m;
@@ -975,17 +973,17 @@ static uintmax_t powm2(uintmax_t *r1m, const uintmax_t *bp, const uintmax_t *ep,
   return r0;
 }
 
-static bool _GL_ATTRIBUTE_CONST millerrabin(uintmax_t n, uintmax_t ni,
-                                            uintmax_t b, uintmax_t q,
-                                            UINT k, uintmax_t one) {
+static bool _GL_ATTRIBUTE_CONST millerrabin(
+    uintmax_t n, uintmax_t ni, uintmax_t b,
+    uintmax_t q, UINT k, uintmax_t one)
+{
   uintmax_t y = powm(b, q, n, ni, one);
+  uintmax_t nm1 = n-one; /* -1, but in redc representation. */
 
-  uintmax_t nm1 = n - one; /* -1, but in redc representation. */
-
-  if (y == one || y == nm1)
+  if (y==one || y==nm1)
     return true;
 
-  for (UINT i = 1; i < k; i++) {
+  for (UINT i=1; i<k; ++i) {
     y = mulredc(y, y, n, ni);
 
     if (y == nm1)
@@ -996,43 +994,45 @@ static bool _GL_ATTRIBUTE_CONST millerrabin(uintmax_t n, uintmax_t ni,
   return false;
 }
 
-static bool millerrabin2(const uintmax_t *np, uintmax_t ni, const uintmax_t *bp,
-                         const uintmax_t *qp, UINT k,
-                         const uintmax_t *one) {
+static bool millerrabin2(
+    const uintmax_t *np, uintmax_t ni, const uintmax_t *bp,
+    const uintmax_t *qp, UINT k, const uintmax_t *one)
+{
   uintmax_t y1, y0, nm1_1, nm1_0, r1m;
 
   y0 = powm2(&r1m, bp, qp, np, ni, one);
   y1 = r1m;
 
-  if (y0 == one[0] && y1 == one[1])
+  if (y0==one[0] && y1==one[1])
     return true;
 
   sub_ddmmss(nm1_1, nm1_0, np[1], np[0], one[1], one[0]);
 
-  if (y0 == nm1_0 && y1 == nm1_1)
+  if (y0==nm1_0 && y1==nm1_1)
     return true;
 
-  for (UINT i = 1; i < k; i++) {
+  for (UINT i=1; i<k; ++i) {
     y0 = mulredc2(&r1m, y1, y0, y1, y0, np[1], np[0], ni);
     y1 = r1m;
 
-    if (y0 == nm1_0 && y1 == nm1_1)
+    if (y0==nm1_0 && y1==nm1_1)
       return true;
-    if (y0 == one[0] && y1 == one[1])
+    if (y0==one[0] && y1==one[1])
       return false;
   }
   return false;
 }
 
 #if HAVE_GMP
-static bool mp_millerrabin(mpz_srcptr n, mpz_srcptr nm1, mpz_ptr x, mpz_ptr y,
-                           mpz_srcptr q, uint k) {
+static bool mp_millerrabin(
+    mpz_srcptr n, mpz_srcptr nm1, mpz_ptr x, mpz_ptr y, mpz_srcptr q, uint k)
+{
   mpz_powm(y, x, q, n);
 
-  if (mpz_cmp_ui(y, 1) == 0 || mpz_cmp(y, nm1) == 0)
+  if (mpz_cmp_ui(y, 1)==0 || mpz_cmp(y, nm1)==0)
     return true;
 
-  for (uint i = 1; i < k; i++) {
+  for (uint i=1; i<k; ++i) {
     mpz_powm_ui(y, y, 2, n);
     if (mpz_cmp(y, nm1) == 0)
       return true;
@@ -1045,7 +1045,8 @@ static bool mp_millerrabin(mpz_srcptr n, mpz_srcptr nm1, mpz_ptr x, mpz_ptr y,
 
 /* Lucas' prime test.  The number of iterations vary greatly, up to a few dozen
    have been observed.  The average seem to be about 2. */
-static bool prime_p(uintmax_t n) {
+static bool prime_p(uintmax_t n)
+{
   int k;
   bool is_prime;
   uintmax_t a_prim, one, ni;
@@ -1059,11 +1060,10 @@ static bool prime_p(uintmax_t n) {
     return true;
 
   /* Precomputation for Miller-Rabin. */
-  uintmax_t q = n - 1;
-  for (k = 0; (q & 1) == 0; k++)
+  uintmax_t q=n-1, a=2;
+  for (k=0; (q & 1)==0; ++k)
     q >>= 1;
 
-  uintmax_t a = 2;
   binv(ni, n); /* ni <- 1/n mod B */
   redcify(one, 1, n);
   addmod(a_prim, one, one, n); /* i.e., redcify a = 2 */
@@ -1074,27 +1074,25 @@ static bool prime_p(uintmax_t n) {
 
   if (flag_prove_primality) {
     /* Factor n-1 for Lucas. */
-    factor(0, n - 1, &factors);
+    factor(0, n-1, &factors);
   }
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite. */
-  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r=0; r < PRIMES_PTAB_ENTRIES; ++r) {
     if (flag_prove_primality) {
       is_prime = true;
-      for (UINT i = 0; i < factors.nfactors && is_prime; i++) {
-        is_prime = powm(a_prim, (n - 1) / factors.p[i], n, ni, one) != one;
+      for (UINT i=0; i<factors.nfactors && is_prime; ++i) {
+        is_prime = powm(a_prim, (n-1) / factors.p[i], n, ni, one) != one;
       }
     } else {
       /* After enough Miller-Rabin runs, be content. */
-      is_prime = (r == MR_REPS - 1);
+      is_prime = (r == MR_REPS-1);
     }
-
     if (is_prime)
       return true;
 
     a += primes_diff[r]; /* Establish new base. */
-
     /* The following is equivalent to redcify(a_prim, a, n).  It runs faster
        on most processors, since it avoids udiv_qrnnd.  If we go down the
        udiv_qrnnd_preinv path, this code should be replaced. */
@@ -1102,35 +1100,30 @@ static bool prime_p(uintmax_t n) {
       uintmax_t s1, s0;
       umul_ppmm(s1, s0, one, a);
       if (LIKELY(s1 == 0))
-        a_prim = s0 % n;
+        a_prim = s0%n;
       else {
         uintmax_t dummy _GL_UNUSED;
         udiv_qrnnd(dummy, a_prim, s1, s0, n);
       }
     }
-
     if (!millerrabin(n, ni, a_prim, q, k, one))
       return false;
   }
-
   error(0, 0, _("Lucas prime test failure.  This should not happen"));
   abort();
 }
 
-static bool prime2_p(uintmax_t n1, uintmax_t n0) {
-  uintmax_t q[2], nm1[2];
-  uintmax_t a_prim[2];
-  uintmax_t one[2];
-  uintmax_t na[2];
-  uintmax_t ni;
-  UINT k;
+static bool prime2_p(uintmax_t n1, uintmax_t n0)
+{
+  uintmax_t q[2], nm1[2], a_prim[2], one[2], na[2], ni;
   struct factors factors;
+  UINT k;
 
   if (n1 == 0)
     return prime_p(n0);
 
-  nm1[1] = n1 - (n0 == 0);
-  nm1[0] = n0 - 1;
+  nm1[1] = n1-(n0 == 0);
+  nm1[0] = n0-1;
   if (nm1[0] == 0) {
     count_trailing_zeros(k, nm1[1]);
 
@@ -1161,7 +1154,7 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite. */
-  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r=0; r<PRIMES_PTAB_ENTRIES; ++r) {
     bool is_prime;
     uintmax_t e[2], y[2];
 
@@ -1170,12 +1163,12 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
       if (factors.plarge[1]) {
         uintmax_t pi;
         binv(pi, factors.plarge[0]);
-        e[0] = pi * nm1[0];
+        e[0] = pi*nm1[0];
         e[1] = 0;
         y[0] = powm2(&y[1], a_prim, e, na, ni, one);
         is_prime = (y[0] != one[0] || y[1] != one[1]);
       }
-      for (UINT i = 0; i < factors.nfactors && is_prime; i++) {
+      for (UINT i=0; i<factors.nfactors && is_prime; ++i) {
         /* FIXME: We always have the factor 2. Do we really need to
            handle it here? We have done the same powering as part
            of millerrabin. */
@@ -1188,9 +1181,8 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
       }
     } else {
       /* After enough Miller-Rabin runs, be content. */
-      is_prime = (r == MR_REPS - 1);
+      is_prime = (r == MR_REPS-1);
     }
-
     if (is_prime)
       return true;
 
@@ -1200,13 +1192,13 @@ static bool prime2_p(uintmax_t n1, uintmax_t n0) {
     if (!millerrabin2(na, ni, a_prim, q, k, one))
       return false;
   }
-
   error(0, 0, _("Lucas prime test failure.  This should not happen"));
   abort();
 }
 
 #if HAVE_GMP
-static bool mp_prime_p(mpz_t n) {
+static bool mp_prime_p(mpz_t n)
+{
   bool is_prime;
   mpz_t q, a, nm1, tmp;
   struct mp_factors factors;
@@ -1243,17 +1235,17 @@ static bool mp_prime_p(mpz_t n) {
 
   /* Loop until Lucas proves our number prime, or Miller-Rabin proves our
      number composite. */
-  for (UINT r = 0; r < PRIMES_PTAB_ENTRIES; r++) {
+  for (UINT r=0; r<PRIMES_PTAB_ENTRIES; ++r) {
     if (flag_prove_primality) {
       is_prime = true;
-      for (uint i = 0; i < factors.nfactors && is_prime; i++) {
+      for (uint i=0; i<factors.nfactors && is_prime; ++i) {
         mpz_divexact(tmp, nm1, factors.p[i]);
         mpz_powm(tmp, a, tmp, n);
         is_prime = mpz_cmp_ui(tmp, 1) != 0;
       }
     } else {
       /* After enough Miller-Rabin runs, be content. */
-      is_prime = (r == MR_REPS - 1);
+      is_prime = (r == MR_REPS-1);
     }
 
     if (is_prime)
@@ -1266,7 +1258,6 @@ static bool mp_prime_p(mpz_t n) {
       goto ret1;
     }
   }
-
   error(0, 0, _("Lucas prime test failure.  This should not happen"));
   abort();
 
@@ -1275,17 +1266,15 @@ ret1:
     mp_factor_clear(&factors);
 ret2:
   mpz_clears(q, a, nm1, tmp, NULL);
-
   return is_prime;
 }
 #endif
 
-static void factor_using_pollard_rho(uintmax_t n, uint a,
-                                     struct factors *factors) {
+static void factor_using_pollard_rho(
+    uintmax_t n, uint a, struct factors *factors)
+{
   uintmax_t x, z, y, P, t, ni, g;
-
-  uint k = 1;
-  uint l = 1;
+  uint k=1, l=1;
 
   redcify(P, 1, n);
   addmod(x, P, P, n); /* i.e., redcify(2) */
@@ -1293,7 +1282,6 @@ static void factor_using_pollard_rho(uintmax_t n, uint a,
 
   while (n != 1) {
     assert(a < n);
-
     binv(ni, n); /* FIXME: when could we use old 'ni' value? */
 
     for (;;) {
@@ -1304,7 +1292,7 @@ static void factor_using_pollard_rho(uintmax_t n, uint a,
         submod(t, z, x, n);
         P = mulredc(P, t, n, ni);
 
-        if (k % 32 == 1) {
+        if (k%32 == 1) {
           if (gcd_odd(P, n) != 1)
             goto factor_found;
           y = x;
@@ -1313,15 +1301,14 @@ static void factor_using_pollard_rho(uintmax_t n, uint a,
 
       z = x;
       k = l;
-      l = 2 * l;
-      for (uint i = 0; i < k; i++) {
+      l *= 2;
+      for (uint i=0; i<k; ++i) {
         x = mulredc(x, x, n, ni);
         addmod(x, x, a, n);
       }
       y = x;
     }
-
-  factor_found:
+factor_found:
     do {
       y = mulredc(y, y, n, ni);
       addmod(y, y, a, n);
@@ -1329,11 +1316,10 @@ static void factor_using_pollard_rho(uintmax_t n, uint a,
       submod(t, z, y, n);
       g = gcd_odd(t, n);
     } while (g == 1);
-
-    n = n / g;
-
+    
+    n /= g;
     if (!prime_p(g))
-      factor_using_pollard_rho(g, a + 1, factors);
+      factor_using_pollard_rho(g, a+1, factors);
     else
       factor_insert(factors, g);
 
@@ -1341,10 +1327,9 @@ static void factor_using_pollard_rho(uintmax_t n, uint a,
       factor_insert(factors, n);
       break;
     }
-
-    x = x % n;
-    z = z % n;
-    y = y % n;
+    x %= n;
+    z %= n;
+    y %= n;
   }
 }
 
@@ -1352,7 +1337,6 @@ static void factor_using_pollard_rho2(
     uintmax_t n1, uintmax_t n0, uint a, struct factors *factors)
 {
   uintmax_t x1, x0, z1, z0, y1, y0, P1, P0, t1, t0, ni, g1, g0, r1m;
-
   uint k=1, l=1;
 
   redcify2(P1, P0, 1, n1, n0);
@@ -1375,7 +1359,7 @@ static void factor_using_pollard_rho2(
 
         if (k%32 == 1) {
           g0 = gcd2_odd(&g1, P1, P0, n1, n0);
-          if (g1 != 0 || g0 != 1)
+          if (g1!=0 || g0!=1)
             goto factor_found;
           y1 = x1;
           y0 = x0;
@@ -1386,7 +1370,7 @@ static void factor_using_pollard_rho2(
       z0 = x0;
       k = l;
       l *= 2;
-      for (uint i = 0; i < k; i++) {
+      for (uint i=0; i<k; ++i) {
         x0 = mulredc2(&r1m, x1, x0, x1, x0, n1, n0, ni);
         x1 = r1m;
         addmod2(x1, x0, x1, x0, 0, (uintmax_t)a, n1, n0);
@@ -1394,8 +1378,7 @@ static void factor_using_pollard_rho2(
       y1 = x1;
       y0 = x0;
     }
-
-  factor_found:
+factor_found:
     do {
       y0 = mulredc2(&r1m, y1, y0, y1, y0, n1, n0, ni);
       y1 = r1m;
@@ -1419,7 +1402,7 @@ static void factor_using_pollard_rho2(
       uintmax_t ginv;
 
       binv(ginv, g0); /* Compute n = n / g.  Since the result will */
-      n0 = ginv * n0; /* fit one word, we can compute the quotient */
+      n0 *= ginv;     /* fit one word, we can compute the quotient */
       n1 = 0;         /* modulo B, ignoring the high divisor word. */
 
       if (!prime2_p(g1, g0))
@@ -1488,8 +1471,7 @@ static void mp_factor_using_pollard_rho(
       }
       mpz_set(y, x);
     }
-
-  factor_found:
+factor_found:
     do {
       mpz_mul(t, y, y);
       mpz_mod(y, t, n);
@@ -1503,7 +1485,7 @@ static void mp_factor_using_pollard_rho(
 
     if (!mp_prime_p(t)) {
       devmsg("[composite factor--restarting pollard-rho] ");
-      mp_factor_using_pollard_rho(t, a + 1, factors);
+      mp_factor_using_pollard_rho(t, a+1, factors);
     } else {
       mp_factor_insert(factors, t);
     }
@@ -1515,7 +1497,6 @@ static void mp_factor_using_pollard_rho(
     mpz_mod(z, z, n);
     mpz_mod(y, y, n);
   }
-
   mpz_clears(P, t2, t, z, x, y, NULL);
 }
 #endif
@@ -1523,7 +1504,8 @@ static void mp_factor_using_pollard_rho(
 #if USE_SQUFOF
 /* FIXME: Maybe better to use an iteration converging to 1/sqrt(n)?  If
    algorithm is replaced, consider also returning the remainder. */
-static uintmax_t _GL_ATTRIBUTE_CONST isqrt(uintmax_t n) {
+static uintmax_t _GL_ATTRIBUTE_CONST isqrt(uintmax_t n)
+{
   uintmax_t x;
   unsigned c;
   if (n == 0)
@@ -1532,18 +1514,18 @@ static uintmax_t _GL_ATTRIBUTE_CONST isqrt(uintmax_t n) {
   count_leading_zeros(c, n);
 
   /* Make x > sqrt(n). This will be invariant through the loop. */
-  x = (uintmax_t)1 << ((W_TYPE_SIZE + 1 - c) / 2);
+  x = (uintmax_t)1 << ((W_TYPE_SIZE+1-c)/2);
 
   for (;;) {
-    uintmax_t y = (x + n / x) / 2;
+    uintmax_t y = (x+n/x)/2;
     if (y >= x)
       return x;
-
     x = y;
   }
 }
 
-static uintmax_t _GL_ATTRIBUTE_CONST isqrt2(uintmax_t nh, uintmax_t nl) {
+static uintmax_t _GL_ATTRIBUTE_CONST isqrt2(uintmax_t nh, uintmax_t nl)
+{
   UINT shift;
   uintmax_t x;
 
@@ -1558,7 +1540,7 @@ static uintmax_t _GL_ATTRIBUTE_CONST isqrt2(uintmax_t nh, uintmax_t nl) {
 
   /* Make x > sqrt(n) */
   x = isqrt((nh << shift)+(nl >> (W_TYPE_SIZE-shift)))+1;
-  x <<= (W_TYPE_SIZE - shift)/2;
+  x <<= (W_TYPE_SIZE-shift)/2;
 
   /* Do we need more than one iteration? */
   for (;;) {
@@ -1575,7 +1557,6 @@ static uintmax_t _GL_ATTRIBUTE_CONST isqrt2(uintmax_t nh, uintmax_t nl) {
       assert(ge2(nh, nl, hi, lo));
       sub_ddmmss(hi, lo, nh, nl, hi, lo);
       assert(hi == 0);
-
       return x;
     }
     x = y;
@@ -1615,36 +1596,34 @@ static const unsigned short invtab[0x81] = {
   0x12f,0x12e,0x12c,0x12b,0x129,0x128,0x127,0x125,0x124,0x123,0x121,
   0x120,0x11f,0x11e,0x11c,0x11b,0x11a,0x119,0x118,0x116,0x115,0x114,
   0x113,0x112,0x111,0x10f,0x10e,0x10d,0x10c,0x10b,0x10a,0x109,0x108,
-  0x107,0x106,0x105,0x104,0x103,0x102,0x101,0x100,
+  0x107,0x106,0x105,0x104,0x103,0x102,0x101,0x100
 };
 
 /* Compute q = [u/d], r = u mod d.  Avoids slow hardware division for the case
    that q < 0x40; here it instead uses a table of(Euclidian) inverses */
-#define div_smallq(q, r, u, d)                                                 \
-  do {                                                                         \
-    if ((u)/0x40 < (d)) {                                                      \
-      int _cnt;                                                                \
-      uintmax_t _dinv, _mask, _q, _r;                                          \
-      count_leading_zeros(_cnt, (d));                                          \
-      _r = (u);                                                                \
-      if (UNLIKELY(_cnt > (W_TYPE_SIZE - 8))) {                                \
-        _dinv = invtab[((d) << (_cnt + 8 - W_TYPE_SIZE)) - 0x80];              \
-        _q = _dinv * _r >> (8 + W_TYPE_SIZE - _cnt);                           \
-      } else {                                                                 \
-        _dinv = invtab[((d) >> (W_TYPE_SIZE - 8 - _cnt)) - 0x7f];              \
-        _q = _dinv * (_r >> (W_TYPE_SIZE - 3 - _cnt)) >> 11;                   \
-      }                                                                        \
-      _r -= _q * (d);                                                          \
-                                                                               \
-      _mask = -(uintmax_t)(_r >= (d));                                         \
-      (r) = _r - (_mask & (d));                                                \
-      (q) = _q - _mask;                                                        \
-      assert((q) * (d) + (r) == u);                                            \
-    } else {                                                                   \
-      uintmax_t _q = (u) / (d);                                                \
-      (r) = (u)-_q * (d);                                                      \
-      (q) = _q;                                                                \
-    }                                                                          \
+#define div_smallq(q,r,u,d)                                   \
+  do {                                                        \
+    if ((u)/0x40 < (d)) {                                     \
+      int _cnt;                                               \
+      uintmax_t _dinv, _mask, _q, _r = (u);                   \
+      count_leading_zeros(_cnt, (d));                         \
+      if (UNLIKELY(_cnt > (W_TYPE_SIZE-8))) {                 \
+        _dinv = invtab[((d) << (_cnt+8 - W_TYPE_SIZE))-0x80]; \
+        _q = _dinv * _r >> (8+W_TYPE_SIZE - _cnt);            \
+      } else {                                                \
+        _dinv = invtab[((d) >> (W_TYPE_SIZE-8 - _cnt))-0x7f]; \
+        _q = _dinv * (_r >> (W_TYPE_SIZE-3 - _cnt)) >> 11;    \
+      }                                                       \
+      _r -= _q * (d);                                         \
+      _mask = -(uintmax_t)(_r >= (d));                        \
+      (r) = _r - (_mask & (d));                               \
+      (q) = _q - _mask;                                       \
+      assert((q) * (d) + (r) == u);                           \
+    } else {                                                  \
+      uintmax_t _q = (u) / (d);                               \
+      (r) = (u)-_q * (d);                                     \
+      (q) = _q;                                               \
+    }                                                         \
   } while (0)
 
 /* Notes: Example N = 22117019. After first phase we find Q1 = 6314, Q
@@ -1659,7 +1638,6 @@ static const unsigned short invtab[0x81] = {
    S_{-1} = 55, S_0 = 8653, R_0 = 4652
 
    Put
-
      t_0 = floor([q_0 + R_0] / S0) = 1
      R_1 = t_0 * S_0 - R_0 = 4001
      S_1 = S_{-1} +t_0(R_0 - R_1) = 706
@@ -1705,13 +1683,14 @@ static bool factor_using_squfof(
 
      http://homes.cerias.purdue.edu/~ssw/squfof.pdf
 . */
-
   static const UINT multipliers_1[] = {/* = 1(mod 4) */
-                                               105, 165, 21, 385, 33,
-                                               5,   77,  1,  0};
+    105, 165, 21, 385, 33,
+    5,   77,  1,  0
+  };
   static const UINT multipliers_3[] = {/* = 3(mod 4) */
-                                               1155, 15, 231, 35, 3,
-                                               55,   7,  11,  0};
+    1155, 15, 231, 35, 3,
+    55,   7,  11,  0
+  };
   const UINT *m;
   struct {
     uintmax_t Q, P;
@@ -1740,13 +1719,12 @@ static bool factor_using_squfof(
           factor_using_pollard_rho(sqrt_n, 1, &f);
         }
         /* Duplicate the new factors */
-        for (UINT i = 0; i < f.nfactors; i++)
-          factor_insert_multiplicity(factors, f.p[i], 2 * f.e[i]);
+        for (UINT i=0; i<f.nfactors; ++i)
+          factor_insert_multiplicity(factors, f.p[i], 2*f.e[i]);
       }
       return true;
     }
   }
-
   /* Select multipliers so we always get n * mu = 3(mod 4) */
   for (m=(n0%4 == 1)?multipliers_3:multipliers_1; *m; ++m) {
     uintmax_t S, Dh, Dl, Q1, Q, P, L, L1, B;
@@ -1756,13 +1734,13 @@ static bool factor_using_squfof(
     /* In the notation of the paper, with mu * n == 3(mod 4), we
        get \Delta = 4 mu * n, and the paper's \mu is 2 mu. As far as
        I understand it, the necessary bound is 4 \mu^3 < n, or 32
-       mu^3 < n.
+       mu^3 < n
 
        However, this seems insufficient: With n = 37243139 and mu =
        105, we get a trivial factor, from the square 38809 = 197^2,
-       without any corresponding Q earlier in the iteration.
+       without any corresponding Q earlier in the iteration
 
-       Requiring 64 mu^3 < n seems sufficient. */
+       Requiring 64 mu^3 < n seems sufficient */
     if (n1 == 0) {
       if ((uintmax_t)mu*mu*mu >= n0/64)
         continue;
@@ -1796,12 +1774,10 @@ static bool factor_using_squfof(
       P1 = S-rem; /* P1 = q*Q - P */
 
       IF_LINT(assert(q>0 && Q>0));
-
 #if STAT_SQUFOF
       q_freq[0]++;
       q_freq[MIN(q, Q_FREQ_SIZE)]++;
 #endif
-
       if (Q <= L1) {
         uintmax_t g = Q;
 
@@ -1818,9 +1794,8 @@ static bool factor_using_squfof(
           qpos++;
         }
       }
-
       /* I think the difference can be either sign, but mod
-         2^W_TYPE_SIZE arithmetic should be fine. */
+         2^W_TYPE_SIZE arithmetic should be fine */
       t = Q1+q*(P-P1);
       Q1 = Q;
       Q = t;
@@ -1834,7 +1809,6 @@ static bool factor_using_squfof(
               if (r == 1)
                 /* Traversed entire cycle. */
                 goto next_multiplier;
-
               /* Need the absolute value for divisibility test. */
               if (P >= queue[j].P)
                 t = P-queue[j].P;
@@ -1849,13 +1823,11 @@ static bool factor_using_squfof(
               goto next_i;
             }
           }
-
           /* We have found a square form, which should give a
              factor. */
           Q1 = r;
           assert(S >= P); /* What signs are possible? */
           P += r*((S-P)/r);
-
           /* Note: Paper says(N - P*P) / Q1, that seems incorrect
              for the case D = 2N. */
           /* Compute Q =(D - P*P) / Q1, but we need double
@@ -1865,7 +1837,6 @@ static bool factor_using_squfof(
           sub_ddmmss(hi, lo, Dh, Dl, hi, lo);
           udiv_qrnnd(Q, rem, hi, lo, Q1);
           assert(rem == 0);
-
           for (;;) {
             /* Note: There appears to by a typo in the paper,
                Step 4a in the algorithm description says q <--
@@ -1874,7 +1845,6 @@ static bool factor_using_squfof(
               (In this code, \hat Q is Q1). */
             div_smallq(q, rem, S+P, Q);
             P1 = S-rem; /* P1 = q*Q - P */
-
 #if STAT_SQUFOF
             q_freq[0]++;
             q_freq[MIN(q, Q_FREQ_SIZE)]++;
@@ -1886,7 +1856,6 @@ static bool factor_using_squfof(
             Q = t;
             P = P1;
           }
-
           if ((Q&1) == 0)
             Q /= 2;
           Q /= gcd_odd(Q, mu);
@@ -1910,9 +1879,9 @@ static bool factor_using_squfof(
           return true;
         }
       }
-    next_i:;
+next_i:;
     }
-  next_multiplier:;
+next_multiplier:;
   }
   return false;
 }
@@ -1981,7 +1950,6 @@ static strtol_error strto2uintmax(
     } else
       break;
   }
-
   /* Initial scan for invalid digits. */
   const char *p = s;
   for (;;) {
@@ -2154,18 +2122,18 @@ static bool print_factors(const char *input)
   strtol_error err = strto2uintmax(&t1, &t0, input);
 
   switch (err) {
-  case LONGINT_OK:
-    if (((t1 << 1) >> 1) == t1) {
-      devmsg("[using single-precision arithmetic] ");
-      print_factors_single(t1, t0);
-      return true;
-    } break;
-  case LONGINT_OVERFLOW:
-    /* Try GMP. */
-    break;
-  default:
-    error(0, 0, _("%s is not a valid positive integer"), quote(input));
-    return false;
+    case LONGINT_OK:
+      if (((t1 << 1) >> 1) == t1) {
+        devmsg("[using single-precision arithmetic] ");
+        print_factors_single(t1, t0);
+        return true;
+      } break;
+    case LONGINT_OVERFLOW:
+      /* Try GMP. */
+      break;
+    default:
+      error(0, 0, _("%s is not a valid positive integer"), quote(input));
+      return false;
   }
 #if HAVE_GMP
   devmsg("[using arbitrary-precision arithmetic] ");
@@ -2197,10 +2165,12 @@ void usage(int status)
   if (status != EXIT_SUCCESS)
     emit_try_help();
   else {
-    printf(_("Usage: %s [NUMBER]...\n\
-  or:  %s OPTION\n"), program_name,program_name);
-    fputs(_("Print the prime factors of each specified integer NUMBER.  If none\n\
-are specified on the command line, read them from standard input.\n\n"), stdout);
+    printf(_("Usage: %s [NUMBER]...\n"
+          "  or:  %s OPTION\n"), program_name,program_name);
+    fputs(_(
+          "Print the prime factors of each specified integer NUMBER"
+          "\nIf none are specified on the command line, "
+          "read them from standard input\n\n"), stdout);
     fputs(HELP_OPTION_DESCRIPTION, stdout);
     fputs(VERSION_OPTION_DESCRIPTION, stdout);
     emit_ancillary_info(PROGRAM_NAME);
@@ -2214,7 +2184,6 @@ static bool do_stdin(void)
   token_buffer tokenbuffer;
 
   init_tokenbuffer(&tokenbuffer);
-
   while (true) {
     size_t token_length =
         readtoken(stdin, DELIM, sizeof(DELIM)-1, &tokenbuffer);
@@ -2238,23 +2207,21 @@ int main(int argc, char *argv[])
   atexit(close_stdout);
   atexit(lbuf_flush);
   int c;
-  while ((c = getopt_long(argc, argv, "", long_options, NULL)) != -1) {
+  while ((c=getopt_long(argc, argv, "", long_options, NULL)) != -1) {
     switch (c) {
-    case DEV_DEBUG_OPTION:
-      dev_debug = true;
-      break;
-      
-    case_GETOPT_HELP_CHAR;
-    case_GETOPT_VERSION_CHAR(PROGRAM_NAME, AUTHORS);
+      case DEV_DEBUG_OPTION:
+        dev_debug = true;
+        break;
+        
+      case_GETOPT_HELP_CHAR;
+      case_GETOPT_VERSION_CHAR(PROGRAM_NAME, AUTHORS);
 
-    default:usage(EXIT_FAILURE);
+      default:usage(EXIT_FAILURE);
     }
   }
-
 #if STAT_SQUFOF
   memset(q_freq, 0, sizeof(q_freq));
 #endif
-
   bool ok;
   if (argc <= optind)
     ok = do_stdin();
@@ -2264,7 +2231,6 @@ int main(int argc, char *argv[])
       if (!print_factors(argv[i]))
         ok = false;
   }
-
 #if STAT_SQUFOF
   if (q_freq[0] > 0) {
     double acc_f;

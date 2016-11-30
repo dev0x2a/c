@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <limits.h>
+#include <stdio.h>
 
 #ifndef USETYPEDEFS
 #define USETYPEDEFS 1
@@ -25,8 +26,13 @@ typedef unsigned int uint;
 #define NMIN(_a,_b) ((_a<_b)?(_a):(_b))
 #endif
 
-#define BASE 16
+#define BASE 65536
 
+#define TESTSTRUCTS 1
+#define TESTBITS 0
+#define DEBUG 0
+
+#if TESTSTRUCTS
 struct integer {
   char c;
   struct integer *next;
@@ -46,6 +52,7 @@ struct bignum_st {
   int neg; /* 1 if num is negative */
   int flags;
 };
+typedef struct bignum_st bignum;
 
 struct gcrypt_mpi {
   int alloced; /* array sie (# allocated limbs) */
@@ -64,7 +71,7 @@ typedef struct {
                    negative number */
   size_t *_mp_d; /* ptr to table mp_limb_t==size_t */
 } __mpz_struct;
-
+#endif
 //add //sizeof(result) = max(sizeof(src1), sizeof(src2)) + 1;
 /*
 for (l=0,i-0; i<m; ++i) {
@@ -81,12 +88,13 @@ for (i=0; i<n; ++i)
   for (j=0; j<n; ++j)
     tmp[j*n+i] = (acc)a[i]*b[j];
 */
-/*
+#if TESTBITS
+
 #define SETBIT(b,n) ((n) |= 1 << (b))
 #define CLRBIT(b,n) ((n) &= ~(1 << (b)))
 #define TOGBIT(b,n) ((n) ^= 1 << (b))
-#define CHKBIT(b,n,x) ((x) = ((n) >> (b)) & 1)
 #define NTHBIT(b,n) ((n) ^= (-(b) ^ (n)) & (1 << (n)))
+#define CHKBIT(b,n,x) ((x) = ((n) >> (b)) & 1)
 
 struct bits {
   unsigned int a:1;
@@ -102,97 +110,54 @@ enum bitflags = {
   biterr = 1 << 8;
 };
 
-bitstate |= bitflag1;
-bitstate &= ~bitflag0;
-if (bit & biterr) {...}
-
-//a=target var
-//b=bit num to act upon 0-n
-*//*
+/*
+ * bitstate |= bitflag1;
+ * bitstate &= ~bitflag0;
+ * if (bit & biterr) {...}
+ */
+/* a=target var
+ * b=bit num to act upon 0-n
+ */
 #define BIT_SET(a,b) ((a) |= ((uintmax_t)1<<(b)))
-#define BIT_CLEAR(a,b) ((a) &= ~((uintmax_t)1<<(b)))
+#define BIT_CLR(a,b) ((a) &= ~((uintmax_t)1<<(b)))
 #define BIT_FLIP(a,b) ((a) ^= ((uintmax_t)1<<(b)))
-#define BIT_CHECK(a,b) ((a) & ((uintmax_t)1<<(b)))
+#define BIT_CHK(a,b) ((a) & ((uintmax_t)1<<(b)))
 
-//x=target var
-//y=mask
+/* x=target var
+ * y=mask
+ */
 #define BITMASK_SET(x,y) ((x) |= (y))
 #define BITMASK_CLEAR(x,y) ((x) &= (~(y)))
 #define BITMASK_FLIP(x,y) ((x) ^= (y))
 #define BITMASK_CHECK(x,y) (((x) & (y)) == (y))
-*//*
+
 typedef enum {ERROR = -1, FALSE, TRUE } LOGICAL;
 #define BOOL(x) (!(!(x)))
 
 #define BITOP(a,b,op) \
   ((a)[(size_t)(b)/(8*sizeof *(a))] op ((size_t)1<<((size_t)(b)%(8*sizeof *(a)))))
 
-#define BITS CHAR_BIT //8
-#define BIT_SET_(p,n) (p[(n)/BITS] |= (0x80>>((n)%BITS)))
-#define BIT_CLEAR_(p,n) (p[(n)/BITS] &= ~(0x80>>((n)%BITS)))
-#define BIT_ISSET_(p,n) (p[(n)/BITS] & (0x80>>((n)%BITS)))
+#define BITS_ CHAR_BIT //8
+#define BIT_SET_(p,n) (p[(n)/BITS_] |= (0x80>>((n)%BITS_)))
+#define BIT_CLR_(p,n) (p[(n)/BITS_] &= ~(0x80>>((n)%BITS_)))
+#define BIT_ISSET_(p,n) (p[(n)/BITS_] & (0x80>>((n)%BITS_)))
 
-#define bit_test(x,y) ((((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07)))
-int bittestf(){
+#define bit_test(x,y) \
+  ((((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07)))
+
+void bittestf(void)
+{
   unsigned char arr[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
   for (int ix=0; ix<64; ++ix)
     printf("bit %d is %d\n", ix,bit_test(arr, ix));
-  return 0;
-}*/
+}
 
 const unsigned char quickbytemask[8] = {
   0x01, 0x02, 0x04, 0x08,
-  0x10, 0x20, 0x40, 0x80,
+  0x10, 0x20, 0x40, 0x80
 };
-//bit=bit number
-//bitmap=ptr to bitmap
-void tsetbit(short bit, unsigned char *bitmap)
-{
-  short n, x;
-  x = bit/8;//index to byte
-  n = bit%8;//specific bit in byte
-
-  bitmap[x] |= quickbytemask[n];//set bit
-}
-
-void ttogbit(short bit, unsigned char *bitmap)
-{
-  short n, x;
-  x = bit/8;//index to byte
-  n = bit%8;//specific bit in byte
-
-  bitmap[x] &= (~quickbytemask[n]);//toggle bit
-}
-
-
-short tisbitset(short bit, const unsigned char *bitmap)
-{
-  short n, x;
-  x = bit/8;//index to byte
-  n = bit%8;//specific bit in byte
-
-  //logical AND; test bit
- if (bitmap[x] & quickbytemask[n])
-   return 1;
- return 0;
-}
-
-short tisbitreset(short bit, const unsigned char *bitmap)
-{
-  return tisbitset(bit, bitmap) ^ 1;
-}
-
-int tcountbits(const unsigned char *bitmap, int size)
-{
-  int i, count=0;
-
-  for (i=0; i<size; ++i)
-    if (tisbitset(i, bitmap))
-      count++;
-  return count;
-}
-//(1u<<n)
-
+#endif
+#if DEBUG
 bignum add(bignum a, bignum b); /* a+b */
 bignum sub(bignum a, bignum b); /* a-b */
 bignum mul(bignum a, bignum b); /* ab */
@@ -291,7 +256,6 @@ int hashstring(const char *s)
   return key;
 }
 #endif
-#include <stdio.h>
 int test()
 {
   int t;
@@ -323,6 +287,7 @@ int test()
   }
   return 0;
 }
+#endif
 #if 0
 uint32_t carry=0;
 for (i=0; i<len; ++i) {
@@ -332,5 +297,11 @@ for (i=0; i<len; ++i) {
 }
 if (carry) big[len++] = carry;
 #endif
+
+
+
+
+
+
 
 #endif /* RBIGNUM_H */

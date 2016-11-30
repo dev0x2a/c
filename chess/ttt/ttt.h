@@ -23,10 +23,17 @@ void pboard(char board[3][3]);
 int evaluate(NODEPTR p, char player);
 void expand(NODEPTR p, int plevel, int depth);
 void nextmove(char board[][3], char nboard[][3], int looklvl, char player);
+void emit(const int ret, const char *err, const char *file, const int line);
 void bestbranch(NODEPTR pnd, NODEPTR *pbest, int *pvalue, char player);
 NODEPTR buildtree(char board[][3], int looklvl);
 NODEPTR generate(NODEPTR p);
 NODEPTR getnode(void);
+
+void emit(const int ret, const char *err, const char *file, const int line)
+{
+  fprintf(stderr, "%s: line=%d: %s\n", file,line,err);
+  exit(ret);
+}
 
 void prompt(char who, char board[3][3])
 {

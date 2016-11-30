@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "ttt.h"
+#include "iottt.c"
 
 int main(void)
 {
@@ -18,9 +19,7 @@ int main(void)
   usr_t p2 = malloc(sizeof(usr_t));
 
   if (!p1 || !p2) {
-    fprintf(stderr,
-        "%s: line=%d: could not allocate memory\n", __FILE__,__LINE__);
-    exit(1);
+    emit(1, "could not allocate memory", __FILE__,__LINE__);
   }
 
   if (n == 0) {
@@ -35,12 +34,18 @@ int main(void)
   p1->turn = ON;
   p2->turn = OFF;
   pboard(board);
-
+  
+  const char *p = "point";
+  const int gflags = 1;
+  int len = 5;
+  put_tty_line(p, len, gflags);
+#if 0
   while (1) {
     prompt(c&1 ? p2->who:p1->who, board);
     ++c;
     pboard(board);
   }
+#endif
   free(p1);
   free(p2);
   exit(0);

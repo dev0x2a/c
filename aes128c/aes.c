@@ -239,9 +239,7 @@ static void shiftrows(void)
 }
 
 static uint8_t xtime(uint8_t x)
-{
-  return ((x<<1)^(((x>>7)&1)*0x1b));
-}
+{ return ((x<<1)^(((x>>7)&1)*0x1b)); }
 
 /* mixcol function mixes the columns of the state matrix */
 static void mixcol(void)
@@ -277,8 +275,9 @@ static uint8_t Multiply(uint8_t x, uint8_t y)
       ((y>>3&1)*xtime(xtime(xtime(x))))^((y>>4&1)*xtime(xtime(xtime(xtime(x))))));
 }
 #else
-#define Multiply(x,y) (((y&1)*x)^((y>>1&1)*xtime(x))^((y>>2&1)*xtime(xtime(x)))\
-    ^((y>>3&1)*xtime(xtime(xtime(x))))^((y>>4&1)*xtime(xtime(xtime(xtime(x))))))
+#define Multiply(x,y) \
+  (((y&1)*x)^((y>>1&1)*xtime(x))^((y>>2&1)*xtime(xtime(x)))^ \
+   ((y>>3&1)*xtime(xtime(xtime(x))))^((y>>4&1)*xtime(xtime(xtime(xtime(x))))))
 #endif
 
 /* mixcol function mixes the columns of the state matrix
@@ -384,9 +383,8 @@ static void invcipher(void)
 
 static void blkcpy(uint8_t *output, uint8_t *input)
 {
-  for (uint8_t i=0; i<KEYLEN; ++i) {
+  for (uint8_t i=0; i<KEYLEN; ++i)
     output[i] = input[i];
-  }
 }
 
 /* Public functions */
@@ -417,9 +415,8 @@ void AES128_ECB_decrypt(uint8_t *input, const uint8_t *key, uint8_t *output)
 #if defined(CBC) && CBC
 static void xoriv(uint8_t *buf)
 {
-  for (uint8_t i=0; i<KEYLEN; ++i) {
+  for (uint8_t i=0; i<KEYLEN; ++i)
     buf[i] ^= Iv[i];
-  }
 }
 
 void AES128_CBC_encrypt_buffer(uint8_t *output, uint8_t *input,

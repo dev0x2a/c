@@ -43,11 +43,12 @@ int ulam_get_map(int x, int y, int n)
 /* Passing a value of 0 as glyph will print numbers */
 void output_ulam_spiral(int n, const char glyph)
 {
-  /* An even side length does not make sense, use greatest odd value < n */
+  /* An even side length does not make sense,
+   * use greatest odd value < n */
   n -= n%2 == 0 ? 1 : 0;
 
   const char *spaces = "                 ";
-  //const char *spaces = ".................";
+  /*const char *spaces = ".................";*/
   int mwidth = log10(n*n)+1;
 
   bitsieve *b = sieve(n*n+1);

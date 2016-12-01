@@ -1,16 +1,16 @@
 typedef unsigned short prime_t;
 #define NUMPRIMES 2048
+#include <stdlib.h>
 
 struct bignum_st {
-  BN_ULONG *d; /* Pointer to an array of 'BN_BITS2' bit
-                * chunks. */
+  /*BN_ULONG *d;*/ /* Pointer to an array of 'BN_BITS2' bit chunks. */
+  size_t *d;
   int top;     /* Index of last used d +1. */
   /* The next are internal book keeping for bn_expand. */
   int dmax; /* Size of the d array. */
   int neg;  /* one if the number is negative */
   int flags;
 };
-
 typedef struct bignum_st BIGNUM;
 
 /* Used for montgomery multiplication */
@@ -20,9 +20,10 @@ struct bn_mont_ctx_st {
   BIGNUM N;       /* The modulus */
   BIGNUM Ni;      /* R*(1/R mod N) - N*Ni = 1 (Ni is only
                    * stored for bignum algorithm) */
-  BN_ULONG n0[2]; /* least significant word(s) of Ni; (type
+  /*BN_ULONG n0[2];*/ /* least significant word(s) of Ni; (type
                    * changed with 0.9.9, was "BN_ULONG n0;"
                    * before) */
+  size_t n0[2];
   int flags;
 };
 typedef struct bn_mont_ctx_st BN_MONT_CTX;

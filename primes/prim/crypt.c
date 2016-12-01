@@ -8,22 +8,24 @@
 int main(int argc, char *argv[])
 { 
   if (argc < 2) {
-    printf("%s [file1] [file2] (default out.txt)\n", argv[0]);
-    exit(-1);
+    fprintf(stderr,
+        "%s [file1] [file2] (default out.txt)\n", argv[0]);
+    exit(1);
   }
   char ch;
   char *file1, *file2;
+  unsigned long i=0;
   FILE *fp, *ft;
-  unsigned long int i = 0;
 
   file1 = argv[1];
   fp = fopen(file1, "r");
 
   if (!fp) {
-    printf("%s: cannot open file %s\n"
+    fprintf(stderr,
+        "%s: cannot open file %s\n"
            "[file1] encripted to [file2]\n",
             file1,argv[0]);
-    exit(-1);
+    exit(1);
   }
   file2 = argv[2];
   ft = fopen(file2, "w");

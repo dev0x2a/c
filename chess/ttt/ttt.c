@@ -19,7 +19,8 @@ int main(void)
   usr_t p2 = malloc(sizeof(usr_t));
 
   if (!p1 || !p2) {
-    emit(1, "could not allocate memory", __FILE__,__LINE__);
+    emit(EXIT_FAILURE,
+        "could not allocate memory", __FILE__,__LINE__);
   }
 
   if (n == 0) {
@@ -48,6 +49,6 @@ int main(void)
 #endif
   free(p1);
   free(p2);
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
 

@@ -1,0 +1,3 @@
+           SCELL(0,1);
+                      SCELL(1,2);
+SCELL(2,0);SCELL(2,1);SCELL(2,2);

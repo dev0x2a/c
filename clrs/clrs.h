@@ -1,10 +1,8 @@
-#ifndef ALG_H
-#define ALG_H
+#ifndef CLRS_H
+#define CLRS_H
 /*
  * "Introduction to Algorithms"
- *
  * standard header by Ryan Keleti
- * uses some code from "Numerical Recipes"
  * 
  * @ryankeleti
  */
@@ -17,6 +15,7 @@ typedef unsigned long       u32;  /*              0 : 4.294967295e9 */
 typedef signed long         s32;  /* -2.147483648e9 : 2.147483647e9 */
 typedef signed long long    s64;
 typedef unsigned long long  u64;
+typedef unsigned char       byte;
 
 #include <malloc.h>
 #include <stdlib.h>
@@ -24,11 +23,45 @@ typedef unsigned long long  u64;
 
 #define LRAND_MAX 2147483647
 
+#ifndef INCLUDESTDINT
+#define INCLUDESTDINT 1
+#include <stdint.h>
+#endif
+
+#ifndef INCLUDEMATH
+#define INCLUDEMATH 1
+#include <math.h>
+#endif
+
+typedef struct dynarr_st {
+  int *data;
+  size_t cap, size;
+} vector;
+
+typedef struct voidvec_st {
+  byte *data;
+  /* cap >= size; elemsize = size in bytes of sizeof(TYPE) */
+  size_t cap, size, elemsize;
+  void (*elemfree)(void*);
+  void (*eleminit)(void*,void*);
+} vvector;
+
+int vecinit(vector *b, size_t initcap)
+{
+  v->data = malloc(initcap*sizeof(int));
+  if (!v->data) {
+    inerror("could not alloc memory", "vecinit()");
+  }
+  v->size = 0;
+  v->cap = initcap;
+  return 0;
+}
+
+
+
 /* algorithm standard error handler */
 void aerror(char error_text[], char pgrm[])
 {
-  void exit();
-
   fprintf(stderr, "%s: run-time error...\n", pgrm);
   fprintf(stderr, "%s\n", error_text);
   fprintf(stderr, "...now exiting to system...\n");
@@ -37,8 +70,6 @@ void aerror(char error_text[], char pgrm[])
 /* internal algorithm standard error handler */
 void inerror(char error_text[], char cmd[])
 {
-  void exit();
-
   fprintf(stderr, "***%s*** run-time error...\n", cmd);
   fprintf(stderr, "%s\n", error_text);
   fprintf(stderr, "...now exiting to system...\n");
@@ -50,14 +81,12 @@ void catoi(int k, int argc, char args[])
   if (argc < k) {
     fprintf(stderr, "\nInvalid argument count (argc > %d)\n\n", k);
     fprintf(stderr, "use: ./[prog] %s\n\n", args);
-    exit(-1);
+    exit(1);
   }
 }
 
 void aexit(int k, char pgrm[])
 {
-  void exit();
-
   fprintf(stdout, "\n***Terminating %s***\n\n", pgrm);
   exit(k);
 }
@@ -70,9 +99,8 @@ void tprint(char pgrm[])
 
 int matoi(const char s[])
 {
-  int i, n;
+  int i, n=0;
 
-  n = 0;
   for (i=0; s[i]>='0' && s[i]<='9'; ++i) {
     n = 10*n+(s[i]-'0');
   }
@@ -83,26 +111,23 @@ static unsigned long int anext = 1;
 int mrand(void)
 {
   anext = anext*1103515245+12345;
-  return((unsigned)(anext/65536)%32768);
+  return ((unsigned)(anext/65536)%32768);
 }
 
-void msrand(unsigned int seed)
-{
-  anext = seed;
-}
+void msrand(unsigned int seed) { anext = seed; }
 
-/* allocates a float vector with range [nl..nh] */
+/* alloc float vector range [nl..nh] */
 float *vector(int nl, int nh)
 {
   float *v;
   v = (float *)malloc((unsigned) (nh-nl+1)*sizeof(float));
 
   if (!v)
-    inerror("allocation failure","vector()");
+    inerror("allocation failure", "vector()");
   return v-nl;
 }
 
-/* allocates an int vector with range [nl..nh] */
+/* alloc int vector range [nl..nh] */
 int *ivector(int nl, int nh)
 {
   int *v;
@@ -113,7 +138,7 @@ int *ivector(int nl, int nh)
   return v-nl;
 }
 
-/* allocates a double vector with range [nl..nh] */
+/* alloc double vector range [nl..nh] */
 double *dvector(int nl, int nh)
 {
   double *v;
@@ -124,7 +149,7 @@ double *dvector(int nl, int nh)
   return v-nl;
 }
 
-/* allocates a float matrix with range [nrl..nrh][ncl] */
+/* alloc float matrix range [nrl..nrh][ncl] */
 float **matrix(int nrl, int nrh, int ncl, int nch)
 {
   int i;
@@ -148,7 +173,7 @@ float **matrix(int nrl, int nrh, int ncl, int nch)
   return m;
 }
 
-/* allocates a double matrix with range [nrl..nrh][ncl] */
+/* alloc double matrix range [nrl..nrh][ncl] */
 double **dmatrix(int nrl, int nrh, int ncl, int nch)
 {
   int i;
@@ -172,7 +197,7 @@ double **dmatrix(int nrl, int nrh, int ncl, int nch)
   return m;
 }
 
-/* allocates a double matrix with range [nrl..nrh][ncl] */
+/* alloc int matrix range [nrl..nrh][ncl] */
 int **imatrix(int nrl, int nrh, int ncl, int nch)
 {
   int i, **m;
@@ -200,8 +225,9 @@ int **imatrix(int nrl, int nrh, int ncl, int nch)
  * pointing to the existing matrix range
  *    a[oldrl..oldrh][oldcl..oldch]
  */
-float **submatrix(float **a, int oldrl, int oldrh, int oldcl, int oldch,
-    int newrl, int newcl)
+float **submatrix(
+    float **a, int oldrl, int oldrh, int oldcl,
+    int oldch, int newrl, int newcl)
 {
   int i, j;
   float **m;
@@ -220,28 +246,18 @@ float **submatrix(float **a, int oldrl, int oldrh, int oldcl, int oldch,
 }
 
 /* frees a float vector allocated by vector() */
-void free_vector(float *v, int nl, int nh)
-{
-  free((char *) (v+nl));
-}
+void free_vector(float *v, int nl, int nh) { free((char *) (v+nl)); }
 
 /* frees an int vector allocated by ivector() */
-void free_ivector(int *v, int nl, int nh)
-{
-  free((char *) (v+nl));
-}
+void free_ivector(int *v, int nl, int nh) { free((char *) (v+nl)); }
 
 /* frees a double vector allocated by dvector() */
-void free_dvector(double *v, int nl, int nh)
-{
-  free((char *) (v+nl));
-}
+void free_dvector(double *v, int nl, int nh) { free((char *) (v+nl)); }
 
 /* frees a matrix allocated with matrix() */
 void free_matrix(float **m, int nrl, int nrh, int ncl, int nch)
 {
   int i;
-
   for (i=nrh; i>=nrl; --i)
     free((char *) (m[i]+ncl));
   free((char *) (m+nrl));
@@ -251,7 +267,6 @@ void free_matrix(float **m, int nrl, int nrh, int ncl, int nch)
 void free_dmatrix(double **m, int nrl, int nrh, int ncl, int nch)
 {
   int i;
-
   for (i=nrh; i>=nrl; --i)
     free((char *) (m[i]+ncl));
   free((char *) (m+nrl));
@@ -261,7 +276,6 @@ void free_dmatrix(double **m, int nrl, int nrh, int ncl, int nch)
 void free_imatrix(int **m, int nrl, int nrh, int ncl, int nch)
 {
   int i;
-
   for (i=nrh; i>=nrl; --i)
     free((char *) (m[i]+ncl));
   free((char *) (m+nrl));
@@ -269,9 +283,7 @@ void free_imatrix(int **m, int nrl, int nrh, int ncl, int nch)
 
 /* frees a submatrix allocated by submatrix() */
 void free_submatrix(float **b, int nrl, int nrh, int ncl, int nch)
-{
-  free((char *) (b+nrl));
-}
+{ free((char *) (b+nrl)); }
 
 /* allocate a float matrix m[nrl..nrh][ncl..nch] that points to the 
  * matrix a declared in the standard C manner as a[nrow][ncol], where
@@ -298,9 +310,7 @@ float **convert_matrix(float *a, int nrl, int nrh, int ncl, int nch)
 }
 
 /* free a matrix allocated by convert_matrix() */
-void free_convert_matrix(float **b, int nrl, int nrh, int ncl, int nch)
-{
-  free((char *) (b+nrl));
-}
+void free_convert_matrix(float **b, int nrl, int nrh, int ncl, int nch) 
+{ free((char *) (b+nrl)); }
 
-#endif /* ALG_H */
+#endif /* CRLS_H */

@@ -13,7 +13,6 @@
  * your compiler supports 'long long' integers of 64 bits, you may use
  * the integer version of 'mul_mod' (see HAS_LONG_LONG).  
  */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -22,9 +21,9 @@
 /* #define HAS_LONG_LONG */
 
 #ifdef HAS_LONG_LONG
-#define mul_mod(a,b,m) (( (long long) (a) * (long long) (b) ) % (m))
+#define mul_mod(a,b,m) (((long long)(a) * (long long)(b)) % (m))
 #else
-#define mul_mod(a,b,m) fmod( (double) a * (double) b, m)
+#define mul_mod(a,b,m) fmod((double) a * (double) b, m)
 #endif
 
 /* return the inverse of x(mod y) */

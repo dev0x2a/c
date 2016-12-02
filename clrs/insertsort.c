@@ -1,4 +1,4 @@
-#include "alg.h"
+#include "clrs.h"
 #define PGRM "Insertion Sort"
 #define DEBUG 1
 
@@ -6,11 +6,11 @@ int main(int argc, char *argv[])
 {
 
 #if DEBUG
-  c_atoi(2, argc, "<vector size>");
+  catoi(2, argc, "<vector size>");
   tprint(PGRM);
 
   int i, j, key, *a;
-  unsigned int k = m_atoi(argv[1]);
+  unsigned int k = matoi(argv[1]);
   
   a = (int *)malloc(k*sizeof(int));
   printf("a[%d] =\n", k);
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
   free(a);
   putchar('\n');
 #endif
-  
   aexit(0, PGRM);
 }
 

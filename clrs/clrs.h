@@ -17,26 +17,13 @@ typedef signed long long    s64;
 typedef unsigned long long  u64;
 typedef unsigned char       byte;
 
-#include <malloc.h>
-#include <stdlib.h>
-#include <stdio.h>
-
 #define LRAND_MAX 2147483647
-
-#ifndef INCLUDESTDINT
-#define INCLUDESTDINT 1
-#include <stdint.h>
-#endif
-
-#ifndef INCLUDEMATH
-#define INCLUDEMATH 1
-#include <math.h>
-#endif
+#define FREEVEC(v) free((v))
 
 typedef struct dynarr_st {
   int *data;
   size_t cap, size;
-} vector;
+} vector_t;
 
 typedef struct voidvec_st {
   byte *data;
@@ -44,19 +31,7 @@ typedef struct voidvec_st {
   size_t cap, size, elemsize;
   void (*elemfree)(void*);
   void (*eleminit)(void*,void*);
-} vvector;
-
-int vecinit(vector *b, size_t initcap)
-{
-  v->data = malloc(initcap*sizeof(int));
-  if (!v->data) {
-    inerror("could not alloc memory", "vecinit()");
-  }
-  v->size = 0;
-  v->cap = initcap;
-  return 0;
-}
-
+} voidvec_t;
 
 
 /* algorithm standard error handler */
@@ -115,6 +90,17 @@ int mrand(void)
 }
 
 void msrand(unsigned int seed) { anext = seed; }
+
+int vecinit(vector_t *v, size_t initcap)
+{
+  v->data = malloc(initcap*sizeof(int));
+  if (!v->data) {
+    inerror("could not alloc memory", "vecinit()");
+  }
+  v->size = 0;
+  v->cap = initcap;
+  return 0;
+}
 
 /* alloc float vector range [nl..nh] */
 float *vector(int nl, int nh)

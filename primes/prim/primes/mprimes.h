@@ -1,4 +1,5 @@
-#if 0
+#ifndef MPRIMES_H
+#define MPRIMES_H
 /*
  * mprimes.h
  * c header for some useful primes functions
@@ -6,10 +7,6 @@
  *
  * yes, the variable names are meaningless. this is a personal header.
  */
-#endif
-
-#ifndef MPRIMES_H
-#define MPRIMES_H
 
 int pwr(int b, unsigned int e)
 {

@@ -1,0 +1,137 @@
+key generation
+--------------
+  * generate 2 large distinct primes p & q of same bit-size
+  * compute n = p*q  and   phi = (p-1)*(q-1)
+  * select a random integer e, 1<e<phi such that gcd(e, phi) = 1
+  * compute unique integer d such that 
+        e*d = 1 mod phi
+      using the extended Euclidean algorithm
+  * the public key is (n,e), the private key is d
+
+encryption
+----------
+(E = "is a member of" from set theory because ascii)
+  * given a message m E [0,n-1]
+      and the recipient's public key (n,e), compute the ciphertext:
+              c = m^e mod n
+  * anybody can encrypt
+
+decryption
+----------
+  * given a ciphertext c, to recover m, compute:
+      m = c^d mod n
+  * only the owner of the private key can decrypt
+
+why decryption works
+--------------------
+
+  e*d = 1 mod (p-1)*(q-1)
+  
+  (m^e)^d = m^(e*d) = m^1 = m mod N
+
+
+*************************
+
+key gen:
+  
+  * public modulus: N = p*q,       p and q are large primes
+  * public exponent: e
+  * private exponent: d,           d*e = 1 mod phi(N) 
+
+signing a message m, the signer computes:
+
+  * s = m^d mod N
+  * only signer can sign this message
+
+verify, check:
+
+  * m = s^e mod N
+  * anyone can verify the signature
+
+factoring
+mathematical attacks
+  ->heuristics
+
+
+factoring large integers
+
+  * current best: Number Field Sieve
+  * sub-exponential complexity
+
+        exp( ( c + o(1)) * n^(1/3) * log^(2/3) * n )
+    
+      for n-bit integer
+  * current record (~2009): 640-bit RSA modulus
+
+use at least 1024-bit RSA moduli
+  * 2048-bit for better security long term
+
+breaking RSA:
+  * given (N,e) and y, find x such that y = x^e mod N
+
+knowing d is equivalent to factoring
+  * probabilistic algorithm RSA 1978
+  * deterministic algorithm 2004 A.May, 2007 A.May
+
+plain RSA encryption: dictionary attack
+  * if only two possible messages m0 and m1, then
+      c0 = (m0)^e mod N
+      c1 = (m1)^e mod N
+    => encryption must be probabilistic
+
+PKCS#1 v1.5
+  * mu (m) = 0002 ||r|| 00 || m
+  * c = mu (m)^e mod N
+  * still insufficient (Bleichenbacher's attack, 1998)
+
+Existential forgery 
+  * r^e = m mod N, so r is signature of m
+
+Chosen message attack
+  * (m1 * m2)^d = m1^d * m2^d  mod N
+
+To prevent these attacks, first compute mu (m), and let s = mu (m)^d mod N
+  * ISO 9796-1:
+      mu (m) = s_bar(m_z)*s(m_(z-1))*m_z*m_(z-1)...s(m_1)*s(m_0)*m_0*6
+  * ISO 9796-2:
+      mu (m) = 6A ||m[1]|| H(m) || BC
+  * PKCS#1 v1.5:
+      mu (m) = 0001 FF....FF00 ||c_SHA|| SHA(m)
+
+still insufficient?
+
+Desmedt and Odlyzko attack (Crypto 85)
+  * based on findinf messages m such that mu (m)
+        is smooth (product of small primes only)
+  * mu (m_i) = PISUM( p_j ^alpha_i,_j ) for many messages m_i
+                j
+  
+  * solve a linear system and write mu (m_k) = PISUM( mu (m_i))
+                                                i
+
+  * then mu (m_k)^d = PISUM( mu (m_i)^d ) mod N
+                       i
+
+Coron, Naccache, Stern arrack on ISO 9796-2
+
+Wiener's attack: use small d: recover d if d < N^0.25
+
+Boneh and Durfee's attack (1999)
+  * recover d if d < N^0.29
+  * based on lattice reduction and Coppersmith's technique
+  * open problem: extend to d < N^0.5
+
+Conclusion: devastating attack
+  * use a full-size d
+
+To reduce encryption time, use small e
+  * i.e.: e = 3, or e = 2^16 + 1
+
+Coppersmith's Thm:
+  * let N be an integer and f be polynomial of degree delta.
+  * given N and f, one can recover on polynomial time all x_0
+      such that f(x_0) = 0 mod N and x_0 < N^(1/delta)
+
+partially known method attack
+short pad attack
+******************************

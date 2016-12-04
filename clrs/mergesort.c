@@ -1,50 +1,93 @@
-#include "alg.h"
-#define PGRM "Merge Sort"
+#include <stdio.h>
+#include <stdlib.h>
+//#include "clrs.h"
+
+//#define PGRM "Merge Sort"
 #define DEBUG 0
-#define DEBUG1 1
+#define DEBUG1 0
+
+void merge(int *a, int n, int m)
+{
+  int i, j, k;
+  int *x = malloc(n * sizeof(int));
+
+  for (i=0, j=m, k=0; k<n; ++k) {
+    x[k] = j == n ?      a[i++]
+         : i == m ?      a[j++]
+         : a[j] < a[i] ? a[j++]
+         :               a[i++];
+  }
+  for (i=0; i<n; ++i) {
+    a[i] = x[i];
+  }
+  free(x);
+}
+
+void mergesort(int *a, int n)
+{
+  if (n < 2)
+    return;
+  int m = n/2;
+  mergesort(a, m);
+  mergesort(a+m, n-m);
+  merge(a, n, m);
+}
+
+int main(void)
+{
+#define SIZE 10
+  //int a[SIZE] = {5,8,1,2,5,6,1,2,7,3};
+  int a[SIZE];
+  int i;
+  for (i=0; i<SIZE; ++i)
+    scanf("%d", &a[i]);
+  int n = sizeof a / sizeof a[0];
+  for (i=0; i<n; ++i)
+    printf("%d%s", a[i], i==n-1 ? "\n" : " ");
+  mergesort(a, n);
+  for (i=0; i<n; ++i)
+    printf("%d%s", a[i], i==n-1 ? "\n" : " ");
+  return 0;
+}
+
 
 #if DEBUG1
 double mfloor(const double n)
 {
   double q;
   asm("roundsd $1, %1, %0" : "=x" (q) : "xm" (n));
-  return(q);
+  return q;
 }
 
-int merge(int a[], const int p, const int q, const int r)
+void merge(int *a, int p, int q, int r)
 {
   /* p<=q<r */
   int i, j, k, n1, n2;
   n1 = q-p+1; 
   n2 = r-q;
-  //int *la = (int *)malloc((n1+1)*sizeof(int));
-  //int *ra = (int *)malloc((n2+1)*sizeof(int));
-  int la[n1];
-  int ra[n2];
+  int la[n1+1];
+  int ra[n2+1];
 
   for (i=0; i<n1; ++i)
     la[i] = a[p+i-1];
   for (j=0; j<n2; ++j)
     ra[j] = a[q+j];
-  la[n1+1] = -0x1;
-  ra[n2+1] = -0x1;
+  la[n1+1] = -1;
+  ra[n2+1] = -1;
 
   i=j=0;
-  for (k=p; k<=r; ++k) {
+  for (k=p; k<r; ++k) {
     if (la[i] <= ra[j]) {
-      a[k-1] = la[i];
+      a[k] = la[i];
       ++i;
     } else {
-      a[k-1] = ra[j];
+      a[k] = ra[j];
       ++j;
     }
   }
-  //free(la);
-  //free(ra);
-  return(0);
 }
 
-int mergesort(int a[], const int p, const int r)
+void mergesort(int *a, int p, int r)
 {
   int q;
   if (p < r) {
@@ -53,14 +96,12 @@ int mergesort(int a[], const int p, const int r)
     mergesort(a, q+1, r);
     merge(a, p, q, r);
   }
-  return(0);
 }
 
 int main(int argc, char *argv[])
 {
   tprint(PGRM);
   int i;
-  //int a[5] = {mrand(), mrand(), mrand(), mrand(), mrand()};
   int a[5] = {10,5,4,2,8};
 
   for (i=0; i<5; ++i)
@@ -77,7 +118,6 @@ int main(int argc, char *argv[])
 }
 #endif
 
-//{{{
 #if DEBUG
 int main(int argc, char *argv[])
 {
@@ -86,9 +126,9 @@ int main(int argc, char *argv[])
   int m = 7, M = 128, L = 1;
   int *a0, *a1, *a2;
 
-  a0 = (int *)malloc(5*sizeof(int));
-  a1 = (int *)malloc(5*sizeof(int));
-  a2 = (int *)malloc(5*sizeof(int));
+  a0 = malloc(5*sizeof(int));
+  a1 = malloc(5*sizeof(int));
+  a2 = malloc(5*sizeof(int));
 
   for (i=1; i<=m; ++i) {
     K = M>>i;
@@ -130,5 +170,4 @@ int main(int argc, char *argv[])
   aexit(0, PGRM);
 }
 #endif
-//}}}
 

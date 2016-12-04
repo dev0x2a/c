@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   int offset[8] = {1,7,11,13,17,19,23,29};
   int del[8] = {6,4,2,4,2,4,6,2};

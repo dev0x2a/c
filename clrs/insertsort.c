@@ -1,11 +1,22 @@
+/*
+ * p18
+ * insertion sort (A)
+ * 
+ *   for j=2 to A.length
+ *       key = A[j]
+ *       // insert A[j] into the sorted seq A[1..j-1]
+ *       i = j-1
+ *       while i>0 and A[i]>key
+ *           A[i+1] = A[i]
+ *           i = i-1;
+ *       A[i+1] = key
+ */
+
 #include "clrs.h"
 #define PGRM "Insertion Sort"
-#define DEBUG 1
 
 int main(int argc, char *argv[])
 {
-
-#if DEBUG
   catoi(2, argc, "<vector size>");
   tprint(PGRM);
 
@@ -19,7 +30,7 @@ int main(int argc, char *argv[])
     scanf("%d", &a[i]);
     /* for psuedo-random numbers,
      * use:
-     * a[i] = m_rand(); 
+     * a[i] = mrand(); 
      * printf("%d ", a[i]);
      */
   }
@@ -31,7 +42,7 @@ int main(int argc, char *argv[])
     i = j-1;  
     while (i>=0 && a[i]>key) {
       a[i+1] = a[i];
-      i -= 1;
+      --i;
     }
     a[i+1] = key;
   }
@@ -40,7 +51,6 @@ int main(int argc, char *argv[])
   }
   free(a);
   putchar('\n');
-#endif
   aexit(0, PGRM);
 }
 

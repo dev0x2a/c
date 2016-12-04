@@ -29,95 +29,90 @@ uchar	bittab[] = {
 	1,2,4,8,16,32,64,128,
 };
 
-void mrk(double nn,long k);
+void mrk(double, long);
 void elim(void);
 
-void
-main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-	if(argc<=1) {
-		fprintf(stderr,"%s <num> <lim>\n",argv[0]);
-		exit(-1);
+	if (argc <= 1) {
+		fprintf(stderr, "%s <num> <lim>\n", argv[0]);
+		exit(1);
 	}
 	int i;
-	double k,v,tmp,lim,nn;
-	nn=atof(argv[1]);
-	lim=N;
-	if(argc>2) {
-		lim=atof(argv[2]);
-		if(lim<nn)
+	double k, v, tmp;
+  double lim=N, nn=atof(argv[1]);
+	lim = N;
+	if (argc > 2) {
+		lim = atof(argv[2]);
+		if (lim < nn)
 			exit(0);
-		if(lim>N)
+		if (lim > N)
 			elim();
 	}
-	if(nn<0||nn>N)
+	if (nn<0 || nn>N)
 		elim();
-	if(nn==0)
-		nn=1;
-	if(nn<230) {
-		for(i=0;i<ptsiz;++i) {
-			if(pt[i]<nn)
+	if (nn == 0)
+		nn = 1;
+	if (nn < 230) {
+		for (i=0; i<ptsiz; ++i) {
+			if (pt[i] < nn)
 				continue;
-			if(pt[i]>lim)
+			if (pt[i] > lim)
 				exit(0);
-			printf("%d\n",pt[i]);
-			if(lim>=N)
+			printf("%d\n", pt[i]);
+			if (lim >= N)
 				exit(0);
 		}
-		nn=230;
+		nn = 230;
 	}
-	modf(nn/2,&tmp);
-	nn=2.*tmp+1;
-  /*  clear the sieve table */
-	for(;;) {
-		for(i=0;i<tabsiz;++i)
-			tbl[i]=0;
-    /*  run the sieve */
-		v=sqrt(nn+tsiz8);
-		mrk(nn,3);
-		mrk(nn,5);
-		mrk(nn,7);
-		for(i=0,k=11;k<=v;k+=whl[i]) {
+	modf(nn/2, &tmp);
+	nn = 2.0*tmp+1;
+  /* clear the sieve table */
+	for (;;) {
+		for (i=0; i<tabsiz; ++i)
+			tbl[i] = 0;
+    /* run the sieve */
+		v = sqrt(nn+tsiz8);
+		mrk(nn, 3);
+		mrk(nn, 5);
+		mrk(nn, 7);
+		for (i=0,k=11 ;k<=v; k+=whl[i]) {
 			mrk(nn,k);
 			++i;
-			if(i>=whsiz)
-				i=0;
+			if (i >= whsiz)
+				i = 0;
 		}
-    /*
-     *	now get the primes from the table
-     *	and printf them
-     */
-		for(i=0;i<tsiz8;i+=2) {
-			if(tbl[i>>3]&bittab[i&07])
+    /* now get the primes from the table
+     * and printf them */
+		for (i=0; i<tsiz8; i+=2) {
+			if (tbl[i>>3] & bittab[i&07])
 				continue;
-			tmp=nn+i;
-			if(tmp>lim)
+			tmp = nn+i;
+			if (tmp > lim)
 				exit(0);
-			printf("%.0f\n",tmp);
-			if(lim>=N)
+			printf("%.0f\n", tmp);
+			if (lim >= N)
 				exit(0);
 		}
-		nn+=tsiz8;
+		nn += tsiz8;
   }
 }
 
-void
-mrk(double nn,long k)
+void mrk(double nn,long k)
 {
 	double t1;
 	long j;
-	modf(nn/k,&t1);
-	j=k*t1-nn;
-	if(j<0)
-		j+=k;
-	for(;j<tsiz8;j+=k)
-		tbl[j>>3]|=bittab[j&07];
+	modf(nn/k, &t1);
+	j = k*t1-nn;
+	if (j < 0)
+		j += k;
+	for (; j<tsiz8; j+=k)
+		tbl[j>>3] |= bittab[j&07];
 }
 
-void
-elim(void)
+void elim(void)
 {
-	fprintf(stderr,"lim exceeded\n");
-	exit(-1);
+	fprintf(stderr, "lim exceeded\n");
+	exit(1);
 }
 

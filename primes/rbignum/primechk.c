@@ -5,6 +5,14 @@
 #include <limits.h>
 #include <math.h>
 
+struct bignum_st {
+  size_t size;
+  unsigned char sign;
+  unsigned char tab[BUFSIZ];
+  uintmax_t nn; /* temporary... */
+} bignum;
+
+  
 int main(int argc, char *argv[])
 { 
   if (argc < 2) {
@@ -13,10 +21,13 @@ int main(int argc, char *argv[])
   }
   /*int offset[8]={1,7,11,13,17,19,23,29};*/
   int del[8] = {6,4,2,4,2,4,6,2};
-  int i, prime=1, inc=0;
+  unsigned i=1, prime=1, inc=0;
   uintmax_t div, max;
-  uintmax_t nn = atoi(argv[1]);
-
+  //uintmax_t nn = atol(argv[1]);
+  bignum.sign = 0;
+  bignum.nn = strtol(argv[1], (char**)NULL, 10);
+#define nn bignum.nn
+/* this doesn't actually do anthing because atoi truncates */
   if (nn > UINTMAX_MAX) {
     fprintf(stderr, "%s: input exceeds uintmax_t type\n", argv[0]);
     exit(EXIT_FAILURE);
@@ -73,7 +84,7 @@ int main(int argc, char *argv[])
       else
         putchar('\n');
     }
-    exit(0);
+    exit(EXIT_SUCCESS);
   }
 
   max = (uintmax_t)sqrt(nn);

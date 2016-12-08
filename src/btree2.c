@@ -2,9 +2,7 @@
 #include <stdlib.h> // by graphitemaster 2016 (the same guy who did the 15 line hashtable)
 
 void *(*bnew(void))[4]
-{
-  return calloc(sizeof(void*[4]), 1);
-}
+{ return calloc(sizeof(void*[4]), 1); }
 
 void bdel(void *(*n)[4])
 {
@@ -15,7 +13,8 @@ void bdel(void *(*n)[4])
   }
 }
 
-void *(*bput(void *(*n)[4], int k, int v))[4] {
+void *(*bput(void *(*n)[4], int k, int v))[4]
+{
   void *(**m)[4] = (void *(**)[4])&((*n)[!!(k < (uintptr_t)((*n)[2]))]);
   if (*m)
     return bput(*m, k, v);
@@ -35,7 +34,6 @@ void *(*bget(void *(*n)[4], int k))[4]
     return n;
   return bget((*n)[0], k);
 }
-
 
 // example of use
 #include <stdio.h>
@@ -59,7 +57,6 @@ int main(void)
   // something not in there
   void *(*c)[4] = bget(n, 42);
   printf("search for 42 should be null: %p\n", c);
-
   bdel(n);
 }
 

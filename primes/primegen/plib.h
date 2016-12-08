@@ -14,8 +14,7 @@
 typedef unsigned int uint32;
 typedef unsigned long uint64;
 typedef long int64;
-/*
- * B is 32 times X.
+/* B is 32 times X.
  * Total memory use for one generator is 2B bytes  =  64X bytes.
  * Covers primes in an interval of length 1920X.
  * Working set size for one generator is B bits  =  4X bytes.
@@ -28,8 +27,7 @@ typedef long int64;
  *  4004 to fit inside a 16K L1 cache (e.g.,  Pentium II).
  *  64064 to fit inside a 256K L2 cache.
  *
- * There are various word-size limits on X; 1000000 should still be okay.
- */
+ * There are various word-size limits on X; 1000000 should still be okay */
 #define PRIMEGEN_WORDS 2048
 #define B32 PRIMEGEN_WORDS
 #define B (PRIMEGEN_WORDS*32)
@@ -242,7 +240,6 @@ void strerr_sysinit(void)
   strerr_sys.z = "";
 }
 
-
 void substdio_fdbuf(register substdio *s, register int (*op)(), 
                     register int fd, register char *buf, register int len)
 { 
@@ -252,7 +249,6 @@ void substdio_fdbuf(register substdio *s, register int (*op)(),
   s->p = 0;
   s->n = len;
 }
-
 
 int substdio_copy(register substdio *ssout, register substdio *ssin)
 { 
@@ -271,14 +267,11 @@ int substdio_copy(register substdio *ssout, register substdio *ssin)
   }
 }
 
-
 int open_read(char *fn)
 { return(open(fn, O_RDONLY | O_NDELAY)); }
 
-
 int open_trunc(char *fn)
 { return(open(fn, O_WRONLY | O_NDELAY | O_TRUNC | O_CREAT, 0644)); }
-
 
 uint32 scan_uint64(char *s, uint64 *u)
 { 
@@ -292,7 +285,6 @@ uint32 scan_uint64(char *s, uint64 *u)
   *u = result;
   return(pos);
 }
-
 
 uint32 fmt_uint64(char *s, uint64 u)
 { 
@@ -311,7 +303,6 @@ uint32 fmt_uint64(char *s, uint64 u)
   }
   return(len);
 }
-
 
 void primegen_init(primegen *pg)
 { 
@@ -338,7 +329,6 @@ void primegen_init(primegen *pg)
   pg->num   = 17;
 }
 
-
 void byte_copy(register char *to, register uint32 n,
                register char *from)
 { 
@@ -354,8 +344,7 @@ void byte_copy(register char *to, register uint32 n,
   }
 }
 
-
-void byte_copyr(register char *to,register uint32 n,
+void byte_copyr(register char *to, register uint32 n,
                 register char *from)
 { 
   to += n;
@@ -372,7 +361,6 @@ void byte_copyr(register char *to,register uint32 n,
   }
 }
 
-
 uint32 str_len(register char *s)
 { 
   register char *t=s;
@@ -388,14 +376,13 @@ uint32 str_len(register char *s)
   }
 }
 
-
 void primegen_fill(primegen *pg)
 { 
   uint32 mask, bits0, bits1, bits2, bits3, bits4, bits5, bits6, bits7;
   uint32 bits8, bits9, bits10, bits11, bits12, bits13, bits14, bits15;
   uint64 base;
 
-  int i = pg->pos;
+  int i=pg->pos;
   if (i == B32) {
     primegen_sieve(pg);
     pg->L += B;
@@ -442,14 +429,12 @@ void primegen_fill(primegen *pg)
   }
 }
 
-
 uint64 primegen_next(primegen *pg)
 { 
   while (!pg->num)
     primegen_fill(pg);
   return (pg->p[--pg->num]);
 }
-
 
 uint64 primegen_peek(primegen *pg)
 { 
@@ -466,8 +451,7 @@ static const uint64 pop[256] = {
   1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
   2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
   2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
-  3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
-};
+  3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8};
 
 uint64 primegen_count(primegen *pg, uint64 to)
 { 
@@ -504,9 +488,9 @@ uint64 primegen_count(primegen *pg, uint64 to)
         for (j=0; j<16; ++j)
           for (pos=0; pos<B32; ++pos) {
             bits = ~pg->buf[j][pos];
-            smallcount += pop[bits&255]; bits >>=  8;
-            smallcount += pop[bits&255]; bits >>=  8;
-            smallcount += pop[bits&255]; bits >>=  8;
+            smallcount += pop[bits&255]; bits >>= 8;
+            smallcount += pop[bits&255]; bits >>= 8;
+            smallcount += pop[bits&255]; bits >>= 8;
             smallcount += pop[bits&255];
           }
         count += smallcount;
@@ -515,7 +499,6 @@ uint64 primegen_count(primegen *pg, uint64 to)
     primegen_fill(pg);
   }
 }
-
 
 void primegen_skipto(primegen *pg, uint64 to)
 { 
@@ -540,7 +523,6 @@ void primegen_skipto(primegen *pg, uint64 to)
     primegen_fill(pg);
   }
 }
-
 
 void strerr_warn(char *x1, char *x2, char *x3, char *x4,
                  char *x5, char *x6, struct strerr *se)
@@ -571,14 +553,12 @@ void strerr_warn(char *x1, char *x2, char *x3, char *x4,
   substdio_flush(subfderr);
 }
 
-
 void strerr_die(int e, char *x1, char *x2, char *x3, char *x4,
                 char *x5, char *x6, struct strerr *se)
 { 
   strerr_warn(x1, x2, x3, x4, x5, x6, se);
   _exit(e);
 }
-
 
 static int oneread(register int (*op)(), register int fd,
                    register char *buf, register int len)
@@ -592,7 +572,6 @@ static int oneread(register int (*op)(), register int fd,
     return (r);
   }
 }
-
 
 static int getthis(register substdio *s, register char *buf,
                    register int len)
@@ -629,7 +608,6 @@ int substdio_feed(register substdio *s)
   return (r);
 }
 
-
 int substdio_bget(register substdio *s, register char *buf,
                   register int len)
 { 
@@ -645,32 +623,27 @@ int substdio_bget(register substdio *s, register char *buf,
   return (getthis(s, buf, len));
 }
 
-
 int substdio_get(register substdio *s, register char *buf,
                  register int len)
 { 
-  register int r;
   if (s->p>0)
     return (getthis(s, buf, len));
   if (s->n <= len)
     return (oneread(s->op, s->fd, buf, len));
-  r = substdio_feed(s);
+  register int r=substdio_feed(s);
   if (r <= 0)
     return (r);
   return (getthis(s, buf, len));
 }
 
-
 char *substdio_peek(register substdio *s)
 { return (s->x+s->n); }
-
 
 void substdio_seek(register substdio *s, register int len)
 { 
   s->n += len;
   s->p -= len;
 }
-
 
 static int allwrite(register int (*op)(), register int fd,
                     register char *buf, register int len)
@@ -689,7 +662,6 @@ static int allwrite(register int (*op)(), register int fd,
   }
   return (0);
 }
-
 
 int substdio_flush(register substdio *s)
 { 
@@ -719,11 +691,10 @@ int substdio_bput(register substdio *s, register char *buf,
   return (0);
 }
 
-
 int substdio_put(register substdio *s, register char *buf,
                  register int len)
 { 
-  register int n = s->n;
+  register int n=s->n;
   if (len > n-s->p) {
     if (substdio_flush(s) == -1)
       return (-1);
@@ -745,7 +716,6 @@ int substdio_put(register substdio *s, register char *buf,
   return (0);
 }
 
-
 int substdio_putflush(register substdio *s, register char *buf,
                       register int len)
 { 
@@ -754,14 +724,11 @@ int substdio_putflush(register substdio *s, register char *buf,
   return (allwrite(s->op, s->fd, buf, len));
 }
 
-
 int substdio_bputs(register substdio *s, register char *buf)
 { return (substdio_bput(s, buf, str_len(buf))); }
 
-
 int substdio_puts(register substdio *s, register char  *buf)
 { return (substdio_put(s, buf, str_len(buf))); }
-
 
 int substdio_putsflush(register substdio *s, register char *buf)
 { return (substdio_putflush(s, buf, str_len(buf))); }
@@ -770,86 +737,85 @@ static substdio it = SUBSTDIO_FDBUF(write, 2, subfd_errbuf, 256);
 substdio *subfderr = &it;
 
 /*warning: as coverage improves here,  should update error_{str, temp}*/
-int error_intr = 
+int error_intr=
 #ifdef EINTR
 EINTR;
 #else
 -1;
 #endif
-int error_nomem = 
+int error_nomem=
 #ifdef ENOMEM
 ENOMEM;
 #else
 -2;
 #endif
-int error_noent =  
+int error_noent=
 #ifdef ENOENT
 ENOENT;
 #else
 -3;
 #endif
-int error_txtbsy = 
+int error_txtbsy=
 #ifdef ETXTBSY
 ETXTBSY;
 #else
 -4;
 #endif
-int error_io =
+int error_io=
 #ifdef EIO
 EIO;
 #else
 -5;
 #endif
-int error_exist =
+int error_exist=
 #ifdef EEXIST
 EEXIST;
 #else
 -6;
 #endif
-int error_timeout = 
+int error_timeout=
 #ifdef ETIMEDOUT
 ETIMEDOUT;
 #else
 -7;
 #endif
-int error_inprogress = 
+int error_inprogress=
 #ifdef EINPROGRESS
 EINPROGRESS;
 #else
 -8;
 #endif
-int error_wouldblock = 
+int error_wouldblock=
 #ifdef EWOULDBLOCK
 EWOULDBLOCK;
 #else
 -9;
 #endif
-int error_again = 
+int error_again=
 #ifdef EAGAIN
 EAGAIN;
 #else
 -10;
 #endif
-int error_pipe = 
+int error_pipe=
 #ifdef EPIPE
 EPIPE;
 #else
 -11;
 #endif
-int error_perm = 
+int error_perm=
 #ifdef EPERM
 EPERM;
 #else
 -12;
 #endif
-int error_acces = 
+int error_acces=
 #ifdef EACCES
 EACCES;
 #else
 -13;
 #endif
-#define X(e,s) \
-  if (i == (e)) return (s);
+#define X(e,s) if (i == (e)) return (s);
 
 char *error_str(int i)
 { 

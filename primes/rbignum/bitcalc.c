@@ -15,8 +15,8 @@ void ungetch(int);
 
 char charset[] = {
   '+', '-', '*', '/', '>', '<', '^', '&', '|', '!', '~',
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q',
-  ' ', '\t', '\n'
+  '%', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  'q', ' ', '\t', '\n'
 };
 static int err;
 
@@ -73,6 +73,10 @@ int main(int argc, char *argv[])
         break;
       case '~': /* ~ */
         push( ~((int)pop()) );
+        break;
+      case '%':
+        op = pop();
+        push( (int)pop() % (int)op);
         break;
       case '\n':
         printf("\t%.08g\n", pop());

@@ -2,7 +2,6 @@
 #define ERATSPEED_H
 
 #include "timing.h"
-
 #define B32_E 1001
 #define B_E (B32_E*32)
 
@@ -292,6 +291,5 @@ static const uint64 E_pop[256] = {
 uint32 next[8][3509];
 uint32 a[8][B32_E];
 int dtab[8] = {1,7,11,13,17,19,23,29};
-
 
 #endif /* ERATSPEED_H */

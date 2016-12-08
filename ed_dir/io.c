@@ -1,12 +1,11 @@
 /* io.c: i/o routines for the ed line editor */
+#include "ed.h"
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include "ed.h"
 
 /* print text to stdout */
-static void put_tty_line(const char *p, int len, const int gflags)
-{
+static void put_tty_line(const char *p, int len, const int gflags) {
   const char escapes[] = "\a\b\f\n\r\t\v\\";
   const char escchars[] = "abfnrtv\\";
   int col = 0;
@@ -24,7 +23,7 @@ static void put_tty_line(const char *p, int len, const int gflags)
         col = 1;
         fputs("\\\n", stdout);
       }
-      if (ch>=32 && ch<=126 && ch!='\\')
+      if (ch >= 32 && ch <= 126 && ch != '\\')
         putchar(ch);
       else {
         char *const p = strchr(escapes, ch);
@@ -34,9 +33,9 @@ static void put_tty_line(const char *p, int len, const int gflags)
           putchar(escchars[p - escapes]);
         else {
           col += 2;
-          putchar(((ch>>6)&7)+'0');
-          putchar(((ch>>3)&7)+'0');
-          putchar((ch&7)+'0');
+          putchar(((ch >> 6) & 7) + '0');
+          putchar(((ch >> 3) & 7) + '0');
+          putchar((ch & 7) + '0');
         }
       }
     }
@@ -47,10 +46,9 @@ static void put_tty_line(const char *p, int len, const int gflags)
 }
 
 /* print a range of lines to stdout */
-bool display_lines(int from, const int to, const int gflags)
-{
+bool display_lines(int from, const int to, const int gflags) {
   line_t *const ep = search_line_node(inc_addr(to)),
-         *bp = search_line_node(from);
+                *bp = search_line_node(from);
 
   if (!from) {
     set_error_msg("Invalid address");
@@ -68,10 +66,9 @@ bool display_lines(int from, const int to, const int gflags)
 }
 
 /* return the parity of escapes at the end of a string */
-static bool trailing_escape(const char *const s, int len)
-{
+static bool trailing_escape(const char *const s, int len) {
   bool odd_escape = false;
-  while (--len>=0 && s[len]=='\\')
+  while (--len >= 0 && s[len] == '\\')
     odd_escape = !odd_escape;
   return odd_escape;
 }
@@ -79,14 +76,14 @@ static bool trailing_escape(const char *const s, int len)
 /* If *ibufpp contains an escaped newline, get an extended line (one
    with escaped newlines) from stdin */
 bool get_extended_line(const char **const ibufpp, int *const lenp,
-                       const bool strip_escaped_newlines)
-{
+                       const bool strip_escaped_newlines) {
   static char *buf = 0;
   static int bufsz = 0;
   int len;
 
-  for (len=0; (*ibufpp)[len++]!='\n';);
-  if (len < 2 || !trailing_escape(*ibufpp, len-1)) {
+  for (len = 0; (*ibufpp)[len++] != '\n';)
+    ;
+  if (len < 2 || !trailing_escape(*ibufpp, len - 1)) {
     if (lenp)
       *lenp = len;
     return true;
@@ -95,7 +92,7 @@ bool get_extended_line(const char **const ibufpp, int *const lenp,
     return false;
   memcpy(buf, *ibufpp, len);
   --len;
-  buf[len-1] = '\n'; /* strip trailing esc */
+  buf[len - 1] = '\n'; /* strip trailing esc */
   if (strip_escaped_newlines)
     --len; /* strip newline */
   while (true) {
@@ -103,22 +100,22 @@ bool get_extended_line(const char **const ibufpp, int *const lenp,
     const char *const s = get_tty_line(&len2);
     if (!s)
       return false;
-    if (len2==0 || s[len2-1]!='\n') {
+    if (len2 == 0 || s[len2 - 1] != '\n') {
       set_error_msg("Unexpected end-of-file");
       return false;
     }
-    if (!resize_buffer(&buf, &bufsz, len+len2))
+    if (!resize_buffer(&buf, &bufsz, len + len2))
       return false;
-    memcpy(buf+len, s, len2);
+    memcpy(buf + len, s, len2);
     len += len2;
-    if (len2<2 || !trailing_escape(buf, len-1))
+    if (len2 < 2 || !trailing_escape(buf, len - 1))
       break;
     --len;
-    buf[len-1] = '\n'; /* strip trailing esc */
+    buf[len - 1] = '\n'; /* strip trailing esc */
     if (strip_escaped_newlines)
       --len; /* strip newline */
   }
-  if (!resize_buffer(&buf, &bufsz, len+1))
+  if (!resize_buffer(&buf, &bufsz, len + 1))
     return false;
   buf[len] = 0;
   *ibufpp = buf;
@@ -130,15 +127,14 @@ bool get_extended_line(const char **const ibufpp, int *const lenp,
 /* Read a line of text from stdin.
    Returns pointer to buffer and line size (including trailing newline
    if it exists) */
-const char *get_tty_line(int *const sizep)
-{
+const char *get_tty_line(int *const sizep) {
   static char *buf = 0;
   static int bufsz = 0;
   int i = 0;
 
   while (true) {
     const int c = getchar();
-    if (!resize_buffer(&buf, &bufsz, i+2)) {
+    if (!resize_buffer(&buf, &bufsz, i + 2)) {
       if (sizep)
         *sizep = 0;
       return 0;
@@ -177,14 +173,13 @@ const char *get_tty_line(int *const sizep)
    Returns pointer to buffer and line size (including trailing newline
    if it exists and is not added now) */
 static const char *read_stream_line(FILE *const fp, int *const sizep,
-                                    bool *const newline_added_nowp)
-{
+                                    bool *const newline_added_nowp) {
   static char *buf = 0;
   static int bufsz = 0;
-  int c, i=0;
+  int c, i = 0;
 
   while (true) {
-    if (!resize_buffer(&buf, &bufsz, i+2))
+    if (!resize_buffer(&buf, &bufsz, i + 2))
       return 0;
     c = getc(fp);
     if (c == EOF)
@@ -203,7 +198,7 @@ static const char *read_stream_line(FILE *const fp, int *const sizep,
       return 0;
     } else if (i) {
       buf[i] = '\n';
-      buf[i+1] = 0;
+      buf[i + 1] = 0;
       *newline_added_nowp = true;
       if (!isbinary())
         ++i;
@@ -214,13 +209,11 @@ static const char *read_stream_line(FILE *const fp, int *const sizep,
 }
 
 /* read a stream into the editor buffer; return total size of data read */
-static long read_stream(FILE *const fp, const int addr)
-{
+static long read_stream(FILE *const fp, const int addr) {
   line_t *lp = search_line_node(addr);
   undo_t *up = 0;
   long total_size = 0;
-  const bool o_isbinary = isbinary(),
-        appended = (addr==last_addr());
+  const bool o_isbinary = isbinary(), appended = (addr == last_addr());
   bool newline_added_now = false;
 
   set_current_addr(addr);
@@ -234,7 +227,7 @@ static long read_stream(FILE *const fp, const int addr)
     else
       break;
     disable_interrupts();
-    if (!put_sbuf_line(s, size+newline_added_now, current_addr())) {
+    if (!put_sbuf_line(s, size + newline_added_now, current_addr())) {
       enable_interrupts();
       return -1;
     }
@@ -264,14 +257,13 @@ static long read_stream(FILE *const fp, const int addr)
 }
 
 /* read a named file/pipe into the buffer; return line count */
-int read_file(const char *const filename, const int addr)
-{
+int read_file(const char *const filename, const int addr) {
   FILE *fp;
   long size;
   int ret;
 
   if (*filename == '!')
-    fp = popen(filename+1, "r");
+    fp = popen(filename + 1, "r");
   else
     fp = fopen(strip_escapes(filename), "r");
   if (!fp) {
@@ -297,18 +289,17 @@ int read_file(const char *const filename, const int addr)
 }
 
 /* write a range of lines to a stream */
-static long write_stream(FILE *const fp, int from, const int to)
-{
+static long write_stream(FILE *const fp, int from, const int to) {
   line_t *lp = search_line_node(from);
   long size = 0;
 
-  while (from && from<=to) {
+  while (from && from <= to) {
     int len;
     char *p = get_sbuf_line(lp);
     if (!p)
       return -1;
     len = lp->len;
-    if (from!=last_addr() || !isbinary() || !newline_added())
+    if (from != last_addr() || !isbinary() || !newline_added())
       p[len++] = '\n';
     size += len;
     while (--len >= 0)
@@ -325,14 +316,13 @@ static long write_stream(FILE *const fp, int from, const int to)
 
 /* write a range of lines to a named file/pipe; return line count */
 int write_file(const char *const filename, const char *const mode,
-               const int from, const int to)
-{
+               const int from, const int to) {
   FILE *fp;
   long size;
   int ret;
 
   if (*filename == '!')
-    fp = popen(filename+1, "w");
+    fp = popen(filename + 1, "w");
   else
     fp = fopen(strip_escapes(filename), mode);
   if (!fp) {
@@ -354,6 +344,5 @@ int write_file(const char *const filename, const char *const mode,
   }
   if (!scripted())
     fprintf(stderr, "%lu\n", size);
-  return (from && from<=to) ? to-from+1 : 0;
+  return (from && from <= to) ? to - from + 1 : 0;
 }
-

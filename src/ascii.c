@@ -52,16 +52,16 @@ char *posix[] = {
 
 int main(int argc, char *argv[])
 {
-  int i, j = -1, setposix;
+  int i, j, setposix;
 
   if (argc > 1) {
     setposix = 1;
   } else
     setposix = 0;
 
-  for (i=0; i<(setposix?103:256); ++i) {
+  for (i=j=0; i<(setposix?103:256); ++i) {
     if (i%8 == 0)
-      printf("\n\t%2d\t", ++j);
+      printf("\n\t%2d\t", j++);
     printf("%s ", setposix ? posix[i] : str[i]);
   }
   putchar('\n');

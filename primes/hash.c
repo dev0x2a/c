@@ -45,18 +45,15 @@ struct nlist { /* table entry */
   char *name; /* defined name */
   char *defn; /* replacement name */
 };
-
 #define HASHSIZE 101
-
 static struct nlist *hashtab[HASHSIZE]; /* pointer table */
-
 
 unsigned hash(char *s)
 {
   unsigned hashval;
 
-  for (hashval=0; *s != '\0'; ++s)
-    hashval = *s + 31 * hashval;
+  for (hashval=0; *s!='\0'; ++s)
+    hashval = *s+31*hashval;
   return hashval % HASHSIZE;
 }
 
@@ -65,7 +62,7 @@ struct nlist *lookup(char *s)
   struct nlist *np;
 
   /* for (ptr=head; ptr!=NULL; ptr=ptr->next) ... */
-  for (np=hashtab[hash(s)]; np != NULL; np=np->next)
+  for (np=hashtab[hash(s)]; np!=NULL; np=np->next)
     if (strcmp(s, np->name) == 0)
       return np; /* found */
   return NULL;   /* not found */

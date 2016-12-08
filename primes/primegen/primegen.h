@@ -58,7 +58,6 @@ static void doit4(register uint32 *a, register long x,
   start -= 1000000000;
   
   i = start;
-  
   while (i < B_G) {
     i += x;
     x += 30;
@@ -66,16 +65,13 @@ static void doit4(register uint32 *a, register long x,
 
   for (;;) {
     x -= 30;
-    
     if (x <= 15)
       return;
     i -= x;
-    
     while (i < 0) {
       i += y;
       y += 30;
     }
-    
     i0 = i;
     y0 = y;
     while (i < B_G) {
@@ -105,7 +101,6 @@ static void doit6(register uint32 *a, register long x,
   x += 5;
   y += 15;
   start += 1000000000;
-
   while (start < 0) {
     start += x;
     x += 10;
@@ -113,7 +108,6 @@ static void doit6(register uint32 *a, register long x,
 
   start -= 1000000000;
   i = start;
-
   while (i < B_G) {
     i += x;
     x += 10;
@@ -121,16 +115,13 @@ static void doit6(register uint32 *a, register long x,
 
   for (;;) {
     x -= 10;
-
     if (x <= 5)
       return;
     i -= x;
-
     while (i < 0) {
       i += y;
       y += 30;
     }
-
     i0 = i;
     y0 = y;
     while (i < B_G) {
@@ -159,7 +150,6 @@ static void doit12(register uint32 *a, register long x,
 
   x += 5;
   start += 1000000000;
-  
   while (start<0) {
     start += x;
     x += 10;
@@ -174,7 +164,6 @@ static void doit12(register uint32 *a, register long x,
 
   y += 15;
   x += 10;
-
   for (;;) {
     while ( i >= B_G) {
       if (x <= y)
@@ -182,10 +171,9 @@ static void doit12(register uint32 *a, register long x,
       i -= y;
       y += 30;
     }
-
     i0 = i;
     y0 = y;
-    while ((i >= 0)&&(y < x)) {
+    while ((i>=0) && (y<x)) {
       pos = i;
       data = i;
       pos >>= 5;
@@ -216,7 +204,7 @@ static void squarefree1big(uint32 (*buf)[B32_G], uint64 base,
 { 
   int n;
   uint32 pos;
-  uint64 i, bound = base+60*B_G;
+  uint64 i, bound=base+60*B_G;
 
   while (qq < bound) {
     if (bound < 2000000000)
@@ -240,7 +228,7 @@ static void squarefree1big(uint32 (*buf)[B32_G], uint64 base,
 static void squarefree1(register uint32 (*buf)[B32_G], uint64 L, uint32 q)
 { 
   uint32 qq, i;
-  uint64 base = 60*L;
+  uint64 base=60*L;
   register int n;
   register uint32 qqhigh, ilow, ihigh;
 
@@ -255,7 +243,8 @@ static void squarefree1(register uint32 (*buf)[B32_G], uint64 L, uint32 q)
       i += qq;
     if (i < B_G*60) { 
       qqhigh = qq/60;
-      ilow = i%60;ihigh = i/60;
+      ilow = i%60;
+      ihigh = i/60;
       qqhigh +=  qqhigh;
       while (ihigh < B_G) {
         n = deltainverse[ilow];
@@ -280,7 +269,7 @@ static void squarefree49big(uint32 (*buf)[B32_G], uint64 base,
 { 
   int n;
   uint32 pos;
-  uint64 i, bound = base+60*B_G;
+  uint64 i, bound=base+60*B_G;
 
   while (qq < bound) {
     if (bound < 2000000000)
@@ -305,10 +294,9 @@ static void squarefree49big(uint32 (*buf)[B32_G], uint64 base,
 static void squarefree49(register uint32 (*buf)[B32_G], uint64 L, uint32 q)
 { 
   register int n;
-  uint32 qq, i;
-  uint32 qqhigh, ilow, ihigh;
+  uint32 i, qq, qqhigh, ilow, ihigh;
 
-  uint64 base = 60*L;
+  uint64 base=60*L;
   qq = q*q;
   q = 60*q+900;
 
@@ -368,8 +356,7 @@ static void squarefreetiny(register uint32 *a, uint32 *Lmodqq, int d)
 }
 
 typedef struct {
-  char index;
-  char f, g, k;
+  char index, f, g, k;
 } todo;
 
 static const todo for4[] = {

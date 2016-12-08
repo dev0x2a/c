@@ -11,7 +11,7 @@
 #define DMIN(a,b) ((a<b)?(a):(b))
 #endif
 
-int dgt(int t, int n)
+void dgt(int t, int n)
 {
   int a[200];
   int i, j, tmp, m, x;
@@ -35,11 +35,11 @@ int dgt(int t, int n)
       printf("%d", a[i]);
   }
   putchar('\n');
-  return(0);
+  return;
 }
 
 int dgt_max = 5000;
-void dgt_fact(int a[], int n)
+void dgt_fact(int *a, int n)
 {
   /* factorial in array */
   if (!n) 
@@ -53,7 +53,7 @@ void dgt_fact(int a[], int n)
   dgt_fact(a, n-1);
 }
 
-void dgt_disp(int a[])
+void dgt_disp(int *a)
 {
   /* to print array */
   int i, c=0;
@@ -73,8 +73,8 @@ int dgt_main(int num)
   //printf("factorial of  %d is: ", num);
   dgt_fact(a, num);
   dgt_disp(a);
-  putchar('\n');
   free(a);
+  putchar('\n');
   return(0);
 }
 #endif /* DIGITS_H */

@@ -1,7 +1,6 @@
 #include "plib.h"
 
 primegen pg;
-
 int main(void)
 {
   uint32 diff, maxdiff;

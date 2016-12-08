@@ -1,10 +1,7 @@
-/*
- * cblk.c
+/* cblk.c
  * catches block comments with c syntax
  * '*' must be on lines
- *
- * ryan keleti
- */
+ * ryan keleti */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

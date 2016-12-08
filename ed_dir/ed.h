@@ -1,7 +1,7 @@
 /*  Global declarations for the ed editor
  *  GNU ed - The GNU line editor */
 #ifndef __cplusplus
-enum Bool { false=0, true=1 };
+enum Bool { false = 0, true = 1 };
 typedef enum Bool bool;
 #endif
 
@@ -22,15 +22,15 @@ typedef struct line /* Line node */
 } line_t;
 
 typedef struct {
-  enum { UADD=0, UDEL=1, UMOV=2, VMOV=3 } type;
+  enum { UADD = 0, UDEL = 1, UMOV = 2, VMOV = 3 } type;
   line_t *head, *tail; /* head, tail of list */
 } undo_t;
 
 #ifndef max
-#define max(a,b) (((a)>(b))?(a):(b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 #ifndef min
-#define min(a,b) (((a)<(b))?(a):(b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
 /* defined in buffer.c */

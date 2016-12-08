@@ -6,12 +6,15 @@
 #include <math.h>
 
 struct bignum_st {
-  size_t size;
+  unsigned size;
   unsigned char sign;
   unsigned char tab[BUFSIZ];
   uintmax_t nn; /* temporary... */
-} bignum;
+  size_t *ptr;
+};
+struct bignum_st bignum;
 
+#define OUT(n) puts(n" is prime")
   
 int main(int argc, char *argv[])
 { 
@@ -23,9 +26,8 @@ int main(int argc, char *argv[])
   int del[8] = {6,4,2,4,2,4,6,2};
   unsigned i=1, prime=1, inc=0;
   uintmax_t div, max;
-  //uintmax_t nn = atol(argv[1]);
   bignum.sign = 0;
-  bignum.nn = strtol(argv[1], (char**)NULL, 10);
+  bignum.nn = strtoll(argv[1], (char**)NULL, 10);
 #define nn bignum.nn
 /* this doesn't actually do anthing because atoi truncates */
   if (nn > UINTMAX_MAX) {
@@ -34,11 +36,11 @@ int main(int argc, char *argv[])
   }
 
   if ((signed)nn<=1 || nn==2) {
-    nn==2 ? puts("2 is prime") : puts("n<=1 not prime");
+    nn==2 ? OUT("2") : puts("n<=1 not prime");
     exit(EXIT_SUCCESS);
   }
   if (nn==3 || nn==5) {
-    nn==3 ? puts("3 is prime") : puts("5 is prime");
+    nn==3 ? OUT("3") : OUT("5");
     exit(EXIT_SUCCESS);
   }
 

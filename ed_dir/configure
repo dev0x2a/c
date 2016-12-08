@@ -1,16 +1,15 @@
 #! /bin/sh
 # configure script for GNU ed - The GNU line editor
-# Copyright (C) 2006-2016 Antonio Diaz Diaz.
+# Copyright (C) 2006-2016 Antonio Diaz Diaz
 #
 # This configure script is free software: you have unlimited permission
-# to copy, distribute and modify it.
-
+# to copy, distribute and modify it
 pkgname=ed
 pkgversion=1.13
 progname=ed
 srctrigger=doc/${pkgname}.texi
 
-# clear some things potentially inherited from environment.
+# clear some things potentially inherited from environment
 LC_ALL=C
 export LC_ALL
 srcdir=
@@ -26,7 +25,7 @@ CPPFLAGS=
 CFLAGS='-Wall -W -O2'
 LDFLAGS=
 
-# checking whether we are using GNU C.
+# checking whether we are using GNU C
 ${CC} --version > /dev/null 2>&1
 if [ $? != 0 ] ; then
 	CC=cc
@@ -37,19 +36,15 @@ fi
 args=
 no_create=
 while [ $# != 0 ] ; do
-
 	# Get the first arg, and shuffle
 	option=$1 ; arg2=no
 	shift
-
 	# Add the argument quoted to args
 	args="${args} \"${option}\""
-
 	# Split out the argument for options that take them
 	case ${option} in
 	*=*) optarg=`echo ${option} | sed -e 's,^[^=]*=,,;s,/$,,'` ;;
 	esac
-
 	# Process the options
 	case ${option} in
 	--help | -h)
@@ -107,7 +102,6 @@ while [ $# != 0 ] ; do
 		echo "Try 'configure --help' for more information." 1>&2
 		exit 1 ;;
 	esac
-
 	# Check if the option took a separate argument
 	if [ "${arg2}" = yes ] ; then
 		if [ $# != 0 ] ; then args="${args} \"$1\"" ; shift
@@ -116,7 +110,6 @@ while [ $# != 0 ] ; do
 		fi
 	fi
 done
-
 # Find the source files, if location was not specified.
 srcdirtext=
 if [ -z "${srcdir}" ] ; then
@@ -133,7 +126,6 @@ if [ ! -r "${srcdir}/${srctrigger}" ] ; then
 	echo "configure: (At least ${srctrigger} is missing)." 1>&2
 	exit 1
 fi
-
 # Set srcdir to . if that's what it is.
 if [ "`pwd`" = "`cd "${srcdir}" ; pwd`" ] ; then srcdir=. ; fi
 
@@ -171,10 +163,10 @@ rm -f Makefile
 cat > Makefile << EOF
 # Makefile for GNU ed - The GNU line editor
 # Copyright (C) 2006-2016 Antonio Diaz Diaz.
-# This file was generated automatically by configure. Don't edit.
+# This file was generated automatically by configure. Don't edit
 #
 # This Makefile is free software: you have unlimited permission
-# to copy, distribute and modify it.
+# to copy, distribute and modify it
 
 pkgname = ${pkgname}
 pkgversion = ${pkgversion}
@@ -193,5 +185,4 @@ CFLAGS = ${CFLAGS}
 LDFLAGS = ${LDFLAGS}
 EOF
 cat "${srcdir}/Makefile.in" >> Makefile
-
 echo "OK. Now you can run make."

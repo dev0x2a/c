@@ -13,6 +13,7 @@ struct key {
   "case", 0,
   "char", 0,
   "const", 0,
+  "switch", 0,
   "continue", 0,
   "default", 0,
   "sizeof", 0,
@@ -32,21 +33,23 @@ struct key {
   "else", 0,
   "for", 0,
   "asm", 0,
+  "DIR", 0,
+  "FILE", 0,
   "goto", 0,
   "inline", 0,
   "register", 0,
   "struct", 0,
   "typedef", 0,
-  "#define", 0,
   "#if", 0,
   "#else", 0,
+  "#elif", 0,
   "#endif", 0,
   "#ifndef", 0,
+  "#define", 0,
   "#undef", 0,
   "#pragma", 0,
   "#include", 0
 };
-
 
 int sp=0;
 double val[MAXVAL];
@@ -98,21 +101,20 @@ double matof(char s[])
 {
   double val, power;
   int i, sign;
-
   for (i=0; isspace(s[i]); ++i);
 
   sign = (s[i] == '-') ? -1: 1;
-  if (s[i] == '+' || s[i] == '-')
+  if (s[i]=='+' || s[i]=='-')
     i++;
   for (val=0.0; isdigit(s[i]); ++i)
-    val = 10.0 * val + (s[i] - '0');
+    val = 10.0*val+(s[i]-'0');
   if (s[i] == '.')
     i++;
   for (power=1.0; isdigit(s[i]); ++i) {
-    val = 10.0 * val + (s[i] - '0');
+    val = 10.0*val+(s[i]-'0');
     power *= 10.0;
   }
-  return sign * val / power;
+  return sign*val/power;
 }
 
 int matoi(char s[])
@@ -146,7 +148,6 @@ int getword(char *word, int lim)
 char *mstrdup(char *s)
 {
   char *p;
-
   p = (char *) malloc(strlen(s)+1); /* +1 for '\0' */
   if (p != NULL)
     strcpy(p, s);

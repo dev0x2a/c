@@ -103,15 +103,14 @@ int main(void)
 
   timing_basic_now(&finishb);
   timing_now(&finish);
-
   printf("%d primes up to %d.\n", total,30*L);
 
-  printf("Timings are in ticks. Nanoseconds per tick: approximately %f.\n",
+  printf("Timings are in ticks. Nanoseconds per tick: approximately %f\n",
       timing_basic_diff(&finishb,&startb)/timing_diff(&finish, &start));
-  printf("Overall seconds: approximately %f.\n",
+  printf("Overall seconds: approximately %f\n",
       0.000000001*timing_basic_diff(&finishb, &startb));
-  puts("Tick counts may be underestimates on systems\
- without hardware tick support.");
+  puts("Tick counts may be underestimates on systems"
+      " without hardware tick support");
   exit(0);
 }
 

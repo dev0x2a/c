@@ -1,0 +1,38 @@
+representing arbitrary precision numbers
+----------------------------------------
+ * use an array of machine integers:
+    [ x1, x2, ..., xn ]
+   where 0 <= xi < beta, and the radix beta is usually 2^32 or 2^64
+
+ * a big integer is represented as:
+
+    x = s*( sigsum( xi * beta^(i-1)), from i=1 to n)
+
+ * a big float is represented by a triple (sign, mantissa, exponent)
+
+   x = s*( sigsum( xi * beta^(-i)), from i=1 to n) *beta^e
+
+ * cost:
+    cost to multiply n bit numbers M(n)
+
+    div, sqrt are ~ O(M(n))
+    add, sub, mult/div by a single word are O(n)
+    
+    scalar div more expensive than scalar mult
+
+-----------------------------------------
+simple div
+N = Q * D + R
+
+1) let M = magnitude(D) - 1          (if D = 12345, then the magnitude is 5)
+2) A = INT( D / 10^M ) * 10^M        (if D = 12345, then A = 10000)
+3) Q = N / A
+4) R = N - Q * D
+5) Qn = Q + R / A
+6) Q = (Qn + Q) / 2
+7) if |R| >= D, GOTO 4
+8) R = N - Q * D
+9) if R >= 0 EXIT, else
+   10) Q = Q - 1
+   11) R = R + D
+

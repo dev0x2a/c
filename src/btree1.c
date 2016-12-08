@@ -14,7 +14,6 @@ void *(*bget(void *(*n)[4], int k))[4] {
   return n ? (k < (uintptr_t)(*n)[2]) ? bget((*n)[1], k) : (k == (uintptr_t)(*n)[2]) ? n : bget((*n)[0], k) : 0;
 }
 
-
 // example of use
 #include <stdio.h>
 int main() {
@@ -35,7 +34,6 @@ int main() {
   // something not in there
   void *(*c)[4] = bget(n, 42);
   printf("search for 42 should be null: %p\n", c);
-
   bdel(n);
 }
 

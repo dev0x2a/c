@@ -26,17 +26,17 @@ uint32 div10[200] = {
   18,18,18,18,18,18,18,18,18,18 ,19,19,19,19,19,19,19,19,19,19
 };
 
-uint64 low = 2;
-uint64 high = 1000000000;
+int len;
 primegen pg;
 uint32 digits[40];
-int len;
+uint64 low = 2;
+uint64 high = 1000000000;
 
 int main(int argc, char *argv[])
 { 
   int i;
-  uint64 p;
   uint32 u;
+  uint64 p;
   if (argv[1]) {
     scan_uint64(argv[1], &low);
     if (argv[2])
@@ -50,11 +50,10 @@ int main(int argc, char *argv[])
   
   p = primegen_peek(&pg);
   len = 0;
-  
   do {
     digits[len++] = p%10;
     p /= 10;
-  } while(p);
+  } while (p);
   
   p = primegen_peek(&pg);
   for (;;) {
@@ -72,7 +71,8 @@ int main(int argc, char *argv[])
         u = div10[u];
       }
     }
-    if (i>len)len=i;
+    if (i > len)
+      len = i;
     for (i=len-1; i>=0; --i)
       putchar('0'+digits[i]);
     putchar('\n');

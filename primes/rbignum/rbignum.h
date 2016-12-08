@@ -7,6 +7,7 @@
 
 #define DEBUG 0
 
+#if DEBUG
 //add //sizeof(result) = max(sizeof(src1), sizeof(src2)) + 1;
 /*
 for (l=0,i-0; i<m; ++i) {
@@ -23,7 +24,6 @@ for (i=0; i<n; ++i)
   for (j=0; j<n; ++j)
     tmp[j*n+i] = (acc)a[i]*b[j];
 */
-#if DEBUG
 bignum add(bignum a, bignum b); /* a+b */
 bignum sub(bignum a, bignum b); /* a-b */
 bignum mul(bignum a, bignum b); /* ab */
@@ -73,8 +73,7 @@ void testrsa(int len);
  * (where i is the index of an instruction, and <> a comparison operator
  *   =, !=, <, >, <=, >= and b,g are as above)
  * passes flow of control conditionally to instruction I_i */
-#endif
-#if 0
+#if !1
 uint32_t carry=0;
 for (i=0; i<len; ++i) {
   uint64_t tmp = n*(uint64_t)big[i] + carry;

@@ -2,7 +2,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-
 #include "mlib.c"
 
 #if 0
@@ -19,7 +18,8 @@ struct entry {
   struct entry *next;
 } *table[1<<20];
 
-int lookup(unsigned char *key){
+int lookup(unsigned char *key)
+{
   int index = hash(key) % (1<<20);
   
   for (struct entry *e=table[index]; e!=NULL; e=e->next) {
@@ -30,8 +30,7 @@ int lookup(unsigned char *key){
 }
 
 int hashstring(const char *s)
-{
-  /* take the result % hash table size */
+{ /* take the result % hash table size */
   int key = 0;
   while (*s) {
     key = key*37 + *s++;
@@ -42,8 +41,8 @@ int hashstring(const char *s)
 
 struct nlist { /* table entry */
   struct nlist *next; /* next entry in chain */
-  char *name; /* defined name */
-  char *defn; /* replacement name */
+  char *name, /* defined name */
+       *defn; /* replacement name */
 };
 #define HASHSIZE 101
 static struct nlist *hashtab[HASHSIZE]; /* pointer table */

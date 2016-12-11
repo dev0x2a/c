@@ -1,12 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 /* b = a*a  */
@@ -119,6 +110,3 @@ clean:
   }
 }
 
-/* $Source: /cvs/libtom/tomsfastmath/src/sqr/fp_sqr.c,v $ */
-/* $Revision: 1.1 $ */
-/* $Date: 2006/12/31 21:25:53 $ */

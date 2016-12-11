@@ -5,12 +5,11 @@
 #include "flmoon.c"
 #include "julday.c"
 
-
 #define ZON -5.0    /* time zone -5 is Eastern Standard Time */
 #define IYBEG 1900  /* the range of dates to be searched */
 #define IYEND 2000
 
-int main() /* Program BADLUK */
+int main(void) /* Program BADLUK */
 {
   int ic, icon, idwk, im, iyyy, n;
   float timzon = ZON/24.0, frac;
@@ -26,10 +25,9 @@ int main() /* Program BADLUK */
       idwk = (int) ((jday+1) % 7);
       if (idwk == 5) {
         /* n is the first approximation of how many full moons have occurred
-         * since 1900.
-         * up<->down until 13th was/was not a full moon.
-         * icon is the direction of adjustment.
-         */
+         * since 1900
+         * up<->down until 13th was/was not a full moon
+         * icon is the direction of adjustment */
         n = 12.37*(iyyy-1900+(im-0.5)/12.0);
         icon = 0;
 
@@ -40,8 +38,7 @@ int main() /* Program BADLUK */
           frac = 24.0*(frac+timzon);
 
           /* convert from Julian Days (beginning:noon) to
-           * civil days (beginning:midnight)
-           */
+           * civil days (beginning:midnight) */
           if (frac < 0.0) {
             --jd;
             frac += 24.0;

@@ -16,9 +16,9 @@
  */
 
 /* set to zero */
-void mp_zero (mp_int * a)
+void mp_zero(mp_int *a)
 {
-  int       n;
+  int n;
   mp_digit *tmp;
 
   a->sign = MP_ZPOS;
@@ -26,7 +26,7 @@ void mp_zero (mp_int * a)
 
   tmp = a->dp;
   for (n = 0; n < a->alloc; n++) {
-     *tmp++ = 0;
+    *tmp++ = 0;
   }
 }
 #endif

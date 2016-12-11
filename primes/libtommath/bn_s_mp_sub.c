@@ -16,10 +16,9 @@
  */
 
 /* low level subtraction (assumes |a| > |b|), HAC pp.595 Algorithm 14.9 */
-int
-s_mp_sub (mp_int * a, mp_int * b, mp_int * c)
+int s_mp_sub(mp_int* a, mp_int* b, mp_int* c)
 {
-  int     olduse, res, min, max;
+  int olduse, res, min, max;
 
   /* find sizes */
   min = b->used;
@@ -27,7 +26,7 @@ s_mp_sub (mp_int * a, mp_int * b, mp_int * c)
 
   /* init result */
   if (c->alloc < max) {
-    if ((res = mp_grow (c, max)) != MP_OKAY) {
+    if ((res = mp_grow(c, max)) != MP_OKAY) {
       return res;
     }
   }
@@ -78,7 +77,7 @@ s_mp_sub (mp_int * a, mp_int * b, mp_int * c)
     }
   }
 
-  mp_clamp (c);
+  mp_clamp(c);
   return MP_OKAY;
 }
 

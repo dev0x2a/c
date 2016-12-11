@@ -1,8 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- * This project is public domain and free for all purposes.
- * Tom St Denis, tomstdenis@gmail.com */
 #ifndef TFM_H_
 #define TFM_H_
 
@@ -16,15 +11,15 @@
  * Minor
  * Patch
  * XX - undefined */
-#define TFM_VERSION 0x000D0000
+#define TFM_VERSION 0x000d0000
 #define TFM_VERSION_S "v0.13.0"
 
 #ifndef MIN
-#define MIN(x, y) ((x) < (y) ? (x) : (y))
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
 #endif
 
 #ifndef MAX
-#define MAX(x, y) ((x) > (y) ? (x) : (y))
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
 #endif
 
 /* externally define this symbol to ignore the default settings, useful for
@@ -95,7 +90,7 @@
  * You can externally define this or it defaults to 4096-bits [allowing
  * multiplications upto 2048x2048 bits ] */
 #ifndef FP_MAX_SIZE
-#define FP_MAX_SIZE (4096 + (8 * DIGIT_BIT))
+#define FP_MAX_SIZE (4096+(8*DIGIT_BIT))
 #endif
 
 /* will this lib work? */
@@ -246,6 +241,7 @@
 #endif
 #endif
 
+typedef unsigned long long ulong64;
 /* some default configurations */
 #if defined(FP_64BIT)
 /* for GCC only on supported platforms */
@@ -325,25 +321,25 @@ void fp_set(fp_int *a, fp_digit b);
 void fp_rand(fp_int *a, int digits);
 
 /* copy from a to b */
-#define fp_copy(a, b) (void)(((a) != (b)) && memcpy((b), (a), sizeof(fp_int)))
-#define fp_init_copy(a, b) fp_copy(b, a)
+#define fp_copy(a,b) (void)(((a)!=(b)) && memcpy((b),(a),sizeof(fp_int)))
+#define fp_init_copy(a,b) fp_copy(b,a)
 
 /* clamp digits */
 #define fp_clamp(a) { \
-  while ((a)->used && (a)->dp[(a)->used - 1] == 0) \
-    --((a)->used);                                 \
-    (a)->sign = (a)->used ? (a)->sign : FP_ZPOS;   \
+  while ((a)->used && (a)->dp[(a)->used-1] == 0) \
+    --((a)->used);                               \
+    (a)->sign = (a)->used ? (a)->sign : FP_ZPOS; \
   }
 
 /* negate and absolute */
-#define fp_neg(a, b) { \
-    fp_copy(a, b);     \
-    (b)->sign ^= 1;    \
-    fp_clamp(b);       \
+#define fp_neg(a,b) { \
+    fp_copy(a, b);    \
+    (b)->sign ^= 1;   \
+    fp_clamp(b);      \
   }
-#define fp_abs(a, b) { \
-    fp_copy(a, b);     \
-    (b)->sign = 0;     \
+#define fp_abs(a,b) { \
+    fp_copy(a, b);    \
+    (b)->sign = 0;    \
   }
 
 /* right shift x digits */
@@ -431,8 +427,7 @@ void fp_lcm(fp_int *a, fp_int *b, fp_int *c);
 int fp_montgomery_setup(fp_int *a, fp_digit *mp);
 
 /* computes a = B**n mod b without division or multiplication useful for
- * normalizing numbers in a Montgomery system.
- */
+ * normalizing numbers in a Montgomery system */
 void fp_montgomery_calc_normalization(fp_int *a, fp_int *b);
 
 /* computes x/R == x (mod N) via Montgomery Reduction */

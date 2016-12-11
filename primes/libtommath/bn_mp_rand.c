@@ -16,13 +16,13 @@
  */
 
 #if MP_GEN_RANDOM_MAX == 0xffffffff
-  #define MP_GEN_RANDOM_SHIFT  32
+#define MP_GEN_RANDOM_SHIFT 32
 #elif MP_GEN_RANDOM_MAX == 32767
-  /* SHRT_MAX */
-  #define MP_GEN_RANDOM_SHIFT  15
+/* SHRT_MAX */
+#define MP_GEN_RANDOM_SHIFT 15
 #elif MP_GEN_RANDOM_MAX == 2147483647
-  /* INT_MAX */
-  #define MP_GEN_RANDOM_SHIFT  31
+/* INT_MAX */
+#define MP_GEN_RANDOM_SHIFT 31
 #elif !defined(MP_GEN_RANDOM_SHIFT)
 #error Thou shalt define their own valid MP_GEN_RANDOM_SHIFT
 #endif
@@ -33,7 +33,7 @@ static mp_digit mp_gen_random(void)
   mp_digit d = 0, msk = 0;
   do {
     d <<= MP_GEN_RANDOM_SHIFT;
-    d |= ((mp_digit) MP_GEN_RANDOM());
+    d |= ((mp_digit)MP_GEN_RANDOM());
     msk <<= MP_GEN_RANDOM_SHIFT;
     msk |= MP_GEN_RANDOM_MAX;
   } while ((MP_MASK & msk) != MP_MASK);
@@ -41,13 +41,12 @@ static mp_digit mp_gen_random(void)
   return d;
 }
 
-int
-mp_rand (mp_int * a, int digits)
+int mp_rand(mp_int* a, int digits)
 {
-  int     res;
+  int res;
   mp_digit d;
 
-  mp_zero (a);
+  mp_zero(a);
   if (digits <= 0) {
     return MP_OKAY;
   }
@@ -57,16 +56,16 @@ mp_rand (mp_int * a, int digits)
     d = mp_gen_random();
   } while (d == 0);
 
-  if ((res = mp_add_d (a, d, a)) != MP_OKAY) {
+  if ((res = mp_add_d(a, d, a)) != MP_OKAY) {
     return res;
   }
 
   while (--digits > 0) {
-    if ((res = mp_lshd (a, 1)) != MP_OKAY) {
+    if ((res = mp_lshd(a, 1)) != MP_OKAY) {
       return res;
     }
 
-    if ((res = mp_add_d (a, mp_gen_random(), a)) != MP_OKAY) {
+    if ((res = mp_add_d(a, mp_gen_random(), a)) != MP_OKAY) {
       return res;
     }
   }

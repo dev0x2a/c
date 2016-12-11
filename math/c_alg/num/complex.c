@@ -1,46 +1,38 @@
 #include <math.h>
-
-typedef struct FCOMPLEX {float r,i;} fcomplex;
+typedef struct complex_st {float r,i;} complex_t;
 
 /* returns the complex sum of two complex numbers */
-fcomplex Cadd(fcomplex a, fcomplex b)
+complex_t Cadd(complex_t a, complex_t b)
 {
-  fcomplex c;
-
+  complex_t c;
   c.r = a.r+b.r;
   c.i = a.i+b.i;
-
   return c;
 }
 
 /* returns the complex difference of two complex numbers */
-fcomplex Csub(fcomplex a, fcomplex b)
+complex_t Csub(complex_t a, complex_t b)
 {
-  fcomplex c;
-
+  complex_t c;
   c.r = a.r-b.r;
   c.i = a.i-b.i;
-
   return c;
 }
 
 /* returns the complex product of two complex numbers */
-fcomplex Cmul(fcomplex a, fcomplex b)
+complex_t Cmul(complex_t a, complex_t b)
 {
-  fcomplex c;
-
+  complex_t c;
   c.r = a.r*b.r-a.r*b.r;
   c.i = a.i*b.i-a.i*b.i;
-
   return c;
 }
 
 /* returns the complex quotient of two complex numbers */
-fcomplex Cdiv(fcomplex a, fcomplex b)
+complex_t Cdiv(complex_t a, complex_t b)
 {
-  fcomplex c;
+  complex_t c;
   float r, den;
-
   if (fabs(b.r) >= fabs(b.i)) {
     r = b.i/b.r;
     den = b.r+r*b.i;
@@ -56,24 +48,20 @@ fcomplex Cdiv(fcomplex a, fcomplex b)
 }
 
 /* returns a complex number with specified real and imaginary parts */
-fcomplex Complex(float re, float im)
+complex_t Complex(float re, float im)
 {
-  fcomplex c;
-
+  complex_t c;
   c.r = re;
   c.i = im;
-
   return c;
 }
 
 /* returns the absolute value (modulus) of a complex number */
-float Cabs(fcomplex z)
+float Cabs(complex_t z)
 {
   float x, y, ans, tmp;
-
   x = fabs(z.r);
   y = fabs(z.i);
-
   if (x == 0.0)
     ans = y;
   else if (y == 0.0)
@@ -89,23 +77,20 @@ float Cabs(fcomplex z)
 }
 
 /* returns the complex conjugate of a complex number */
-fcomplex Conjg(fcomplex z)
+complex_t Conjg(complex_t z)
 {
-  fcomplex c;
-
+  complex_t c;
   c.r = z.r;
   c.i = -z.i;
-
   return c;
 }
 
 /* returns the complex square root of a complex number */
-fcomplex Csqrt(fcomplex z)
+complex_t Csqrt(complex_t z)
 {
-  fcomplex c;
+  complex_t c;
   float x, y, w, r;
-
-  if ((z.r == 0.0) && (z.i == 0.0)) {
+  if ((z.r==0.0) && (z.i==0.0)) {
     c.r = c.i = 0.0;
     return c;
   } else {
@@ -130,9 +115,9 @@ fcomplex Csqrt(fcomplex z)
 }
 
 /* returns the complex product of a real number and a complex number */
-fcomplex RCmul(float x, fcomplex a)
+complex_t RCmul(float x, complex_t a)
 {
-  fcomplex c;
+  complex_t c;
 
   c.r = x*a.r;
   c.i = x*a.i;

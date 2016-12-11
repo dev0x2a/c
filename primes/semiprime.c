@@ -6,17 +6,16 @@ int semiprime(int n)
   for (p=2; f<2 && p*p<=n; ++p)
     while (n%p == 0)
       n /=p, f++;
-  return f + (n > 1) == 2;
+  return f+(n>1) == 2;
 }
 
 int main(void)
 {
   int i;
-
   for (i=2; i<100; ++i) 
     if (semiprime(i))
       printf(" %d", i);
-    putchar('\n');
+  putchar('\n');
   return 0;
 }
 

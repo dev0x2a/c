@@ -17,8 +17,7 @@ int main(int argc, char *argv[])
 /* a^n%mod */
 size_t power(size_t a, size_t n, size_t mod)
 {
-  size_t power = a;
-  size_t result = 1;
+  size_t power=a, result=1;
 
   while (n) {
     if (n & 1)
@@ -34,8 +33,7 @@ size_t power(size_t a, size_t n, size_t mod)
  * factor powers or 2 from n-1 */
 bool witness(size_t n, size_t s, size_t d, size_t a)
 {
-  size_t x = power(a, d, n);
-  size_t y;
+  size_t y, x = power(a, d, n);
 
   while (s) {
     y = (x*x)%n;
@@ -49,8 +47,7 @@ bool witness(size_t n, size_t s, size_t d, size_t a)
   return true;
 }
 
-/*
- * n < 1,373,653           a=2,3
+/* n < 1,373,653           a=2,3
  * n < 9,080,191           a=31,73
  * n < 4,759,123,141       a=2,7,61
  * n < 1,122,004,669,633   a=2,13,23,1662803

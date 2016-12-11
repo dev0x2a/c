@@ -16,8 +16,7 @@
  */
 
 /* clear one (frees)  */
-void
-mp_clear (mp_int * a)
+void mp_clear(mp_int* a)
 {
   int i;
 
@@ -25,16 +24,16 @@ mp_clear (mp_int * a)
   if (a->dp != NULL) {
     /* first zero the digits */
     for (i = 0; i < a->used; i++) {
-        a->dp[i] = 0;
+      a->dp[i] = 0;
     }
 
     /* free ram */
     XFREE(a->dp);
 
     /* reset members to make debugging easier */
-    a->dp    = NULL;
+    a->dp = NULL;
     a->alloc = a->used = 0;
-    a->sign  = MP_ZPOS;
+    a->sign = MP_ZPOS;
   }
 }
 #endif

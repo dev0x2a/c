@@ -1,17 +1,7 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 /* computes a = B**n mod b without division or multiplication useful for
- * normalizing numbers in a Montgomery system.
- */
+ * normalizing numbers in a Montgomery system */
 void fp_montgomery_calc_normalization(fp_int *a, fp_int *b) {
   int x, bits;
 
@@ -37,6 +27,3 @@ void fp_montgomery_calc_normalization(fp_int *a, fp_int *b) {
   }
 }
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

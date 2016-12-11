@@ -1,12 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 static const int lnz[16] = {4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0};
@@ -38,6 +29,3 @@ int fp_cnt_lsb(fp_int *a) {
   return x;
 }
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

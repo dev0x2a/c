@@ -1,6 +1,5 @@
 #define MAXVAL 100
 #define BUFSIZE 100
-
 #define MAXWORD 100
 #define NKEYS (sizeof keytab / sizeof keytab[0])
 
@@ -8,52 +7,76 @@ struct key {
   char *word;
   int count;
 } keytab[] = {
+  "asm", 0,
   "auto", 0,
   "break", 0,
   "case", 0,
   "char", 0,
   "const", 0,
-  "switch", 0,
   "continue", 0,
   "default", 0,
-  "sizeof", 0,
-  "return", 0,
+  "do", 0,
+  "double", 0,
+  "DIR", 0,
+  "else", 0,
+  "enum", 0,
+  "extern", 0,
+  "FILE", 0,
+  "float", 0,
+  "for", 0,
+  "goto", 0,
+  "if", 0,
+  "inline", 0,
   "int", 0,
   "long", 0,
+  "register", 0,
+  "restrict", 0,
+  "return", 0,
   "short", 0,
-  "float", 0,
-  "double", 0,
   "signed", 0,
+  "sizeof", 0,
+  "struct", 0,
+  "switch", 0,
+  "typedef", 0,
+  "union", 0,
   "unsigned", 0,
   "void", 0,
   "volatile", 0,
   "while", 0,
-  "do", 0,
-  "if", 0,
-  "else", 0,
-  "for", 0,
-  "asm", 0,
-  "DIR", 0,
-  "FILE", 0,
-  "goto", 0,
-  "inline", 0,
-  "register", 0,
-  "struct", 0,
-  "typedef", 0,
-  "#if", 0,
-  "#else", 0,
+  "_Bool", 0,
+  "_Complex", 0,
+  "_Imaginary", 0,
+
   "#elif", 0,
+  "#else", 0,
   "#endif", 0,
-  "#ifndef", 0,
   "#define", 0,
-  "#undef", 0,
+  "#if", 0,
+  "#ifndef", 0,
+  "#include", 0,
   "#pragma", 0,
-  "#include", 0
+  "#undef", 0,
+  
+  "+", 0,
+  "-", 0,
+  "*", 0,
+  "/", 0,
+  "%", 0,
+  "^", 0,
+  "&", 0,
+  "|", 0,
+  "!", 0,
+  "~", 0,
+  "->", 0,
+  "\\", 0,
+  "\n", 0,
+  "\t", 0,
+  "\v", 0,
+  "  ", 0
 };
 
 int sp=0;
 double val[MAXVAL];
-
 int bufp = 0;
 char buf[BUFSIZE];
 
@@ -85,9 +108,7 @@ double pop(void)
 }
 
 int getch(void)
-{
-  return (bufp > 0) ? buf[--bufp] : getchar();
-}
+{ return (bufp > 0) ? buf[--bufp] : getchar(); }
 
 void ungetch(int c)
 {

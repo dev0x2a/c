@@ -1,100 +1,89 @@
-#!/bin/bash
+#!/ bin / bash
 #
-# return values of this script are:
-#   0  success
-# 128  a test failed
-#  >0  the number of timed-out tests
+#return values of this script are:
+# 0 success
+# 128 a test failed
+#> 0 the number of timed - out tests
 
-set -e
+set - e
 
-if [ -f /proc/cpuinfo ]
-then
-  MAKE_JOBS=$(( ($(cat /proc/cpuinfo | grep -E '^processor[[:space:]]*:' | tail -n -1 | cut -d':' -f2) + 1) * 2 + 1 ))
-else
-  MAKE_JOBS=8
-fi
+  if[-f / proc / cpuinfo] then MAKE_JOBS =
+  $((($(cat / proc / cpuinfo | grep - E '^processor[[:space:]]*:' |
+        tail - n - 1 | cut - d ':' - f2) +
+      1) *
+       2 +
+     1)) else MAKE_JOBS = 8 fi
 
-ret=0
-TEST_CFLAGS=""
+    ret = 0 TEST_CFLAGS = ""
 
-_help()
+  _help()
 {
-  echo "Usage options for $(basename $0) [--with-cc=arg [other options]]"
   echo
-  echo "Executing this script without any parameter will only run the default configuration"
-  echo "that has automatically been determined for the architecture you're running."
-  echo
-  echo "    --with-cc=*             The compiler(s) to use for the tests"
-  echo "        This is an option that will be iterated."
-  echo
-  echo "To be able to specify options a compiler has to be given."
-  echo "All options will be tested with all MP_xBIT configurations."
-  echo
-  echo "    --with-{m64,m32,mx32}   The architecture(s) to build and test for,"
-  echo "                            e.g. --with-mx32."
-  echo "        This is an option that will be iterated, multiple selections are possible."
-  echo "        The mx32 architecture is not supported by clang and will not be executed."
-  echo
-  echo "    --cflags=*              Give an option to the compiler,"
-  echo "                            e.g. --cflags=-g"
-  echo "        This is an option that will always be passed as parameter to CC."
-  echo
-  echo "    --make-option=*         Give an option to make,"
-  echo "                            e.g. --make-option=\"-f makefile.shared\""
-  echo "        This is an option that will always be passed as parameter to make."
-  echo
-  echo "Godmode:"
-  echo
-  echo "    --all                   Choose all architectures and gcc and clang as compilers"
-  echo
-  echo "    --help                  This message"
-  exit 0
+    "Usage options for $(basename $0) [--with-cc=arg [other options]]" echo
+      echo "Executing this script without any parameter will only run the "
+           "default configuration" echo "that has automatically been "
+                                        "determined for the architecture "
+                                        "you're running." echo echo
+    "    --with-cc=*             The compiler(s) to use for the tests" echo
+    "        This is an option that will be iterated." echo echo
+    "To be able to specify options a compiler has to be given." echo
+    "All options will be tested with all MP_xBIT configurations." echo echo
+    "    --with-{m64,m32,mx32}   The architecture(s) to build and test "
+    "for," echo "                            e.g. --with-mx32." echo
+    "        This is an option that will be iterated, multiple selections "
+    "are possible." echo "        The mx32 architecture is not supported "
+                         "by clang and will not be executed." echo echo
+    "    --cflags=*              Give an option to the compiler," echo
+    "                            e.g. --cflags=-g" echo
+    "        This is an option that will always be passed as parameter to "
+    "CC." echo echo
+    "    --make-option=*         Give an option to make," echo
+    "                            e.g. --make-option=\"-f "
+    "makefile.shared\"" echo "        This is an option that will always "
+                             "be passed as parameter to make." echo echo
+    "Godmode:" echo echo
+    "    --all                   Choose all architectures and gcc and "
+    "clang as compilers" echo echo
+    "    --help                  This message" exit 0
 }
 
 _die()
 {
-  echo "error $2 while $1"
-  if [ "$2" != "124" ]
-  then
-    exit 128
-  else
-    echo "assuming timeout while running test - continue"
-    ret=$(( $ret + 1 ))
-  fi
+  echo "error $2 while $1" if["$2" != "124"] then exit 128 else echo
+    "assuming timeout while running test - continue" ret = $(($ret + 1)) fi
 }
 
 _runtest()
 {
-  echo -ne " Compile $1 $2"
-  make clean > /dev/null
-  CC="$1" CFLAGS="$2 $TEST_CFLAGS" make -j$MAKE_JOBS test_standalone $MAKE_OPTIONS > /dev/null 2>test_errors.txt
-  echo -e "\rRun test $1 $2"
-  timeout --foreground 90 ./test > test_$(echo ${1}${2}  | tr ' ' '_').txt || _die "running tests" $?
+  echo - ne " Compile $1 $2" make clean > / dev / null CC = "$1" CFLAGS =
+    "$2 $TEST_CFLAGS" make - j$MAKE_JOBS test_standalone $MAKE_OPTIONS >
+      / dev / null 2 >
+      test_errors.txt echo -
+        e "\rRun test $1 $2" timeout-- foreground 90./ test >
+      test_$(echo $ { 1 } ${2} | tr ' ' '_').txt ||
+    _die "running tests" $
+    ?
 }
 
 _banner()
 {
-  echo "uname="$(uname -a)
-  [[ "$#" != "0" ]] && (echo $1=$($1 -dumpversion)) || true
+  echo "uname=" $(uname - a)[["$#" != "0"]] &&
+      (echo $1 = $($1 - dumpversion)) ||
+    true
 }
 
 _exit()
 {
-  if [ "$ret" == "0" ]
-  then
-    echo "Tests successful"
-  else
-    echo "$ret tests timed out"
-  fi
+  if
+    ["$ret" == "0"] then echo "Tests successful" else echo
+      "$ret tests timed out" fi
 
-  exit $ret
+        exit $ret
 }
 
-ARCHFLAGS=""
-COMPILERS=""
-CFLAGS=""
+ARCHFLAGS = "" COMPILERS = "" CFLAGS = ""
 
-while [ $# -gt 0 ];
+  while[$ # - gt 0];
 do
   case $1 in
     "--with-m64" | "--with-m32" | "--with-mx32")
@@ -120,7 +109,7 @@ do
   shift
 done
 
-# default to gcc if nothing is given
+#default to gcc if nothing is given
 if [[ "$COMPILERS" == "" ]]
 then
   _banner gcc
@@ -131,7 +120,8 @@ fi
 archflags=( $ARCHFLAGS )
 compilers=( $COMPILERS )
 
-# choosing a compiler without specifying an architecture will use the default architecture
+#choosing a compiler without specifying an architecture will use           \
+  the default architecture
 if [ "${#archflags[@]}" == "0" ]
 then
   archflags[0]=" "
@@ -149,7 +139,8 @@ do
   compiler_version=$(echo "$i="$($i -dumpversion))
   if [ "$compiler_version" == "clang=4.2.1" ]
   then
-    # one of my versions of clang complains about some stuff in stdio.h and stdarg.h ...
+#one of my versions of clang complains about some stuff in                 \
+  stdio.h and stdarg.h...
     TEST_CFLAGS="-Wno-typedef-redefinition"
   else
     TEST_CFLAGS=""

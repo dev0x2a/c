@@ -1,4 +1,4 @@
-/* signal.c: signal and miscellaneous routines for the ed line editor. */
+/* signal.c: signal and miscellaneous routines for the ed line editor */
 #include "ed.h"
 #include <ctype.h>
 #include <errno.h>
@@ -18,26 +18,26 @@ static int window_columns_ = 72;
 static bool sighup_pending = false;
 static bool sigint_pending = false;
 
-static void sighup_handler(int signum) {
-  if (signum) {
-  } /* keep compiler happy */
+static void sighup_handler(int signum)
+{
+  if (signum) {} /* keep compiler happy */
   if (mutex)
     sighup_pending = true;
   else {
     const char hb[] = "ed.hup";
     sighup_pending = false;
-    if (last_addr() && modified() && write_file(hb, "w", 1, last_addr()) < 0) {
+    if (last_addr() && modified() && write_file(hb, "w", 1, last_addr())<0) {
       char *const s = getenv("HOME");
       const int len = (s ? strlen(s) : 0);
-      const int need_slash = ((!len || s[len - 1] != '/') ? 1 : 0);
-      char *const hup = ((len + need_slash + (int)sizeof hb < path_max(0))
-                             ? (char *)malloc(len + need_slash + sizeof hb)
+      const int need_slash = ((!len || s[len-1]!='/') ? 1 : 0);
+      char *const hup = ((len + need_slash+(int)sizeof hb < path_max(0))
+                             ? (char *)malloc(len+need_slash+sizeof hb)
                              : 0);
       if (len && hup) { /* hup filename */
         memcpy(hup, s, len);
         if (need_slash)
           hup[len] = '/';
-        memcpy(hup + len + need_slash, hb, sizeof hb);
+        memcpy(hup+len+need_slash, hb, sizeof hb);
         if (write_file(hup, "w", 1, last_addr()) >= 0)
           exit(0);
       }
@@ -47,7 +47,8 @@ static void sighup_handler(int signum) {
   }
 }
 
-static void sigint_handler(int signum) {
+static void sigint_handler(int signum)
+{
   if (mutex)
     sigint_pending = true;
   else {
@@ -60,22 +61,23 @@ static void sigint_handler(int signum) {
   }
 }
 
-static void sigwinch_handler(int signum) {
+static void sigwinch_handler(int signum)
+{
 #ifdef TIOCGWINSZ
   struct winsize ws; /* window size structure */
   if (ioctl(0, TIOCGWINSZ, (char *)&ws) >= 0) {
     /* Sanity check values of environment vars */
-    if (ws.ws_row > 2 && ws.ws_row < 600)
-      window_lines_ = ws.ws_row - 2;
-    if (ws.ws_col > 8 && ws.ws_col < 1800)
-      window_columns_ = ws.ws_col - 8;
+    if (ws.ws_row>2 && ws.ws_row<600)
+      window_lines_ = ws.ws_row-2;
+    if (ws.ws_col>8 && ws.ws_col<1800)
+      window_columns_ = ws.ws_col-8;
   }
 #endif
-  if (signum) {
-  } /* keep compiler happy */
+  if (signum) {} /* keep compiler happy */
 }
 
-static int set_signal(const int signum, void (*handler)(int)) {
+static int set_signal(const int signum, void (*handler)(int))
+{
   struct sigaction new_action;
 
   new_action.sa_handler = handler;
@@ -88,7 +90,8 @@ static int set_signal(const int signum, void (*handler)(int)) {
   return sigaction(signum, &new_action, 0);
 }
 
-void enable_interrupts(void) {
+void enable_interrupts(void)
+{
   if (--mutex <= 0) {
     mutex = 0;
     if (sighup_pending)
@@ -115,7 +118,8 @@ int window_columns(void) { return window_columns_; }
 int window_lines(void) { return window_lines_; }
 
 /* convert a string to int with out_of_range detection */
-bool parse_int(int *const i, const char *const str, const char **const tail) {
+bool parse_int(int *const i, const char *const str, const char **const tail)
+{
   char *tmp;
   long li;
 
@@ -128,7 +132,7 @@ bool parse_int(int *const i, const char *const str, const char **const tail) {
     *i = 0;
     return false;
   }
-  if (errno == ERANGE || li > INT_MAX || li < INT_MIN) {
+  if (errno==ERANGE || li>INT_MAX || li<INT_MIN) {
     set_error_msg("Numerical result out of range");
     *i = 0;
     return false;
@@ -137,9 +141,10 @@ bool parse_int(int *const i, const char *const str, const char **const tail) {
 }
 
 /* assure at least a minimum size for buffer 'buf' */
-bool resize_buffer(char **const buf, int *const size, const int min_size) {
+bool resize_buffer(char **const buf, int *const size, const int min_size)
+{
   if (*size < min_size) {
-    const int new_size = (min_size < 512 ? 512 : (min_size / 512) * 1024);
+    const int new_size = (min_size<512 ? 512 : (min_size/512)*1024);
     void *new_buf = 0;
     disable_interrupts();
     if (*buf)
@@ -161,9 +166,10 @@ bool resize_buffer(char **const buf, int *const size, const int min_size) {
 
 /* assure at least a minimum size for buffer 'buf' */
 bool resize_line_buffer(const line_t ***const buf, int *const size,
-                        const int min_size) {
+                        const int min_size)
+{
   if (*size < min_size) {
-    const int new_size = (min_size < 512 ? 512 : (min_size / 512) * 1024);
+    const int new_size = (min_size<512 ? 512 : (min_size/512)*1024);
     void *new_buf = 0;
     disable_interrupts();
     if (*buf)
@@ -185,9 +191,10 @@ bool resize_line_buffer(const line_t ***const buf, int *const size,
 
 /* assure at least a minimum size for buffer 'buf' */
 bool resize_undo_buffer(undo_t **const buf, int *const size,
-                        const int min_size) {
+                        const int min_size)
+{
   if (*size < min_size) {
-    const int new_size = (min_size < 512 ? 512 : (min_size / 512) * 1024);
+    const int new_size = (min_size<512 ? 512 : (min_size/512)*1024);
     void *new_buf = 0;
     disable_interrupts();
     if (*buf)
@@ -208,16 +215,18 @@ bool resize_undo_buffer(undo_t **const buf, int *const size,
 }
 
 /* return unescaped copy of escaped string */
-const char *strip_escapes(const char *p) {
+const char *strip_escapes(const char *p)
+{
   static char *buf = 0;
   static int bufsz = 0;
   const int len = strlen(p);
   int i = 0;
 
-  if (!resize_buffer(&buf, &bufsz, len + 1))
+  if (!resize_buffer(&buf, &bufsz, len+1))
     return 0;
   /* assert: no trailing escape */
-  while ((buf[i++] = ((*p == '\\') ? *++p : *p)))
+  while ((buf[i++] = ((*p=='\\') ? *++p : *p)))
     ++p;
   return buf;
 }
+

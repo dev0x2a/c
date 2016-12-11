@@ -1,2 +1,0 @@
-void twofft(float data1[], float data2[]. float fft1[], float fft2[], unsigned long n)
-{

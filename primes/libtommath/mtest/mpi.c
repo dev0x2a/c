@@ -1,14 +1,7 @@
-/*
-    mpi.c
-
-    by Michael J. Fromberger <sting@linguist.dartmouth.edu>
-    Copyright (C) 1998 Michael J. Fromberger, All Rights Reserved
-
-    Arbitrary precision integer arithmetic library
-
-    $Id$
- */
-
+/* mpi.c
+   by Michael J. Fromberger <sting@linguist.dartmouth.edu>
+   Copyright (C) 1998 Michael J. Fromberger, All Rights Reserved
+   Arbitrary precision integer arithmetic library */
 #include "mpi.h"
 #include <stdlib.h>
 #include <string.h>
@@ -22,14 +15,12 @@
 #define DIAG(T,V)
 #endif
 
-/*
-   If MP_LOGTAB is not defined, use the math library to compute the
-   logarithms on the fly.  Otherwise, use the static table below.
-   Pick which works best for your system.
- */
+/* If MP_LOGTAB is not defined, use the math library to compute the
+   logarithms on the fly; Otherwise, use the static table below
+   Pick which works best for your system */
 #if MP_LOGTAB
-
-/* {{{ s_logv_2[] - log table for 2 in various bases */
+/* {{{ s_logv
+ * _2[] - log table for 2 in various bases */
 
 /*
   A table of the logs of 2 for various bases (the 0 and 1 entries of
@@ -43,9 +34,7 @@
   log_r(n) = log_2(n) * log_r(2)
 
   This table, therefore, is a table of log_r(2) for 2 <= r <= 36,
-  which are the output bases supported.
- */
-
+  which are the output bases supported */
 #include "logtab.h"
 
 /* }}} */
@@ -3980,6 +3969,3 @@ int      s_mp_outlen(int bits, int r)
 /* HERE THERE BE DRAGONS                                                  */
 /* crc==4242132123, version==2, Sat Feb 02 06:43:52 2002 */
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

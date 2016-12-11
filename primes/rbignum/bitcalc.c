@@ -121,9 +121,9 @@ int getop(char *s)
 {
   int i, c;
 
-  while ((s[0]=c=getch()) == ' ' || c == '\t');
+  while ((s[0]=c=getch())==' ' || c=='\t');
   s[1]= '\0';
-  if (!isdigit(c) && c != '.')
+  if (!isdigit(c) && c!='.')
     return c; /* nan */
   i = 0;
   if (isdigit(c))
@@ -140,9 +140,7 @@ char buf[BUFSIZE];
 int bufp = 0;
 
 int getch(void)
-{
-  return (bufp > 0) ? buf[--bufp] : getchar();
-}
+{ return (bufp>0) ? buf[--bufp] : getchar(); }
 
 void ungetch(int c)
 {

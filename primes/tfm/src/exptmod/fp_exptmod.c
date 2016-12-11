@@ -1,12 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 #ifdef TFM_TIMING_RESISTANT
@@ -14,8 +5,7 @@
 /* timing resistant montgomery ladder based exptmod
 
    Based on work by Marc Joye, Sung-Ming Yen, "The Montgomery Powering Ladder",
-   Cryptographic Hardware and Embedded Systems, CHES 2002
-*/
+   Cryptographic Hardware and Embedded Systems, CHES 2002 */
 static int _fp_exptmod(fp_int *G, fp_int *X, fp_int *P, fp_int *Y) {
   fp_int R[2];
   fp_digit buf, mp;
@@ -271,6 +261,3 @@ int fp_exptmod(fp_int *G, fp_int *X, fp_int *P, fp_int *Y) {
   }
 }
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

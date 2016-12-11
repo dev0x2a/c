@@ -20,35 +20,35 @@
  * HAC is wrong here, as the special case of (0 | 1) is not
  * handled correctly.
  */
-int mp_jacobi (mp_int * a, mp_int * n, int *c)
+int mp_jacobi(mp_int *a, mp_int *n, int *c)
 {
-  mp_int  a1, p1;
-  int     k, s, r, res;
+  mp_int a1, p1;
+  int k, s, r, res;
   mp_digit residue;
 
   /* if a < 0 return MP_VAL */
   if (mp_isneg(a) == MP_YES) {
-     return MP_VAL;
+    return MP_VAL;
   }
 
   /* if n <= 0 return MP_VAL */
   if (mp_cmp_d(n, 0) != MP_GT) {
-     return MP_VAL;
+    return MP_VAL;
   }
 
   /* step 1. handle case of a == 0 */
-  if (mp_iszero (a) == MP_YES) {
-     /* special case of a == 0 and n == 1 */
-     if (mp_cmp_d (n, 1) == MP_EQ) {
-       *c = 1;
-     } else {
-       *c = 0;
-     }
-     return MP_OKAY;
+  if (mp_iszero(a) == MP_YES) {
+    /* special case of a == 0 and n == 1 */
+    if (mp_cmp_d(n, 1) == MP_EQ) {
+      *c = 1;
+    } else {
+      *c = 0;
+    }
+    return MP_OKAY;
   }
 
   /* step 2.  if a == 1, return 1 */
-  if (mp_cmp_d (a, 1) == MP_EQ) {
+  if (mp_cmp_d(a, 1) == MP_EQ) {
     *c = 1;
     return MP_OKAY;
   }
@@ -57,18 +57,18 @@ int mp_jacobi (mp_int * a, mp_int * n, int *c)
   s = 0;
 
   /* step 3.  write a = a1 * 2**k  */
-  if ((res = mp_init_copy (&a1, a)) != MP_OKAY) {
+  if ((res = mp_init_copy(&a1, a)) != MP_OKAY) {
     return res;
   }
 
-  if ((res = mp_init (&p1)) != MP_OKAY) {
+  if ((res = mp_init(&p1)) != MP_OKAY) {
     goto LBL_A1;
   }
 
   /* divide out larger power of two */
   k = mp_cnt_lsb(&a1);
   if ((res = mp_div_2d(&a1, k, &a1, NULL)) != MP_OKAY) {
-     goto LBL_P1;
+    goto LBL_P1;
   }
 
   /* step 4.  if e is even set s=1 */
@@ -86,19 +86,19 @@ int mp_jacobi (mp_int * a, mp_int * n, int *c)
   }
 
   /* step 5.  if p == 3 (mod 4) *and* a1 == 3 (mod 4) then s = -s */
-  if ( ((n->dp[0] & 3) == 3) && ((a1.dp[0] & 3) == 3)) {
+  if (((n->dp[0] & 3) == 3) && ((a1.dp[0] & 3) == 3)) {
     s = -s;
   }
 
   /* if a1 == 1 we're done */
-  if (mp_cmp_d (&a1, 1) == MP_EQ) {
+  if (mp_cmp_d(&a1, 1) == MP_EQ) {
     *c = s;
   } else {
     /* n1 = n mod a1 */
-    if ((res = mp_mod (n, &a1, &p1)) != MP_OKAY) {
+    if ((res = mp_mod(n, &a1, &p1)) != MP_OKAY) {
       goto LBL_P1;
     }
-    if ((res = mp_jacobi (&p1, &a1, &r)) != MP_OKAY) {
+    if ((res = mp_jacobi(&p1, &a1, &r)) != MP_OKAY) {
       goto LBL_P1;
     }
     *c = s * r;
@@ -106,8 +106,10 @@ int mp_jacobi (mp_int * a, mp_int * n, int *c)
 
   /* done */
   res = MP_OKAY;
-LBL_P1:mp_clear (&p1);
-LBL_A1:mp_clear (&a1);
+LBL_P1:
+  mp_clear(&p1);
+LBL_A1:
+  mp_clear(&a1);
   return res;
 }
 #endif

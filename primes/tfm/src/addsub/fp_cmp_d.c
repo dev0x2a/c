@@ -1,12 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 /* compare against a single digit */
@@ -31,6 +22,3 @@ int fp_cmp_d(fp_int *a, fp_digit b) {
   }
 }
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

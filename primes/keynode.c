@@ -6,10 +6,9 @@
 #include "mlib.c"
 
 struct tnode {
-  char *word;
   int count;
-  struct tnode *left;
-  struct tnode *right;
+  char *word;
+  struct tnode *left, *right;
 };
 
 struct tnode *addtree(struct tnode *, char *);
@@ -23,7 +22,6 @@ int main(void)
 {
   struct tnode *root;
   char word[MAXWORD];
-
   root = NULL;
   while (getword(word, MAXWORD) != EOF)
     if (isalpha(word[0]))
@@ -36,7 +34,6 @@ int main(void)
 struct tnode *addtree(struct tnode *p, char *w)
 {
   int cond;
-
   if (p == NULL) { /* new word arrival */
     p = talloc();  /* new node */
     p->word = strdup(w);
@@ -61,7 +58,5 @@ void treeprint(struct tnode *p)
 }
 
 struct tnode *talloc(void)
-{
-  return (struct tnode *) malloc(sizeof(struct tnode));
-}
+{ return (struct tnode *) malloc(sizeof(struct tnode)); }
 

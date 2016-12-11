@@ -16,10 +16,10 @@
  */
 
 /* read a string [ASCII] in a given radix */
-int mp_read_radix (mp_int * a, const char *str, int radix)
+int mp_read_radix(mp_int *a, const char *str, int radix)
 {
-  int     y, res, neg;
-  char    ch;
+  int y, res, neg;
+  char ch;
 
   /* zero the digit bignum */
   mp_zero(a);
@@ -29,8 +29,8 @@ int mp_read_radix (mp_int * a, const char *str, int radix)
     return MP_VAL;
   }
 
-  /* if the leading digit is a 
-   * minus set the sign to negative. 
+  /* if the leading digit is a
+   * minus set the sign to negative.
    */
   if (*str == '-') {
     ++str;
@@ -40,8 +40,8 @@ int mp_read_radix (mp_int * a, const char *str, int radix)
   }
 
   /* set the integer to the default of zero */
-  mp_zero (a);
-  
+  mp_zero(a);
+
   /* process each digit of the string */
   while (*str != '\0') {
     /* if the radix <= 36 the conversion is case insensitive
@@ -51,30 +51,30 @@ int mp_read_radix (mp_int * a, const char *str, int radix)
     ch = (radix <= 36) ? (char)toupper((int)*str) : *str;
     for (y = 0; y < 64; y++) {
       if (ch == mp_s_rmap[y]) {
-         break;
+        break;
       }
     }
 
-    /* if the char was found in the map 
+    /* if the char was found in the map
      * and is less than the given radix add it
-     * to the number, otherwise exit the loop. 
+     * to the number, otherwise exit the loop.
      */
     if (y < radix) {
-      if ((res = mp_mul_d (a, (mp_digit) radix, a)) != MP_OKAY) {
-         return res;
+      if ((res = mp_mul_d(a, (mp_digit)radix, a)) != MP_OKAY) {
+        return res;
       }
-      if ((res = mp_add_d (a, (mp_digit) y, a)) != MP_OKAY) {
-         return res;
+      if ((res = mp_add_d(a, (mp_digit)y, a)) != MP_OKAY) {
+        return res;
       }
     } else {
       break;
     }
     ++str;
   }
-  
+
   /* set the sign only if a != 0 */
   if (mp_iszero(a) != MP_YES) {
-     a->sign = neg;
+    a->sign = neg;
   }
   return MP_OKAY;
 }

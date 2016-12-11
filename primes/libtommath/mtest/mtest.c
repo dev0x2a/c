@@ -1,5 +1,4 @@
 /* makes a bignum test harness with NUM tests per operation
- *
  * the output is made in the following format [one parameter per line]
 
 operation
@@ -25,15 +24,12 @@ mulmod
 4
 11
 1
-
- */
-
+*/
 #ifdef MP_8BIT
 #define THE_MASK 127
 #else
 #define THE_MASK 32767
 #endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

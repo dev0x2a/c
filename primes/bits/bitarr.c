@@ -22,43 +22,41 @@
      to strings.  Additional mathematical functions (union, intersection,
      complement, number of set bits) are provided that are more efficient
      than naive implementations.
-               The module was designed to be robust enough to work with
+     
+     The module was designed to be robust enough to work with
      machines of different word sizes.  Only a couple of minor changes are
      required to change it from using unsigned char for `bits' to another
      integer type.  See ba_init() and the definition of BITS_SZ for details.
-               Only minimal optimization has been attempted.
+     Only minimal optimization has been attempted.
 
-               It is the caller's responsibility to know the size of the
+     It is the caller's responsibility to know the size of the
      bit vector.  One way to keep track of the size is to wrap the bit
      vector in a data structure like the one below.  Note that the // is
      used to mark a single line comment.  Only the first two items are
      necessary -- the others are included for illustration only.
 
       typedef struct {
-                elem_t  size;     // how many items in selected
-                bits *  selected; // bit vector recording which
-                                  // elements are selected
-                elem_t  max;      // maximum possible size
-                char ** name;     // array of names of items
-                elem_t  max_len;  // maximum possible length of a name
-                char *  title;    // what data is represented
-                                  // by this struct?
-            } chose_t;
+        elem_t  size;   // how many items in selected
+        bits *selected; // bit vector recording which
+                        // elements are selected
+        elem_t  max;    // maximum possible size
+        char **name;    // array of names of items
+        elem_t  max_len;// maximum possible length of a name
+        char *title;    // what data is represented by this struct?
+      } chose_t;
 
   TYPEDEF NAMES
-            "types.h" must include definitions of the following 4 types
-                      bool   = a Boolean type (0 == FALSE, !0 == TRUE)
-                      string = char *
-                      elem_t = a number (used as a count, i.e. never < 0,
-                               throughout).
-                      bit    = an unsigned integer
-                               + If this is not unsigned char then the #define
-                                 of BITS_SZ as CHAR_BIT should be changed.
-                               + If this is not internally represented by 8
-                                 bits then the lookup table in ba_count() must
-                                 be replaced.
-                               + SEE NOTE dated 13 August 1996 in changes.html
-                                 for a better solution */ 
+      "types.h" must include definitions of the following 4 types
+        bool   = a Boolean type (0 == FALSE, !0 == TRUE)
+        string = char *
+        elem_t = a number (used as a count, i.e. never < 0, throughout).
+        bit    = an unsigned integer
+          + If this is not unsigned char then the #define
+            of BITS_SZ as CHAR_BIT should be changed.
+          + If this is not internally represented by 8
+            bits then the lookup table in ba_count() must be replaced.
+          + SEE NOTE dated 13 August 1996 in changes.html
+            for a better solution */ 
 #include "bitarr.h"
 #include "types.h"
 #include <limits.h>
@@ -74,14 +72,13 @@ typedef struct {
 } BitVector;
 static void first_is_biggest(BitVector bv[2], unsigned *, unsigned *);
 /* macro NELEM()
-
    The number of elements, nelem, in an array of N bits can be
- computed using the formula:
+   computed using the formula:
 
    if (0 == (N % BITS_SZ))
-      nelem = N/BITS_SZ
+     nelem = N/BITS_SZ
    else
-      nelem = N/BITS_SZ+1
+     nelem = N/BITS_SZ+1
 
    This can be represented in any of these ways:
      nelem = N/(BITS_SZ) + 1-(0 == (N %(BITS_SZ)))
@@ -90,14 +87,14 @@ static void first_is_biggest(BitVector bv[2], unsigned *, unsigned *);
 
   The macro NELEM used this last form until Frans F.J. Faase
   <Frans_LiXia at wxs dot nl> suggested the form below (see changes.html) */
-#define NELEM(N, ELEMPER) ((N + (ELEMPER)-1) / (ELEMPER))
+#define NELEM(N, ELEMPER) ((N+(ELEMPER)-1)/(ELEMPER))
 
 /* macro CANONIZE()
   Array is an array of `NumInts' type `bit' representing `NumElem' bits
   Forces `Array' into canonical form, i.e. all unused bits are set to 0 */
-#define CANONIZE(Array, NumInts, NumElem) \
+#define CANONIZE(Array,NumInts,NumElem) \
   (Array)[NumInts-1] &= (bit)~0 >> \
-      (BITS_SZ-((NumElem % BITS_SZ) ? (NumElem % BITS_SZ) : BITS_SZ));
+  (BITS_SZ-((NumElem % BITS_SZ) ? (NumElem % BITS_SZ) : BITS_SZ));
 /* BITS_SZ is the number of bits in a single `bits' type */
 #ifdef CHAR_BIT
 /* assumes typedef unsigned char bits */
@@ -125,9 +122,8 @@ elem_t ba_init(void)
            `CHAR_BIT' then the module global variable `BITS_SZ'
            has been set to the appropriate value */
 #ifndef BITS_SZ
-  if (!BITS_SZ) {
+  if (!BITS_SZ)
     BITS_SZ = bits_size();
-  }
 #endif
   return (BITS_SZ);
 }
@@ -137,8 +133,7 @@ bit *ba_new(const elem_t nelems)
            and initalize the bits to all be zero
      PRE:  nelems is the number of Boolean values required in an array
      POST: either a pointer to an initialized (all zero) array of bit
-        OR
-           space was not available and NULL was returned
+           OR space was not available and NULL was returned
      NOTE: calloc() guarantees that the space has been initialized to 0
 
      Used by: ba_ul2b(), ba_intersection() and ba_union() */
@@ -161,8 +156,7 @@ void ba_copy(bit dst[], const bit src[], const elem_t size)
 }
 
 void ba_assign(bit arr[], elem_t elem, const bool value)
-{ /* PURPOSE: set or clear the bit in position `elem' of the array
-           `arr'
+{ /* PURPOSE: set or clear the bit in position `elem' of the array `arr'
      PRE:     arr[elem] is to be set (assigned to 1) if value is TRUE,
               otherwise it is to be cleared (assigned to 0)
      POST:    PRE fulfilled.  All other bits unchanged
@@ -193,8 +187,7 @@ void ba_toggle(bit arr[], const elem_t elem)
 void ba_all_assign(bit arr[], const elem_t size, const bool value)
 { /* PRE:  arr has been initialized to have *exactly* size elements
      POST: All `size' elements of arr have been set to `value'
-           The array is in canonical form, i.e. trailing elements are
-           all 0
+           The array is in canonical form, i.e. trailing elements are all 0
      NOTE: The array allocated by ba_new() has all elements 0 and is
            therefore in canonical form
      SEE ALSO: ba_assign()
@@ -210,12 +203,11 @@ void ba_all_assign(bit arr[], const elem_t size, const bool value)
 }
 
 bit *ba_ul2b(unsigned long num, bit *arr, elem_t *size)
-{ /* PRE:  Either
-             `arr' points to space allocated to hold enough `bit's to
+{ /* PRE:  Either `arr' points to space allocated to hold enough `bit's to
            represent `num' (namely the ceiling of the base 2 logarithm
-           of `num').  `size' points to the number of bit to use
-         OR
-             `arr' is NULL and the caller is requesting that enough
+           of `num'). `size' points to the number of bit to use
+           OR
+           `arr' is NULL and the caller is requesting that enough
            space be allocated to hold the representation before the
            translation is made. `size' points to space allocated to
            hold the count of the number of bit needed for the
@@ -223,8 +215,7 @@ bit *ba_ul2b(unsigned long num, bit *arr, elem_t *size)
      POST: A pointer to a right-aligned array of bits representing the
            unsigned value num has been returned and `size' points to
            the number of `bit's needed to hold the value
-         OR
-           the request to allocate space for such an array could not
+           OR the request to allocate space for such an array could not
            be granted
      NOTES: - The first argument is unsigned
             - It is bad to pass a `size' that is too small to hold the
@@ -258,9 +249,8 @@ char *ba_b2str(const bit arr[], const elem_t size, char *dest)
            dynamically allocated
      POST: Either `dest' points to a null-terminated string that
            contains a character representation of the first `size'
-           elements of the bit array `arr';
-        OR
-           `dest' is NULL and a request to dynamically allocate memory
+           elements of the bit array `arr'
+           OR `dest' is NULL and a request to dynamically allocate memory
            for a string to hold a character representation of `arr' was
            not be granted
      Used by: ba_print() */
@@ -301,9 +291,8 @@ unsigned long ba_count(const bit arr[], const elem_t size)
 
   if (bitcount[(sizeof bitcount/sizeof bitcount[0])-1] == BITS_SZ) {
     /* lookup table will speed this up a lot */
-    for (count=0L, i=0; i<nelem; ++i) {
+    for (count=0L, i=0; i<nelem; ++i)
       count += bitcount[arr[i]];
-    }
   } else {
     for (count=0L, i=0; i<size; ++i) {
       if (ba_value(arr, i)) {
@@ -434,9 +423,8 @@ bool ba_diff(bit first[], bit second[], bit *diff[], const elem_t size_first,
   } else {
     ba_copy(*diff, bv[largest].vector, bv[largest].size);
     numints = NELEM(bv[smallest].size, (BITS_SZ));
-    for (i=0; i<numints; ++i) {
+    for (i=0; i<numints; ++i)
       (*diff)[i] ^= bv[smallest].vector[i];
-    }
     CANONIZE(*diff, numints, bv[largest].size);
     return (TRUE);
   }
@@ -450,9 +438,8 @@ void ba_complement(bit arr[], const elem_t size)
   elem_t nelem = NELEM(size, (BITS_SZ));
   register elem_t i;
 
-  for (i=0; i<nelem; ++i) {
+  for (i=0; i<nelem; ++i)
     arr[i] = ~arr[i];
-  }
   /* force canonical form */
   CANONIZE(arr, nelem, size);
 }

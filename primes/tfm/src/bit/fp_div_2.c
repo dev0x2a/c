@@ -1,12 +1,3 @@
-/* TomsFastMath, a fast ISO C bignum library.
- *
- * This project is meant to fill in where LibTomMath
- * falls short.  That is speed ;-)
- *
- * This project is public domain and free for all purposes.
- *
- * Tom St Denis, tomstdenis@gmail.com
- */
 #include <tfm_private.h>
 
 /* b = a/2 */
@@ -47,6 +38,3 @@ void fp_div_2(fp_int *a, fp_int *b) {
   fp_clamp(b);
 }
 
-/* $Source$ */
-/* $Revision$ */
-/* $Date$ */

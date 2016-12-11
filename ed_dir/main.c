@@ -1,17 +1,13 @@
 /*  GNU ed - The GNU line editor
- *
  * Exit status: 0 for a normal exit, 1 for environmental problems
  * (file not found, invalid flags, I/O errors, etc), 2 to indicate a
  * corrupt or invalid input file, 3 for an internal consistency error
  * (eg, bug) which caused ed to panic
- *
  * This program is based on the editor algorithm described in
  * Brian W. Kernighan and P. J. Plauger's book "Software Tools
  * in Pascal", Addison-Wesley, 1981
- *
  * The buffering algorithm is attributed to Rodney Ruddock of
- * the University of Guelph, Guelph, Ontario
- */
+ * the University of Guelph, Guelph, Ontario */
 #include "carg_parser.h"
 #include "ed.h"
 #include <locale.h>
@@ -19,12 +15,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-
 static const char *const Program_name = "GNU Ed";
 static const char *const program_name = "ed";
 static const char *const program_year = "2016";
 static const char *invocation_name = 0;
-
 static bool restricted_ = false;  /* if set, run in restricted mode */
 static bool scripted_ = false;    /* if set, suppress diagnostics */
 static bool traditional_ = false; /* if set, be backwards compatible */
@@ -33,7 +27,8 @@ bool restricted(void) { return restricted_; }
 bool scripted(void) { return scripted_; }
 bool traditional(void) { return traditional_; }
 
-static void show_help(void) {
+static void show_help(void)
+{
   printf("%s - The GNU line editor.\n", Program_name);
   printf("\nUsage: %s [options] [file]\n", invocation_name);
   printf(
@@ -59,18 +54,19 @@ static void show_help(void) {
       "General help using GNU software: http://www.gnu.org/gethelp\n");
 }
 
-static void show_version(void) {
+static void show_version(void)
+{
   printf("GNU %s %s\n", program_name, PROGVERSION);
   printf("Copyright (C) 1994 Andrew L. Moore.\n"
-         "Copyright (C) %s Antonio Diaz Diaz.\n",
-         program_year);
+         "Copyright (C) %s Antonio Diaz Diaz.\n", program_year);
   printf("License GPLv3+: GNU GPL version 3 or later "
          "<http://gnu.org/licenses/gpl.html>\n"
          "This is free software: you are free to change and redistribute it.\n"
          "There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
-void show_strerror(const char *const filename, const int errcode) {
+void show_strerror(const char *const filename, const int errcode)
+{
   if (!scripted_) {
     if (filename && filename[0])
       fprintf(stderr, "%s: ", filename);
@@ -79,7 +75,8 @@ void show_strerror(const char *const filename, const int errcode) {
 }
 
 static void show_error(const char *const msg, const int errcode,
-                       const bool help) {
+                       const bool help)
+{
   if (msg && msg[0]) {
     fprintf(stderr, "%s: %s", program_name, msg);
     if (errcode > 0)
@@ -91,21 +88,24 @@ static void show_error(const char *const msg, const int errcode,
 }
 
 /* return true if file descriptor is a regular file */
-bool is_regular_file(const int fd) {
+bool is_regular_file(const int fd)
+{
   struct stat st;
-  return (fstat(fd, &st) != 0 || S_ISREG(st.st_mode));
+  return (fstat(fd, &st)!=0 || S_ISREG(st.st_mode));
 }
 
-bool may_access_filename(const char *const name) {
+bool may_access_filename(const char *const name)
+{
   if (restricted_ &&
-      (*name == '!' || !strcmp(name, "..") || strchr(name, '/'))) {
+      (*name=='!' || !strcmp(name, "..") || strchr(name, '/'))) {
     set_error_msg("Shell access restricted");
     return false;
   }
   return true;
 }
 
-int main(const int argc, const char *const argv[]) {
+int main(const int argc, const char *const argv[])
+{
   int argind;
   bool loose = false;
   const struct ap_Option options[] = {{'G', "traditional", ap_no},
@@ -130,7 +130,7 @@ int main(const int argc, const char *const argv[]) {
     return 1;
   }
 
-  for (argind = 0; argind < ap_arguments(&parser); ++argind) {
+  for (argind=0; argind<ap_arguments(&parser); ++argind) {
     const int code = ap_code(&parser, argind);
     const char *const arg = ap_argument(&parser, argind);
     if (!code)
@@ -177,7 +177,7 @@ int main(const int argc, const char *const argv[]) {
       continue;
     }
     if (may_access_filename(arg)) {
-      if (read_file(arg, 0) < 0 && is_regular_file(0))
+      if (read_file(arg, 0)<0 && is_regular_file(0))
         return 2;
       else if (arg[0] != '!')
         set_def_filename(arg);
@@ -193,3 +193,4 @@ int main(const int argc, const char *const argv[]) {
   ap_free(&parser);
   return main_loop(loose);
 }
+

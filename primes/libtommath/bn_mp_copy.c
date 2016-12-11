@@ -16,10 +16,9 @@
  */
 
 /* copy, b = a */
-int
-mp_copy (mp_int * a, mp_int * b)
+int mp_copy(mp_int *a, mp_int *b)
 {
-  int     res, n;
+  int res, n;
 
   /* if dst == src do nothing */
   if (a == b) {
@@ -28,9 +27,9 @@ mp_copy (mp_int * a, mp_int * b)
 
   /* grow dest */
   if (b->alloc < a->used) {
-     if ((res = mp_grow (b, a->used)) != MP_OKAY) {
-        return res;
-     }
+    if ((res = mp_grow(b, a->used)) != MP_OKAY) {
+      return res;
+    }
   }
 
   /* zero b and copy the parameters over */

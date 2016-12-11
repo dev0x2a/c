@@ -1,15 +1,12 @@
 #include <math.h>
-
 #define RAD (3.14159265/180.0)
-
-/* calculates the phases of the moon.
+/* calculates the phases of the moon
  * Given an integer n and a code nph for the phase desired
  * (nph = 0 for new moon, 1 for first quarter, 2 for full,
  * 3 for last quarter), the routine returns the Julian Day
  * Number jd, and the fractional part of a day frac to be
  * added to it, of the n-th such phase since January 1990.
- * Greenwhich Mean Time is assumed.
- */
+ * Greenwhich Mean Time is assumed*/
 void flmoon(int n, int nph, long *jd, float *frac)
 {
   int i;

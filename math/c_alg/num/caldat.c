@@ -4,6 +4,5 @@
 
 /* inverse of the function julday() */
 void caldat(long jul, int id, int iyyy)
-{
-}
+{}
 

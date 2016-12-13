@@ -2,7 +2,7 @@
    own personal project
 
    you probably shouldn't use this.. */
-#include "rbn.h"
+#include "rbn_priv.h"
 
 void rn_printf(rni *a, int radix, FILE *o)
 {
@@ -17,8 +17,7 @@ void rn_printf(rni *a, int radix, FILE *o)
 
 void rn_add(rni *a, rni *b, rni *c)
 {
-  int sa = a->s,
-      sb = b->s;
+  int sa=a->s, sb=b->s;
   if (sa == sb) {
     c->s = sa;
     s_rn_add(a, b, c);
@@ -35,8 +34,7 @@ void rn_add(rni *a, rni *b, rni *c)
 
 void rn_sub(rni *a, rni *b, rni *c)
 {
-  int sa = a->s,
-      sb = b->s;
+  int sa=a->s, sb=b->s;
   if (sa != sb) {
     c->s = sa;
     s_rn_add(a, b, c);
@@ -53,12 +51,9 @@ void rn_sub(rni *a, rni *b, rni *c)
 
 void s_rn_add(rni *a, rni *b, rni *c)
 {
-  int x,
-      y = MAX(a->u, b->u),
-      ou = MIN(c->u, RN_SIZ);
+  int x, y=MAX(a->u, b->u), ou=MIN(c->u, RN_SIZ);
   register rnw t=0;
   c->u = y;
-  
   for (x=0; x<y; ++x) {
     t += ((rnw)a->dp[x])+((rnw)b->dp[x]);
     c->dp[x] = (rnd)t;
@@ -76,12 +71,9 @@ void s_rn_add(rni *a, rni *b, rni *c)
 
 void s_rn_sub(rni *a, rni *b, rni *c)
 {
-  int x,
-      ou = c->u,
-      obu = b->u;
+  int x, ou=c->u, obu=b->u;
   rnw t=0;
   c->u = a->u;
-
   for (x=0; x<obu; ++x) {
     t = ((rnw)a->dp[x])-(((rnw)b->dp[x])+t);
     c->dp[x] = (rnd)t;
@@ -136,12 +128,12 @@ void rn_subd(rni *a, rnd b, rni *c)
 
 int rn_cmp_mag(rni *a, rni *b)
 {
-  int x;
   if (a->u > b->u) {
     return RN_GT;
   } else if (a->u < b->u) {
     return RN_LT;
   } else {
+    int x;
     for (x=a->u-1; x>=0; --x) {
       if (a->dp[x] > b->dp[x])
         return RN_GT;
@@ -197,8 +189,7 @@ int rn_div(rni *a, rni *b, rni *c, rni *d)
 
   neg = (a->s==b->s) ? ZPOS : RNEG;
   x.s = y.s = ZPOS;
-
-  norm = rn_cntbit(&y) % DGT_BIT;
+  norm = rn_cntbit(&y)%DGT_BIT;
   if (norm < (int)(DGT_BIT-1)) {
     norm = (DGT_BIT-1)-norm;
     rn_mul2d(&x, norm, &x);
@@ -272,9 +263,9 @@ int rn_modd(rni *a, rnd b, rnd *c)
 
 static int s_ispow2(rnd b, int *p)
 {
-  int x;
   if ((b==0) || (b&(b-1)))
     return 0;
+  int x;
   for (x=0; x<DGT_BIT; ++x) {
     if (b == (((rnd)1)<<x)) {
       *p = x;
@@ -286,11 +277,6 @@ static int s_ispow2(rnd b, int *p)
 
 int rn_divd(rni *a, rnd b, rni *c, rnd *d)
 {
-  rni q;
-  rnd t;
-  rnw w=0;
-  int ix;
-
   if (b == 0)
     return VAL;
   if (b==1 || iszero(a)==1) {
@@ -300,13 +286,17 @@ int rn_divd(rni *a, rnd b, rni *c, rnd *d)
       rn_cpy(a,c);
     return OK;
   }
+  int ix;
   if (s_ispow2(b,&ix) == 1) {
     if (d != NULL)
-      *d = a->dp[0] & ((((rnd)1) << ix)-1);
+      *d = a->dp[0]&((((rnd)1)<<ix)-1);
     if (c != NULL)
       rn_div2d(a, ix, c, NULL);
     return OK;
   }
+  rni q;
+  rnd t;
+  rnw w=0;
   init(&q);
   q.u = a->u;
   q.s = a->s;
@@ -330,11 +320,11 @@ int rn_divd(rni *a, rnd b, rni *c, rnd *d)
 
 void rn_rshd(rni *a, int x)
 {
-  int y;
   if (x >= a->u) {
     zero(a);
     return;
   }
+  int y;
   for (y=0; y<a->u-x; ++y)
     a->dp[y] = a->dp[y+x];
   for (; y<a->u; ++y)
@@ -381,12 +371,10 @@ void rn_2exp(rni *a, int b)
 
 void rn_div2(rni *a, rni *b)
 {
-  int x,
-      ou = b->u;
+  int x, ou = b->u;
   b->u = a->u;
   {
     register rnd r=0, rr, *tmpa, *tmpb;
-
     tmpa = a->dp+b->u-1;
     tmpb = b->dp+b->u-1;
     for (x=b->u-1; x>=0; --x) {
@@ -404,16 +392,13 @@ void rn_div2(rni *a, rni *b)
 
 void rn_div2d(rni *a, int b, rni *c, rni *d)
 {
-  rnd D, r, rr;
-  rni t;
-  int x;
-
   if (b <= 0) {
     rn_cpy(a,c);
     if (d != NULL)
       zero(d);
     return;
   }
+  rni t;
   init(&t);
   if (d != NULL)
     rn_mod2d(a, b, &t);
@@ -421,13 +406,14 @@ void rn_div2d(rni *a, int b, rni *c, rni *d)
   if (b >= (int)DGT_BIT)
     rn_rshd(c, b/DGT_BIT);
 
-  D = (rnd)(b % DGT_BIT);
+  rnd D = (rnd)(b%DGT_BIT);
   if (D != 0) {
     register rnd *tmpc, mask, shift;
     mask = (((rnd)1) << D)-1;
     shift = DGT_BIT-D;
     tmpc = c->dp+(c->u-1);
-    r = 0;
+    rnd rr, r=0;
+    int x;
     for (x=c->u-1; x>=0; --x) {
       rr = *tmpc & mask;
       *tmpc = (*tmpc >> D) | (r << shift);
@@ -442,13 +428,11 @@ void rn_div2d(rni *a, int b, rni *c, rni *d)
 
 int rn_cntlsb(rni *a)
 {
-  int x;
-  rnd q, qq;
-
   if (iszero(a) == 1)
     return 0;
+  int x;
   for (x=0; x<a->u && a->dp[x]==0; ++x);
-  q = a->dp[x];
+  rnd qq, q=a->dp[x];
   x *= DGT_BIT;
   if ((q&1) == 0) {
     do {
@@ -462,7 +446,6 @@ int rn_cntlsb(rni *a)
 
 void rn_mod2d(rni *a, int b, rni *c)
 {
-  int x;
   if (b <= 0) {
     zero(c);
     return;
@@ -470,6 +453,7 @@ void rn_mod2d(rni *a, int b, rni *c)
   rn_cpy(a,c);
   if (b >= (DGT_BIT*a->u))
     return;
+  int x;
   for (x=(b/DGT_BIT)+((b%DGT_BIT)==0?0:1); x<c->u; ++x)
     c->dp[x] = 0;
   c->dp[b/DGT_BIT] &= ~((rnd)0)>>(DGT_BIT-b);
@@ -478,11 +462,10 @@ void rn_mod2d(rni *a, int b, rni *c)
 
 void rn_mul(rni *A, rni *B, rni *C)
 {
-  int y, ou;
 #if RN_SIZ >= 48
   int yy;
 #endif
-  ou = C->u;
+  int y, ou=C->u;
   if (A->u+B->u > RN_SIZ) {
     rn_mul_comba(A, B, C);
     goto clean;
@@ -507,7 +490,7 @@ void rn_mul(rni *A, rni *B, rni *C)
     goto clean;
   }
 #endif
-#if defined(RN_MUL6) && FP_SIZE >= 12
+#if defined(RN_MUL6) && RN_SIZ >= 12
   if (y <= 6) {
     rn_mul_comba6(A, B, C);
     goto clean;
@@ -546,7 +529,7 @@ void rn_mul(rni *A, rni *B, rni *C)
 
 #if defined(RN_SMALL_SET) && RN_SIZ >= 32
   if (y <= 16) {
-    rn_mul_comba_small(A, B, C);
+    rn_mul_combasmall(A, B, C);
     goto clean;
   }
 #endif
@@ -594,8 +577,7 @@ clean:
 
 void rn_mul2(rni *a, rni *b)
 {
-  int x,
-      ou = b->u;
+  int x, ou = b->u;
   b->u = a->u;
   {
     register rnd r=0, rr, *tmpa, *tmpb;
@@ -620,16 +602,13 @@ void rn_mul2(rni *a, rni *b)
 
 void rn_mul2d(rni *a, int b, rni *c)
 {
-  rnd carry, carrytmp, shift;
-  int x;
-
   rn_cpy(a,c);
   if (b >= DGT_BIT)
     rn_lshd(c, b/DGT_BIT);
   b %= DGT_BIT;
   if (b != 0) {
-    carry = 0;
-    shift = DGT_BIT-b;
+    rnd carry=0, carrytmp, shift=DGT_BIT-b;
+    int x;
     for (x=0; x<c->u; ++x) {
       carrytmp = c->dp[x] >> shift;
       c->dp[x] = (c->dp[x] << b)+carry;
@@ -652,8 +631,7 @@ int rn_mulmod(rni *a, rni *b, rni *c, rni *d)
 void rn_muld(rni *a, rnd b, rni *c)
 {
   rnw w=0;
-  int x,
-      ou = c->u;
+  int x, ou=c->u;
   c->u = a->u;
   c->s = a->s;
   for (x=0; x<a->u; ++x) {
@@ -674,7 +652,6 @@ void rn_rev(unsigned char *s, int len)
 {
   int ix=0, iy=len-1;
   unsigned char t;
-
   while (ix < iy) {
     t = s[ix];
     s[ix] = s[iy];
@@ -686,8 +663,6 @@ void rn_rev(unsigned char *s, int len)
 
 int rn_radix_siz(rni *a, int radix, int *size)
 {
-  rni t;
-  rnd d;
   *size = 0;
   if (radix<2 || radix>64)
     return VAL;
@@ -695,11 +670,13 @@ int rn_radix_siz(rni *a, int radix, int *size)
     *size = 2;
     return OK;
   }
+  rni t;
   initcpy(&t, a);
   if (t.s == RNEG) {
     (*size)++;
     t.s == ZPOS;
   }
+  rnd d;
   while (iszero(&t) == RNN) {
     rn_divd(&t, (rnd)radix, &t, &d);
     (*size)++;
@@ -740,24 +717,23 @@ int rn_read_radix(rni *a, const char *str, int radix)
 
 int rn_toradixn(rni *a, char *str, int radix, int maxlen)
 {
-  rni t;
-  rnd d;
-  int dgt = 0;
-  char *_s = str;
-
   if (maxlen<2 || radix<2 || radix>64)
     return VAL;
   if (iszero(a) == RNY) {
     *str++ = '0';
     *str = '\0';
   }
+  rni t;
   initcpy(&t, a);
+  char *_s = str;
   if (t.s == RNEG) {
     ++_s;
     *str++ = '-';
     t.s = ZPOS;
     --maxlen;
   }
+  rnd d;
+  int dgt = 0;
   while (iszero(&t) == RNN) {
     if (--maxlen < 1)
       break;
@@ -777,10 +753,10 @@ int rn_toradix(rni *a,  char *str, int radix)
 
 void rn_rand(rni *a, int dgt)
 {
-  rnd d;
   zero(a);
   if (dgt <= 0)
     return;
+  rnd d;
   do
     d = ((rnd)abs(rand())) & MASK;
   while (d == 0);
@@ -794,8 +770,6 @@ void rn_rand(rni *a, int dgt)
 
 void rn_gcd(rni *a, rni *b, rni *c)
 {
-  rni u, v, r;
-
   if (iszero(a)==1 && iszero(b)==0) {
     rn_abs(b, c);
     return;
@@ -808,6 +782,7 @@ void rn_gcd(rni *a, rni *b, rni *c)
     zero(c);
     return;
   }
+  rni u, v, r;
   if (rn_cmp_mag(a,b) != RN_LT) {
     initcpy(&u, a);
     initcpy(&v, b);
@@ -827,7 +802,6 @@ void rn_gcd(rni *a, rni *b, rni *c)
 void rn_lcm(rni *a, rni *b, rni *c)
 {
   rni t1, t2;
-
   init(&t1);
   init(&t2);
   rn_gcd(a, b, &t1);
@@ -847,17 +821,16 @@ void rn_lcm(rni *a, rni *b, rni *c)
    very much lower */
 void rn_pr_millrab(rni *a, rni *b, int *res)
 {
-  rni n1, y, r;
-  int s, j;
   *res = RNN;
 
   if (rn_cmpd(b,1) != RN_GT)
     return;
+  rni n1, y, r;
   initcpy(&n1, a);
   rn_subd(&n1, 1, &n1);
 
   initcpy(&r, &n1);
-  s = rn_cntlsb(&r);
+  int s=rn_cntlsb(&r), j;
   rn_div2d(&r, s, &r, NULL);
   init(&y);
   rn_exptmod(b, &r, a, &y);
@@ -866,7 +839,7 @@ void rn_pr_millrab(rni *a, rni *b, int *res)
     j = 1;
     while ((j<=(s-1)) && rn_cmp(&y,&n1)!=RN_EQ) {
       rn_sqrmod(&y, a, &y);
-      if (fp_cmpd(&y,1) == RN_EQ)
+      if (rn_cmpd(&y,1) == RN_EQ)
         return;
       ++j;
     }
@@ -876,57 +849,19 @@ void rn_pr_millrab(rni *a, rni *b, int *res)
   *res = RNY;
 }
 
-static const rnd primes[PR_SIZ] = {
-  0x0002, 0x0003, 0x0005, 0x0007, 0x000b, 0x000d, 0x0011, 0x0013,
-  0x0017, 0x001d, 0x001f, 0x0025, 0x0029, 0x002b, 0x002f, 0x0035,
-  0x003b, 0x003d, 0x0043, 0x0047, 0x0049, 0x004f, 0x0053, 0x0059,
-  0x0061, 0x0065, 0x0067, 0x006b, 0x006d, 0x0071, 0x007f, 0x0083,
-  0x0089, 0x008b, 0x0095, 0x0097, 0x009d, 0x00a3, 0x00a7, 0x00ad,
-  0x00b3, 0x00b5, 0x00bf, 0x00c1, 0x00c5, 0x00c7, 0x00d3, 0x00df,
-  0x00e3, 0x00e5, 0x00e9, 0x00ef, 0x00f1, 0x00fb, 0x0101, 0x0107,
-  0x010d, 0x010f, 0x0115, 0x0119, 0x011b, 0x0125, 0x0133, 0x0137,
-
-  0x0139, 0x013d, 0x014b, 0x0151, 0x015b, 0x015d, 0x0161, 0x0167,
-  0x016f, 0x0175, 0x017b, 0x017f, 0x0185, 0x018d, 0x0191, 0x0199,
-  0x01a3, 0x01a5, 0x01af, 0x01b1, 0x01b7, 0x01bb, 0x01c1, 0x01c9,
-  0x01cd, 0x01cf, 0x01d3, 0x01df, 0x01e7, 0x01eb, 0x01f3, 0x01f7,
-  0x01fd, 0x0209, 0x020b, 0x021d, 0x0223, 0x022d, 0x0233, 0x0239,
-  0x023b, 0x0241, 0x024b, 0x0251, 0x0257, 0x0259, 0x025f, 0x0265,
-  0x0269, 0x026b, 0x0277, 0x0281, 0x0283, 0x0287, 0x028d, 0x0293,
-  0x0295, 0x02a1, 0x02a5, 0x02ab, 0x02b3, 0x02bd, 0x02c5, 0x02cf,
-
-  0x02d7, 0x02dd, 0x02e3, 0x02e7, 0x02ef, 0x02f5, 0x02f9, 0x0301,
-  0x0305, 0x0313, 0x031d, 0x0329, 0x032b, 0x0335, 0x0337, 0x033b,
-  0x033d, 0x0347, 0x0355, 0x0359, 0x035b, 0x035f, 0x036d, 0x0371,
-  0x0373, 0x0377, 0x038b, 0x038f, 0x0397, 0x03a1, 0x03a9, 0x03ad,
-  0x03b3, 0x03b9, 0x03c7, 0x03cb, 0x03d1, 0x03d7, 0x03df, 0x03e5,
-  0x03f1, 0x03f5, 0x03fb, 0x03fd, 0x0407, 0x0409, 0x040f, 0x0419,
-  0x041b, 0x0425, 0x0427, 0x042d, 0x043f, 0x0443, 0x0445, 0x0449,
-  0x044f, 0x0455, 0x045d, 0x0463, 0x0469, 0x047f, 0x0481, 0x048b,
-
-  0x0493, 0x049d, 0x04a3, 0x04a9, 0x04b1, 0x04bd, 0x04c1, 0x04c7,
-  0x04cd, 0x04cf, 0x04d5, 0x04e1, 0x04eb, 0x04fd, 0x04ff, 0x0503,
-  0x0509, 0x050b, 0x0511, 0x0515, 0x0517, 0x051b, 0x0527, 0x0529,
-  0x052f, 0x0551, 0x0557, 0x055d, 0x0565, 0x0577, 0x0581, 0x058f,
-  0x0593, 0x0595, 0x0599, 0x059f, 0x05a7, 0x05ab, 0x05ad, 0x05b3,
-  0x05bf, 0x05c9, 0x05cb, 0x05cf, 0x05d1, 0x05d5, 0x05db, 0x05e7,
-  0x05f3, 0x05fb, 0x0607, 0x060d, 0x0611, 0x0617, 0x061f, 0x0623,
-  0x062b, 0x062f, 0x063d, 0x0641, 0x0647, 0x0649, 0x064d, 0x0653};
-
 int rn_isprime(rni *a, int t)
 {
-  rni b;
-  rnd d;
-  int r, res;
-
   if (t<=0 || t>PR_SIZ)
     return RNN;
+  rnd d;
+  int r, res;
   for (r=0; r<256; ++r) {
     rn_modd(a, primes[r], &d);
     if (d == 0)
       return RNN;
   }
-  fp_init(&b);
+  rni b;
+  init(&b);
   for (r=0; r<t; ++r) {
     rn_set(&b, primes[r]);
     rn_pr_millrab(a, &b, &res);
@@ -956,11 +891,11 @@ int rn_pr_rand(rni *a, int t, int size, int flags,
   maskOR_msb = 0;
   maskOR_msb_offset = (size-2)>>3;
 
-  if (flags & PR_2MSB_ON) {
+  if (flags & PR_2MSB_ON)
     maskOR_msb |= 1<<((size-2)&7);
-  } else if (flags & PR_2MSB_OFF) {
+  else if (flags & PR_2MSB_OFF)
     maskAND &= ~(1<<((size-2)&7));
-  }
+
   maskOR_lsb = 1;
   if (flags & PR_BBS)
     maskOR_lsb |= 3;
@@ -993,5 +928,440 @@ int rn_pr_rand(rni *a, int t, int size, int flags,
 error:
   free(tmp);
   return err;
+}
+
+#ifdef RN_TIMING_RESISTANT
+/* timing resistant montgomery ladder based expmod
+
+   Based on work by Marc Joye, Sung-Ming Yen, "The Montgomery Powering Ladder",
+   Cryptographic Hardware and Embedded Systems, CHES 2002 */
+static int _rn_expmod(rni *G, rni *X, rni *P, rni *Y)
+{
+  rnd buf, mp;
+  int err, bitcnt, digidx, y;
+
+  if ((err=rn_mont_setup(P, &mp)) != OK)
+    return err;
+  rni R[2];
+  init(&R[0]);
+  init(&R[1]);
+
+  rn_mont_calc_norm(&R[0], P);
+  if (rn_cmp_mag(P,G) != RN_GT)
+    rn_mod(G, P, &R[1]);
+  else
+    rn_cpy(G, &R[1]);
+  rn_mulmod(&R[1], &R[0], P, &R[1]);
+
+  bitcnt = 1;
+  buf = 0;
+  digidx = X->u-1;
+
+  for (;;) {
+    if (--bitcnt == 0) {
+      if (digidx == -1)
+        break;
+      buf = X->dp[digidx--];
+      bitcnt = (int)DGT_BIT;
+    }
+    y = (rnd)(buf>>(DGT_BIT-1))&1;
+    buf <<= (rnd)1;
+
+    rn_mul(&R[0], &R[1], &R[y^1]);
+    rn_mont_reduce(&R[y^1], P, mp);
+    rn_sqr(&R[y], &R[y]);
+    rn_mont_reduce(&R[y], P, mp);
+  }
+  rn_mont_reduce(&R[0], P, mp);
+  rn_cpy(&R[0], Y);
+  return OK;
+}
+#else
+/* y = g**x (mod b)
+   Some restrictions... x must be positive and < b */
+static int _rn_expmod(rni *G, rni *X, rni *P, rni *Y)
+{
+  int err, bitbuf, bitcpy, bitcnt, mode, digidx, y, winsize,
+      x=rn_cntbit(X);
+  if (x <= 21)
+    winsize = 1;
+  else if (x <= 36)
+    winsize = 3;
+  else if (x <= 140)
+    winsize = 4;
+  else if (x <= 450)
+    winsize = 5;
+  else
+    winsize = 6;
+  rni M[64], res;
+  rnd buf, mp;
+  memset(M, 0, sizeof(M));
+  if ((err=rn_mont_setup(P,&mp)) != OK)
+    return err;
+  init(&res);
+  rn_mont_calc_norm(&res, P);
+  if (rn_cmp_mag(P, G) != RN_GT)
+    rn_mod(G, P, &M[1]);
+  else
+    rn_cpy(G, &M[1]);
+  rn_mulmod(&M[1], &res, P, &M[1]);
+  rn_cpy(&M[1], &M[1<<(winsize-1)]);
+  for (x=0; x<(winsize-1); ++x) {
+    rn_sqr(&M[1<<(winsize-1)], &M[1<<(winsize-1)]);
+    rn_mont_reduce(&M[1<<(winsize-1)], P, mp);
+  }
+  for (x=(1<<(winsize-1))+1; x<(1<<winsize); ++x) {
+    rn_mul(&M[x-1], &M[1], &M[x]);
+    rn_mont_reduce(&M[x], P, mp);
+  }
+  buf = 0;
+  mode = 0;
+  bitcnt = 1;
+  digidx = X->u-1;
+  bitcpy = bitbuf = 0;
+  for (;;) {
+    if (--bitcnt == 0) {
+      if (digidx == -1)
+        break;
+      buf = X->dp[digidx--];
+      bitcnt = (int)DGT_BIT;
+    }
+    y = (rnd)(buf>>(DGT_BIT-1))&1;
+    buf <<= (rnd)1;
+    if (mode==0 && y==0)
+      continue;
+    if (mode==1 && y==0) {
+      rn_sqr(&res, &res);
+      rn_mont_reduce(&res, P, mp);
+      continue;
+    }
+    bitbuf |= (y<<(winsize - ++bitcpy));
+    mode = 2;
+    if (bitcpy == winsize) {
+      for (x=0; x<winsize; ++x) {
+        rn_sqr(&res, &res);
+        rn_mont_reduce(&res, P, mp);
+      }
+      rn_mul(&res, &M[bitbuf], &res);
+      rn_mont_reduce(&res, P, mp);
+      bitcpy = bitbuf = 0;
+      mode = 1;
+    }
+  }
+  if (mode==2 && bitcpy>0) {
+    for (x=0; x<bitcpy; ++x) {
+      rn_sqr(&res, &res);
+      rn_mont_reduce(&res, P, mp);
+      bitbuf <<= 1;
+      if ((bitbuf&(1<<winsize)) != 0) {
+        rn_mul(&res, &M[1], &res);
+        rn_mont_reduce(&res, P, mp);
+      }
+    }
+  }
+  rn_mont_reduce(&res, P, mp);
+  rn_cpy(&res, Y);
+  return OK;
+}
+#endif
+
+int rn_expmod(rni *G, rni *X, rni *P, rni *Y)
+{
+#ifdef RN_CHK
+  if (P->u > (RN_SIZ/2))
+    return VAL;
+#endif
+  if (X->s == RNEG) {
+    int err;
+    rni tmp;
+    rn_cpy(G, &tmp);
+    if ((err=rn_invmod(&tmp,P,&tmp)) != OK)
+      return err;
+    X->s = ZPOS;
+    err = _rn_expmod(&tmp, X, P, Y);
+    if (X != Y)
+      X->s = RNEG;
+    return err;
+  } else
+    return _rn_expmod(G, X, P, Y);
+}
+
+void rn_sqr(rni *A, rni *B)
+{
+  int y, ou=B->u;
+  if (A->u+A->u > RN_SIZ) {
+    rn_sqr_comba(A, B);
+    goto clean;
+  }
+  y = A->u;
+#if defined(RN_SQR3) && RN_SIZ >= 6
+  if (y <= 3) {
+    rn_sqr_comba3(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR4) && RN_SIZ >= 8
+  if (y == 4) {
+    rn_sqr_comba4(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR6) && RN_SIZ >= 12
+  if (y <= 6) {
+    rn_sqr_comba6(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR7) && RN_SIZ >= 14
+  if (y == 7) {
+    rn_sqr_comba7(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR8) && RN_SIZ >= 16
+  if (y == 8) {
+    rn_sqr_comba8(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR9) && RN_SIZ >= 18
+  if (y == 9) {
+    rn_sqr_comba9(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR12) && RN_SIZ >= 24
+  if (y <= 12) {
+    rn_sqr_comba12(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR17) && RN_SIZ >= 34
+  if (y <= 17) {
+    rn_sqr_comba17(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SMALL_SET)
+  if (y <= 16) {
+    rn_sqr_combasmall(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR20) && RN_SIZ >= 40
+  if (y <= 20) {
+    rn_sqr_comba20(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR24) && RN_SIZ >= 48
+  if (y <= 24) {
+    rn_sqr_comba24(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR28) && RN_SIZ >= 56
+  if (y <= 28) {
+    rn_sqr_comba28(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR32) && RN_SIZ >= 64
+  if (y <= 32) {
+    rn_sqr_comba32(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR48) && RN_SIZ >= 96
+  if (y <= 48) {
+    rn_sqr_comba48(A, B);
+    goto clean;
+  }
+#endif
+#if defined(RN_SQR64) && RN_SIZ >= 128
+  if (y <= 64) {
+    rn_sqr_comba64(A, B);
+    goto clean;
+  }
+#endif
+  rn_sqr_comba(A, B);
+clean:
+  for (y=B->u; y<ou; ++y)
+    B->dp[y] = 0;
+}
+
+int rn_sqrmod(rni *a, rni *b, rni *c)
+{
+  rni tmp;
+  zero(&tmp);
+  rn_sqr(a, &tmp);
+  return rn_mod(&tmp, b, c);
+}
+
+#define RN_DEFINES
+#include "sqr/rn_sqr_comba.c"
+
+void rn_sqr_comba(rni *A, rni *B)
+{
+  int pa, ix, iz;
+  rnd c0, c1, c2;
+  rni tmp, *dst;
+#ifdef RN_ISO
+  rnw tt;
+#endif
+  pa = A->u+A->u;
+  if (pa >= RN_SIZ)
+    pa = RN_SIZ-1;
+
+  COMBA_START;
+  CLR_CARRY;
+  if (A == B) {
+    zero(&tmp);
+    dst = &tmp;
+  } else {
+    zero(B);
+    dst = B;
+  }
+  for (ix=0; ix<pa; ++ix) {
+    int tx, ty, iy;
+    rnd *tmpy, *tmpx;
+
+    ty = MIN(A->u-1, ix);
+    tx = ix-ty;
+    tmpx = A->dp+tx;
+    tmpy = A->dp+ty;
+    iy = MIN(A->u-tx, ty+1);
+    iy = MIN(iy, (ty-tx+1)>>1);
+    CARRY_FOW;
+    for (iz=0; iz<iy; ++iz) {
+      rnd _tmpx = *tmpx++;
+      rnd _tmpy = *tmpy--;
+      SQRADD2(_tmpx, _tmpy);
+    }
+    if ((ix&1) == 0) {
+      rnd _a_dp = A->dp[ix>>1];
+      SQRADD(_a_dp, A->dp[ix>>1]);
+    }
+    COMBA_STO(dst->dp[ix]);
+  }
+  COMBA_FIN;
+  dst->u = pa;
+  rn_clamp(dst);
+  if (dst != B)
+    rn_cpy(dst, B);
+}
+#undef RN_DEFINES
+
+static int rn_invmod_slow(rni *a, rni *b, rni *c)
+{
+  rni x, y, u, v, A, B, C, D;
+  int res;
+  if (b->s==RNEG || iszero(b)==1)
+    return VAL;
+  init(&x);
+  init(&y);
+  init(&u);
+  init(&v);
+  init(&A);
+  init(&B);
+  init(&C);
+  init(&D);
+  if ((res=rn_mod(a,b,&x)) != OK)
+    return res;
+  rn_cpy(b, &y);
+  if (iseven(&x)==1 && iseven(&y)==1)
+    return VAL;
+  rn_cpy(&x, &u);
+  rn_cpy(&y, &v);
+  rn_set(&A, 1);
+  rn_set(&D, 1);
+top:
+  while (iseven(&u) == 1) {
+    rn_div2(&u, &u);
+    if (isodd(&A)==1 || isodd(&B)==1) {
+      rn_add(&A, &y, &A);
+      rn_sub(&B, &x, &B);
+    }
+    rn_div2(&A, &A);
+    rn_div2(&B, &B);
+  }
+  while (iseven(&v) == 1) {
+    rn_div2(&v, &v);
+    if (isodd(&C)==1 || isodd(&D)==1) {
+      rn_add(&C, &y, &C);
+      rn_sub(&D, &x, &D);
+    }
+    rn_div2(&C, &C);
+    rn_div2(&D, &D);
+  }
+  if (rn_cmp(&u,&v) != RN_LT) {
+    rn_sub(&u, &v, &u);
+    rn_sub(&A, &C, &A);
+    rn_sub(&B, &D, &B);
+  } else {
+    rn_sub(&v, &u, &v);
+    rn_sub(&C, &A, &C);
+    rn_sub(&D, &B, &D);
+  }
+  if (iszero(&u) == 0)
+    goto top;
+  if (rn_cmpd(&v,1) != RN_EQ)
+    return VAL;
+  while (rn_cmpd(&C,0) == RN_LT)
+    rn_add(&C, b, &C);
+  while (rn_cmp_mag(&C,b) != RN_LT)
+    rn_sub(&C, b, &C);
+  rn_cpy(&C, c);
+  return OK;
+}
+
+/* c = 1/a (mod b) for odd b only */
+int rn_invmod(rni *a, rni *b, rni *c)
+{
+  rni x, y, u, v, B, D;
+  int neg;
+  if (iseven(b) == RNY)
+    return rn_invmod_slow(a, b, c);
+  init(&x);
+  init(&y);
+  init(&u);
+  init(&v);
+  init(&B);
+  init(&D);
+  rn_cpy(b, &x);
+  rn_abs(a, &y);
+  rn_cpy(&x, &u);
+  rn_cpy(&y, &v);
+  rn_set(&D, 1);
+top:
+  while (iseven(&u) == RNY) {
+    rn_div2(&u, &u);
+    if (isodd(&B) == RNY)
+      rn_sub(&B, &x, &B);
+    rn_div2(&B, &B);
+  }
+  while (iseven(&v) == RNY) {
+    rn_div2(&v, &v);
+    if (isodd(&D) == RNY)
+      rn_sub(&D, &x, &D);
+    rn_div2(&D, &D);
+  }
+  if (rn_cmp(&u, &v) != RN_LT) {
+    rn_sub(&u, &v, &u);
+    rn_sub(&B, &D, &B);
+  } else {
+    rn_sub(&v, &u, &v);
+    rn_sub(&D, &B, &D);
+  }
+  if (iszero(&u) == RNN)
+    goto top;
+  if (rn_cmpd(&v, 1) != RN_EQ)
+    return VAL;
+  neg = a->s;
+  while (D.s == RNEG)
+    rn_add(&D, b, &D);
+  rn_cpy(&D, c);
+  c->s = neg;
+  return OK;
 }
 

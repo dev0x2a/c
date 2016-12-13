@@ -76,4 +76,10 @@ typedef struct {
   int u, s; /* used, sign */
 } rni; /* int */
 
+#define PR_SIZ 256
+#define PR_BBS 0x0001
+#define PR_SAFE 0x0002
+#define PR_2MSB_OFF 0x0004
+#define PR_2MSB_ON 0x0008
+
 #endif /* RTYPEDEF_H */

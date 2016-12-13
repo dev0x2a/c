@@ -16,16 +16,17 @@ void draw(rni *a, FILE *o)
 
 int main(void)
 {
-  rni p, q, n;
-  init(&p);
-  init(&q);
-  init(&n);
+//rni q, n;
+//init(&q);
+//init(&n);
   
+  rni p;
+  init(&p);
   rn_read_radix(&p, "1", 10);
-  //rn_read_radix(&q, "12345", 10);
-  //rn_add(&p, &q, &n);
+//rn_read_radix(&q, "12345", 10);
+//rn_add(&p, &q, &n);
+//draw(&n, stdout);
   rn_printf(&p, 10, stdout);
-//  draw(&n, stdout);
   return 0;
 }
 

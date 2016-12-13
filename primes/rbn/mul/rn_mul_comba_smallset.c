@@ -1,7 +1,7 @@
 #define RN_DEFINES
 #include "rn_mul_comba.c"
 #if defined(RN_SMALL_SET)
-void rn_mul_comba_small(rni *A, rni *B, rni *C)
+void rn_mul_combasmall(rni *A, rni *B, rni *C)
 {
   rnd c0, c1, c2, at[32];
   switch (MAX(A->u, B->u)) {

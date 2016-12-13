@@ -8,7 +8,6 @@ typedef signed long        s32;
 typedef unsigned long      u32;
 typedef signed long long   s64;
 typedef unsigned long long u64;
-typedef unsigned int       uint;
 
 #ifndef MIN
 #define MIN(a,b) ((a<b)?a:b)

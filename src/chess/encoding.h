@@ -14,16 +14,15 @@
 
 #define CAPTURE 0xffff
 
-typedef unsigned int uint;
-uint move;
+unsigned move;
 
-void pmove(uint from, uint to, uint flag) {
+void pmove(unsigned from, unsigned to, unsigned flag) {
   move = ((flag & 0xf)<<12) | ((from & 0x3f)<<6) | (to & 0x3f);
 }
 
-uint getto() {return move & 0x3f;}
-uint getfrom() {return (move >> 6) & 0x3f;}
-uint getflag() {return (move >> 12) & 0x0f;}
+unsigned getto() {return move & 0x3f;}
+unsigned getfrom() {return (move >> 6) & 0x3f;}
+unsigned getflag() {return (move >> 12) & 0x0f;}
 
 void setto(uint to) {
   move &= ~0x3f;
